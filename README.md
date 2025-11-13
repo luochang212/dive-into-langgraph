@@ -32,6 +32,8 @@ pip -r requirements.txt
 
 ## 2. Table of Contents
 
+Main Tutorial:
+
 |||
 | -- | -- |
 | 1 | [Quickstart](./1.quickstart.ipynb) |
@@ -45,6 +47,15 @@ pip -r requirements.txt
 | 9 | [Parallel](./9.parallel.ipynb) |
 | 10 | [Deep Agents](./10.deep_agents.ipynb) |
 | 11 | [LangGraph CLI](./11.langgraph_cli.ipynb) |
+
+Additional key implementations not covered in the tutorial:
+
+| Code | Description |
+| -- | -- |
+| [/tests/test_rag.py](./tests/test_rag.py) | Use `RAG` to inject local document chunks into the agent |
+| [/tests/test_langmem.py](./tests/test_langmem.py) | Manage long-term memory with `LangMem` |
+| [/tests/test_store.py](./tests/test_store.py) | Read/write long-term memory quickly with `RedisStore` |
+| [/tests/test_router.py](./tests/test_router.py) | Implement a simple agent router |
 
 ## 3. LangGraph CLI
 

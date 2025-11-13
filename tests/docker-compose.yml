@@ -1,0 +1,16 @@
+# Redis 测试环节，联动 test_store.py 使用
+
+services:
+  redis:
+    image: redis/redis-stack-server:latest
+    container_name: myredis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-stack-server /usr/local/etc/redis/redis.conf --appendonly yes
+
+volumes:
+  redis-data:

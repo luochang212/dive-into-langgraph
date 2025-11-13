@@ -32,7 +32,9 @@ pip -r requirements.txt
 
 ## 二、章节目录
 
-|||
+主教程：
+
+|序号|章节|
 | -- | -- |
 | 1 | [快速入门](../1.quickstart.ipynb) |
 | 2 | [状态图](../2.stategraph.ipynb) |
@@ -46,6 +48,15 @@ pip -r requirements.txt
 | 10 | [Deep Agents](../10.deep_agents.ipynb) |
 | 11 | [LangGraph CLI](../11.langgraph_cli.ipynb) |
 
+教程中未提及的一些关键代码实现：
+
+|代码|说明|
+| -- | -- |
+| [/tests/test_rag.py](../tests/test_rag.py) | 使用 `RAG` 将本地文档片段注入智能体 |
+| [/tests/test_langmem.py](../tests/test_langmem.py) | 使用 `LangMeM` 管理智能体长期记忆 |
+| [/tests/test_store.py](../tests/test_store.py) | 使用 `RedisStore` 快速读写长期记忆 |
+| [/tests/test_router.py](../tests/test_router.py) | 实现一个简单的智能体路由 |
+
 ## 三、调试界面
 
 启动 LangGraph CLI 提供的本地开发界面：
@@ -54,7 +65,7 @@ pip -r requirements.txt
 langgraph dev
 ```
 
-更多介绍参阅 [第11章](../11.langgraph_cli.ipynb)
+更多介绍请参阅 [第11章](../11.langgraph_cli.ipynb)
 
 ## 四、参考文档
 
