@@ -12,7 +12,7 @@ load_dotenv()
 llm = ChatOpenAI(
     api_key=os.getenv("DASHSCOPE_API_KEY"),
     base_url=os.getenv("DASHSCOPE_BASE_URL"),
-    model="qwen3-coder-plus",
+    model="Qwen/Qwen3-8B",
 )
 
 # 1) 定义一个简单工具

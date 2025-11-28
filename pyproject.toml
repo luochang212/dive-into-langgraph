@@ -1,0 +1,22 @@
+[project]
+name = "dive-into-langgraph"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "bs4>=0.0.2",
+    "fastmcp>=2.13.1",
+    "ipynbname>=2025.8.0.0",
+    "langchain-community>=0.4.1",
+    "langchain-mcp-adapters>=0.1.14",
+    "langchain-text-splitters>=1.0.0",
+    "langchain[openai]>=1.1.0",
+    "langgraph>=1.0.4",
+    "langgraph-checkpoint-sqlite>=3.0.0",
+    "langgraph-cli[inmem]>=0.4.7",
+    "langgraph-supervisor>=0.0.31",
+    "langmem>=0.0.30",
+    "pydantic>=2.12.5",
+    "python-dotenv>=1.2.1",
+]

@@ -15,7 +15,7 @@ load_dotenv()
 llm = ChatOpenAI(
     api_key=os.getenv("DASHSCOPE_API_KEY"),
     base_url=os.getenv("DASHSCOPE_BASE_URL"),
-    model="qwen3-coder-plus",
+    model="Qwen/Qwen3-8B",
 )
 
 # 创建具有记忆功能的智能体
