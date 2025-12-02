@@ -27,7 +27,7 @@
 
 ## 一、项目介绍
 
-> 2025 年 10 月中旬，LangGraph 发布 1.0 版本。开发团队承诺这是一个稳定版，预计未来接口不会大改，因此现在正是学习它的好时机。
+> 2025 年 10 月中旬，LangGraph 发布 1.0 版本。开发团队承诺这是一个稳定版本，预计未来接口不会大改，因此现在正是学习它的好时机。
 
 [LangGraph](https://github.com/langchain-ai/langgraph) 是由 LangChain 团队开发的开源智能体框架。它功能强大，你要的记忆、MCP、护栏、状态管理、多智能体它全都有。LangGraph 通常与 [LangChain](https://github.com/langchain-ai/langchain) 配合使用：LangChain 提供基础组件和工具，LangGraph 负责工作流和状态管理。因此，两个库的文档都需要学习。为了让大家快速入门，我将两个库的主要功能提取出来，分成 11 个章节进行介绍。
 
