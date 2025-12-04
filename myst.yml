@@ -8,7 +8,7 @@ project:
   authors: []
   github: https://github.com/luochang212/dive-into-langgraph
 site:
-  template: book-theme
+  template: https://github.com/myst-templates/book-theme/tree/2234e910adc8f4607c616920cf2abb212da4d41b
   options:
     logo_text: Dive into LangGraph
     # logo: ./static/my-logo.svg  # 可选，添加自定义logo
