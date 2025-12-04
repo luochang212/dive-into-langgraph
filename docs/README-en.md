@@ -123,3 +123,7 @@ We welcome any form of contribution!
 - 💡 Suggest features — share your ideas
 - 📝 Improve content — help enhance the tutorial
 - 🔧 Optimize code — submit a Pull Request
+
+## 7. License
+
+This work is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-nc-sa/4.0/).
