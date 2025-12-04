@@ -6,5 +6,7 @@ repository:
 sphinx:
   config:
     html_baseurl: https://luochang212.github.io/dive-into-langgraph/
+    exclude_patterns:
+      - LICENSE
 execute:
   execute_notebooks: "off"
