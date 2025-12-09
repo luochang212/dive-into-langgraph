@@ -1,4 +1,4 @@
-name: Deploy Jupyter Book
+name: Jupyter Book
 
 on:
   push:
