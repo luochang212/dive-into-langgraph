@@ -18,7 +18,7 @@
 </div>
 
 <div align="center">
-  <p><a href="https://luochang212.github.io/dive-into-langgraph/">📚 Online Reading</a></p>
+  <p><a href="https://www.luochang.ink/dive-into-langgraph/">📚 Online Reading</a></p>
   <h3>📖 LangGraph 1.0 Complete Guide</h3>
   <p><em>Build powerful agents from scratch</em></p>
 </div>

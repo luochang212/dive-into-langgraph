@@ -18,7 +18,7 @@
 </div>
 
 <div align="center">
-  <p><a href="https://luochang212.github.io/dive-into-langgraph/">📚 在线阅读地址</a></p>
+  <p><a href="https://www.luochang.ink/dive-into-langgraph/">📚 在线阅读地址</a></p>
   <h3>📖《LangGraph 1.0 完全指南》</h3>
   <p><em>从零开始，动手实现强大的智能体</em></p>
 </div>
