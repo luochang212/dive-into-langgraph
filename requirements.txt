@@ -8,7 +8,14 @@ langgraph
 langgraph-cli[inmem]
 langgraph-supervisor
 langgraph-checkpoint-sqlite
+langgraph-checkpoint-redis
 langmem
-ipynbname
 fastmcp
 bs4
+scikit-learn
+ipynbname
+supervisor
+jieba
+dashscope
+tavily-python
+ddgs

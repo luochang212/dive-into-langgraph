@@ -29,7 +29,7 @@
 
 > In mid-October 2025, LangGraph released version 1.0. The team announced this as a stable release and expects the interfaces not to change significantly, so now is a great time to learn it.
 
-This is an open-source ebook project designed to help Agent developers quickly master the LangGraph framework. [LangGraph](https://github.com/langchain-ai/langgraph) is an open-source agent framework developed by the LangChain team. It's powerful — memory, MCP, guardrails, state management, and multi-agent capabilities are all built in. LangGraph is typically used together with [LangChain](https://github.com/langchain-ai/langchain): LangChain provides the building blocks and tools, while LangGraph focuses on workflow orchestration and state management. Therefore, both libraries need to be learned. To help you ramp up quickly, this tutorial extracts the most important features from both libraries and organizes them into 11 chapters.
+This is an open-source ebook project designed to help Agent developers quickly master the LangGraph framework. [LangGraph](https://github.com/langchain-ai/langgraph) is an open-source agent framework developed by the LangChain team. It's powerful — memory, MCP, guardrails, state management, and multi-agent capabilities are all built in. LangGraph is typically used together with [LangChain](https://github.com/langchain-ai/langchain): LangChain provides the building blocks and tools, while LangGraph focuses on workflow orchestration and state management. Therefore, both libraries need to be learned. To help you ramp up quickly, this tutorial extracts the most important features from both libraries and organizes them into 13 chapters.
 
 ## 2. Installation
 
@@ -75,8 +75,13 @@ Quick overview of the tutorial:
 | 7 | [MCP Server](../7.mcp_server.ipynb) | How to create MCP Server and integrate with LangGraph |
 | 8 | [Supervisor Pattern](../8.supervisor.ipynb) | Two methods to implement supervisor pattern: tool-calling, langgraph-supervisor |
 | 9 | [Parallelization](../9.parallelization.ipynb) | How to implement concurrency: node concurrency, `@task` decorator, Map-reduce, Sub-graphs |
-| 10 | [Deep Agents](../10.deep_agents.ipynb) | Brief introduction to Deep Agents |
-| 11 | [Debug UI](../11.langgraph_cli.ipynb) | Introduction to the debug UI provided by langgraph-cli |
+| 10 | [RAG](../10.rag.ipynb) | Implement RAG: Vector Retrieval, Hybrid Retrieval |
+| 11 | [Web Search](../11.web_search.ipynb) | Implement web search functionality |
+| 12 | [Deep Agents](../12.deep_agents.ipynb) | Brief introduction to Deep Agents |
+| 13 | [Debug UI](../13.langgraph_cli.ipynb) | Introduction to the debug UI provided by langgraph-cli |
+
+<!-- | 12 | [Complex Memory](../12.complex_memory.ipynb) | Implement complex memory features: user profiling, cross-dialogue memory |
+| 13 | [Todo List](../13.todo_list.ipynb) | Update Todo List state | -->
 
 Important examples not covered above are placed under the repository’s `tests` directory:
 
@@ -99,7 +104,7 @@ Important examples not covered above are placed under the repository’s `tests`
 langgraph dev
 ```
 
-See [Chapter 11](../11.langgraph_cli.ipynb) for details.
+See [Chapter 13](../13.langgraph_cli.ipynb) for details.
 
 ## 5. Further Reading
 

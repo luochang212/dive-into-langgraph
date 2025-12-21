@@ -17,11 +17,15 @@ project:
     - file: 7.mcp_server.ipynb
     - file: 8.supervisor.ipynb
     - file: 9.parallelization.ipynb
-    - file: 10.deep_agents.ipynb
-    - file: 11.langgraph_cli.ipynb
+    - file: 10.rag.ipynb
+    - file: 11.web_search.ipynb
+    # - file: 12.complex_memory.ipynb
+    # - file: 13.todo_list.ipynb
+    - file: 12.deep_agents.ipynb
+    - file: 13.langgraph_cli.ipynb
 site:
   template: book-theme
   options:
     logo_text: Dive into LangGraph
-    # logo: ./static/my-logo.svg  # 可选，添加自定义logo
-    # favicon: ./static/favicon.ico  # 可选，配置浏览器图标
+    favicon: ./img/favicon_bg.ico  # 可选，配置浏览器图标
+    logo: ./img/favicon.png  # 可选，添加自定义logo
