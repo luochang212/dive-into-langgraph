@@ -75,8 +75,8 @@ Quick overview of the tutorial:
 | 7 | [MCP Server](../7.mcp_server.ipynb) | How to create MCP Server and integrate with LangGraph |
 | 8 | [Supervisor Pattern](../8.supervisor.ipynb) | Two methods to implement supervisor pattern: tool-calling, langgraph-supervisor |
 | 9 | [Parallelization](../9.parallelization.ipynb) | How to implement concurrency: node concurrency, `@task` decorator, Map-reduce, Sub-graphs |
-| 10 | [RAG](../10.rag.ipynb) | Implement RAG: Vector Retrieval, Hybrid Retrieval |
-| 11 | [Web Search](../11.web_search.ipynb) | Implement web search functionality |
+| 10 | [RAG](../10.rag.ipynb) | Implement RAG: Vector Retrieval, Keyword Retrieval, Hybrid Retrieval |
+| 11 | [Web Search](../11.web_search.ipynb) | Implement web search functionality: DashScope, Tavily, DDGS |
 | 12 | [Deep Agents](../12.deep_agents.ipynb) | Brief introduction to Deep Agents |
 | 13 | [Debug UI](../13.langgraph_cli.ipynb) | Introduction to the debug UI provided by langgraph-cli |
 
