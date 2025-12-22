@@ -27,5 +27,5 @@ site:
   template: book-theme
   options:
     logo_text: Dive into LangGraph
-    favicon: ./img/favicon_bg.ico  # 可选，配置浏览器图标
-    logo: ./img/favicon.png  # 可选，添加自定义logo
+    favicon: ./img/favicon.ico  # 可选，配置浏览器图标
+    # logo: ./img/favicon.png  # 可选，添加自定义logo
