@@ -38,7 +38,7 @@
 cp .env.example .env
 ```
 
-注册[阿里云百炼](https://bailian.console.aliyun.com/?tab=model#/model-market)账号，获取 API_KEY 配置到 `.env` 文件。
+然后注册 [阿里云百炼](https://bailian.console.aliyun.com/?tab=model#/model-market) 账号，获取 `API_KEY` 并配置到 `.env` 文件。
 
 ### 2）启动 Agent 和 MCP Server
 
@@ -90,14 +90,14 @@ uv run app.py
     └── web_ui.py
 ```
 
-## 🐒 问题列表
+## 🐒 测试问题列表
 
 详见 [query.md](./docs/query.md)
 
-## 🌱 生成 uv.lock
+## 🌱 依赖管理
 
 ```bash
-# 1. 确保已安装 uv
+# 1. 确保已经安装 uv
 pip install uv -U
 
 # 2. 初始化项目，这会创建一个包含基础信息的 pyproject.toml 文件
