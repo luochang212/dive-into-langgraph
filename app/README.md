@@ -30,37 +30,26 @@
 
 ## 🚀 启动方式
 
-### 1）安装依赖
+### 1）配置环境变量
 
-使用 pip 体验最新版本：
-
-```bash
-# 基础安装命令
-pip install -r requirements.txt -U
-
-## 或者使用镜像源
-# pip install -r requirements.txt -U -i https://mirrors.aliyun.com/pypi/simple/
-```
-
-或者，使用 uv 安装固定版本环境：
-
-```bash
-# 同步 .venv 环境
-uv sync
-```
-
-### 2）配置环境变量
+创建 `.env` 文件：
 
 ```bash
 cp .env.example .env
 ```
 
-### 3）启动 Agent 和 MCP Server
+注册[阿里云百炼](https://bailian.console.aliyun.com/?tab=model#/model-market)账号，获取 API_KEY 配置到 `.env` 文件。
+
+### 2）启动 Agent 和 MCP Server
 
 ```bash
-python app.py
+# 1. 安装 uv
+pip install uv -U
 
-# 或者使用 uv
+# 2. 使用 uv 同步虚拟环境
+uv sync
+
+# 3. 使用 uv 运行应用
 uv run app.py
 ```
 
