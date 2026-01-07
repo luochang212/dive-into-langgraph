@@ -19,7 +19,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 
 # 加载模型配置
-_ = load_dotenv()
+load_dotenv()
 
 
 # 加载模型

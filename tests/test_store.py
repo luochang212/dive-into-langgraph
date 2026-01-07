@@ -21,7 +21,7 @@ from langgraph.store.redis import RedisStore
 from langgraph.store.base import BaseStore
 
 # 加载模型配置
-_ = load_dotenv()
+load_dotenv()
 
 # 加载模型
 llm = ChatOpenAI(

@@ -4,7 +4,7 @@ from langchain_openai import ChatOpenAI
 from langchain.agents import create_agent
 
 # 加载模型配置
-_ = load_dotenv()
+load_dotenv()
 
 # 配置大模型服务
 llm = ChatOpenAI(
