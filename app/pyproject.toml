@@ -1,0 +1,17 @@
+[project]
+name = "dive-into-langgraph"
+version = "0.1.0"
+description = "基于 LangChain 构建流式对话应用"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "dashscope>=1.25.6",
+    "fastmcp>=2.14.2",
+    "gradio>=6.2.0",
+    "langchain>=1.2.1",
+    "langchain-mcp-adapters>=0.2.1",
+    "langchain-openai>=1.1.7",
+    "langgraph>=1.0.5",
+    "pydantic>=2.12.5",
+    "python-dotenv>=1.2.1",
+]

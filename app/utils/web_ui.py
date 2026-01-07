@@ -57,7 +57,7 @@ html, body {
 
 /* 全局样式覆盖 */
 .gradio-container {
-    background: #0b0f19 !important;
+    background: #181818 !important;
 }
 
 .dark .gradio-container {
@@ -66,52 +66,142 @@ html, body {
     height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
-.layout {
-    width: 100%;
-    border-radius: 20px;
+/* 标题栏固定高度 */
+#header {
+    flex: 0 0 auto;
+    height: 60px !important;
     overflow: hidden;
-    background: white;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
+    margin: 0 !important;
+    padding: 10px 0 !important;
+    background: #181818;
+    z-index: 10;
+}
+
+#header h1 {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 24px !important;
+    line-height: 40px !important;
 }
 
 /* 聊天区域样式 */
 #chatbot {
     flex: 1 1 auto;
-    overflow-y: auto;
-    height: calc(100vh - 300px) !important;
-    max-width: 1050px !important;
+    height: calc(100vh - 60px) !important; /* 减去固定的标题栏高度 */
+    overflow-y: auto !important;
+    padding-bottom: 160px !important;
+    box-sizing: border-box !important;
+    background-color: #181818 !important;
+    margin-top: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+
+    /* Firefox 滚动条样式 */
+    scrollbar-width: thin !important;
+    scrollbar-color: rgba(255, 255, 255, 0.1) transparent !important;
+}
+
+/* Webkit 浏览器(Chrome/Safari)滚动条样式 */
+#chatbot::-webkit-scrollbar {
+    width: 6px !important;
+    height: 6px !important;
+}
+
+#chatbot::-webkit-scrollbar-track {
+    background: transparent !important;
+}
+
+#chatbot::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-radius: 3px !important;
+}
+
+#chatbot::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+#chatbot > .wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    flex-grow: 1 !important;
+}
+
+/* 强制覆盖 Chatbot 内部容器背景 */
+#chatbot > .wrapper, 
+#chatbot .bubble-wrap {
+    background-color: #181818 !important;
+}
+
+/* 确保消息列表背景透明或匹配 */
+#chatbot .message-wrap {
+    background-color: #181818 !important;
+}
+
+/* 确保消息行占满宽度并处理边距 */
+/* AI 回复头像及文字气泡 */
+#chatbot .bot-row {
+    margin-left: 15% !important; /* AI 消息向右移动 */
+    width: 75% !important;
+}
+
+/* 用户回复头像及文字气泡 */
+#chatbot .user-row {
+    margin-right: 15% !important; /* 用户消息向左移动 */
+    max-width: 40% !important;
+    # width: 80% !important;
+}
+
+/* AI 回复气泡透明无边框 - 多版本兼容选择器 */
+.bot.message {
+    width: 83% !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding-left: 0 !important;
 }
 
 /* 输入区域样式 */
 .input-row {
-    flex: 0 0 auto;
-    height: 140px;
-    max-width: 750px;
+    position: fixed !important;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: 90%;
+    height: auto;
+    max-width: 800px;
     display: flex;
+    flex-direction: row !important; /* 强制水平排列 */
+    flex-wrap: nowrap !important;   /* 强制不换行 */
     justify-content: center !important;
-    align-items: center !important;
-    margin: 0 auto !important;
+    align-items: center !important; /* 恢复居中对齐，保持原有位置关系 */
+    margin: 0 !important;
     gap: 12px;
-    padding: 1rem;
-    background: #0b0f19;
+    padding: 20px;
+    background: #1e1e1e !important; /* 稍微提亮背景色 */
+    border-radius: 30px; /* 增加圆角，使其更像悬浮岛 */
+    box-shadow: 
+        0 20px 50px rgba(0,0,0,0.5),       /* 深色投影增加悬浮感 */
+        0 0 0 1px rgba(255,255,255,0.1),   /* 细微的亮边框 */
+        0 0 20px rgba(255,255,255,0.05);   /* 柔和的外发光 */
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(20px); /* 毛玻璃效果 */
 }
 
 /* 文本框样式 */
 .textbox {
     flex: 1 1 auto;
-    max-width: calc(100% - 100px);
     border-radius: 24px;
-    height: 100%;
-    padding: 13px 18px ;
-    background: dark;
+    padding: 0 !important; /* Gradio 内部 padding */
+    background: var(--dark);
     color: var(--dark);
     font-size: 16px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: none !important; /* 移除输入框自身的阴影，统一由容器管理 */
     transition: all 0.3s ease !important;
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
 .textbox textarea {
@@ -166,6 +256,18 @@ html, body {
 
 /* 移动端适配 */
 @media screen and (max-width: 768px) {
+    /* 移动端恢复默认边距 */
+    #chatbot .bot-row {
+        margin-left: 50px !important;
+        width: calc(100% - 50px) !important;
+    }
+
+    #chatbot .user-row {
+        margin-right: 50px !important;
+        width: calc(100% - 50px) !important;
+        margin-left: auto !important;
+    }
+
     .textbox {
         padding: 10px 16px !important;
         font-size: 14px !important;
@@ -177,6 +279,17 @@ html, body {
         font-size: 14px;
     }
 }
+
+/* Tool Result 样式 */
+.tool-result-summary::-webkit-details-marker { display: none; }
+.tool-result-summary { list-style: none; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: bold; color: #eee; outline: none; }
+.tool-result-details[open] .tool-result-icon { transform: rotate(180deg); }
+.tool-result-icon { transition: transform 0.2s ease; }
+
+/* 隐藏 Chatbot 右上角的清空/删除按钮 */
+#chatbot button[aria-label="Clear"] {
+    display: none !important;
+}
 """
 
 
@@ -184,15 +297,15 @@ html, body {
 theme = gr.themes.Soft(primary_hue="blue", secondary_hue="blue")
 
 
-def create_ui(llm_func, tab_name, main_title, sub_title, initial_message=None):
+def create_ui(llm_func, tab_name, main_title, initial_message=None):
     """创建聊天界面"""
-    with gr.Blocks(title=tab_name) as ui:
+    with gr.Blocks(title=tab_name, fill_width=True) as ui:
         # 标题区域
         gr.Markdown(
             f"""
             # <center>{main_title}</center>
-            <center><font size=3>{sub_title}</font></center>
             """,
+            elem_id="header",  # 添加 ID 以便 CSS 精确定位
             elem_classes=["dark"]
         )
 
@@ -210,7 +323,9 @@ def create_ui(llm_func, tab_name, main_title, sub_title, initial_message=None):
                 ai_avatar_path     # AI头像
             ),
             height=600,
-            elem_classes=["dark"]
+            show_label=False,
+            elem_classes=["dark"],
+            buttons=[]  # 禁用右上角的所有按钮（分享、复制、清空等）
         )
 
         # 输入区域
@@ -243,7 +358,6 @@ if __name__ == "__main__":
         llm_func=generate_response,
         tab_name="Gradio APP - WebUI",
         main_title="Gradio WebUI Demo",
-        sub_title="GitHub@luochang212"
     )
 
     app.launch(

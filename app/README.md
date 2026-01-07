@@ -1,6 +1,8 @@
-# 实战：基于 LangChain 的流式对话应用
+# 实战：基于 LangChain 构建流式对话应用
 
 ![gradio-app](./images/gradio_app.png)
+
+> 超实用 Agent Web APP。完全本地化部署，自主掌控架构和算力，压榨 LLM 潜力。
 
 ## 💻 技术栈
 
@@ -10,24 +12,41 @@
     - `LangGraph`
 - **MCP**：`fastmcp`
 
-## 🔧 工具
+## 🔧 工具集
 
 - **tools**：
-    - **联网搜索**：[tool_search.py](./tools/tool_search.py)
-    - **数学计算**：[tool_math.py](./tools/tool_math.py)
+    - **联网搜索**：[tool_search](./tools/tool_search.py)
+    - **数学计算**：[tool_math](./tools/tool_math.py)
 - **MCP**：
-    - **角色扮演**：[role_play.py](./mcp/role_play.py)
+    - **角色扮演**：[role-play](./mcp/role_play.py)
+    - **图表可视化**：[mcp-server-chart](./mcp/mcp-server-chart/README.md)
+    - **高德地图**：[amap-maps](https://lbs.amap.com/api/mcp-server/summary)
+    - **文件系统**：[filesystem](https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem)
+- **Middleware**：
+    - **任务列表**：[TodoListMiddleware](https://reference.langchain.com/python/langchain/middleware/#langchain.agents.middleware.TodoListMiddleware)
+    - **历史对话压缩**：[SummarizationMiddleware](https://reference.langchain.com/python/langchain/middleware/#langchain.agents.middleware.SummarizationMiddleware)
+
+<!-- ## 👷 技能 (Skills) -->
 
 ## 🚀 启动方式
 
 ### 1）安装依赖
 
-```bash
-# 基础版
-pip install -r requirements.txt
+使用 pip 体验最新版本：
 
-## 增强版
+```bash
+# 基础安装命令
+pip install -r requirements.txt -U
+
+## 或者使用镜像源
 # pip install -r requirements.txt -U -i https://mirrors.aliyun.com/pypi/simple/
+```
+
+或者，使用 uv 安装固定版本环境：
+
+```bash
+# 同步 .venv 环境
+uv sync
 ```
 
 ### 2）配置环境变量
@@ -40,6 +59,9 @@ cp .env.example .env
 
 ```bash
 python app.py
+
+# 或者使用 uv
+uv run app.py
 ```
 
 ## 🔭 架构
@@ -50,24 +72,60 @@ python app.py
 ├── app.py                  # 主应用入口
 ├── requirements.txt        # 项目依赖
 ├── .env.example            # 环境变量示例
+├── docs                    # 文档目录
+│   └── query.md
 ├── images                  # 图片资源
 │   ├── ai.png
 │   ├── gradio_app.png
+│   ├── gradio_app_raw.png
 │   └── user.png
 ├── logs                    # 日志目录
-├── mcp                     # MCP Server
+├── mcp                     # MCP 模块
+│   ├── mcp-server-chart
+│   │   └── README.md
 │   └── role_play.py
 ├── prompts                 # 系统提示词模块
 │   ├── __init__.py
 │   ├── prompt.py
 │   ├── prompt_base.py
 │   └── prompt_enhance.py
+├── space                   # filesystem 读写空间
+│   └── food.md
 ├── tools                   # 工具模块
-│   ├── __init__.py
 │   ├── tool_math.py
 │   └── tool_search.py
 └── utils                   # 实用脚本模块
-    ├── __init__.py
     ├── device_info.py
+    ├── fix_deepseek.py
+    ├── tool_result.py
     └── web_ui.py
 ```
+
+## 🐒 问题列表
+
+详见 [query.md](./docs/query.md)
+
+## 🌱 生成 uv.lock
+
+```bash
+# 1. 确保已安装 uv
+pip install uv -U
+
+# 2. 初始化项目，这会创建一个包含基础信息的 pyproject.toml 文件
+uv init --name dive-into-langgraph --description "基于 LangChain 构建流式对话应用" --python 3.12
+
+# 3. 更新 pyproject.toml 中的 dependencies 部分
+# 这会自动创建 .venv 虚拟环境，并创建 uv.lock 文件
+uv add -r requirements.txt
+```
+
+## 📝 更新记录
+
+- [x] 优化前端展示效果：优化输入框；优化 ChatBot 滑块、边距、工具调用显示、文字气泡框；优化背景颜色
+- [x] 增强的 MCP：加入高德地图 MCP；加入图表可视化 MCP；加入 filesystem MCP
+- [x] 增强的 Middleware：加入任务列表中间件；加入历史对话压缩中间件
+- [x] 上下文工程：通过上下文工程无损传递 API_KEY 等敏感信息
+- [x] 多智能体：为 Agent 提供拥有独立上下文且具备搜索能力的 subagent（子智能体）
+- [x] 独立的系统提示词模块：提供多版本系统提示词，其中增强版提示词可获取用户名、当前时间、操作系统等信息
+- [x] 错误处理：增加 LLM 调用超时限制；开启 LLM 调用失败重试；MCP 运行失败免退出并总结失败原因
+- [x] 欢迎语：在用户打开 APP 时，介绍所有工具（包括 MCP）的名称和简单描述。但当工具过多时，仅展示工具名。

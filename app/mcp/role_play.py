@@ -11,9 +11,8 @@ import os
 import operator
 
 from dotenv import load_dotenv
-from typing import Annotated
+from typing import Annotated, TypedDict
 from pydantic import BaseModel
-from typing_extensions import TypedDict
 from langchain.chat_models import init_chat_model
 from langgraph.graph import StateGraph, START, END
 from langgraph.types import Send
@@ -112,7 +111,6 @@ mcp = FastMCP("role_play")
 
 @mcp.tool
 def role_play(
-    model_name: str = "qwen3-max",
     situation: str = "告诉你她今天要加班",
     roles: list[str] = [
         "男神", "巨魔", "舔狗", "渣男", "奶狗弟弟", "社恐宅男",
@@ -125,16 +123,17 @@ def role_play(
     最后，模型会根据所有回复，评选出最能挽回女神的心的回复。
 
     该工具使用指定的 LLM 模型，模拟多种不同人设（如男神、舔狗、渣男等）在特定情境下的回复，
-    并由模型评选出最合适的回复。
+    并由模型评选出最合适的回复。当人设数量 ≤ 20 时，建议向用户返回全部人设的结果。
 
     Args:
-        model_name: 使用的大模型名称，默认值为 "qwen3-max"
         situation: 设定的情境描述，默认为 "告诉你她今天要加班"
         roles: 参与角色扮演的人设列表，默认为一组预设的典型角色
 
     Returns:
         str: 包含所有角色回复及最佳回复评选结果的格式化文本
     """
+    # 默认使用 qwen3-max
+    model_name = "qwen3-max"
     llm = init_chat_model(
         model=model_name,
         model_provider="openai",

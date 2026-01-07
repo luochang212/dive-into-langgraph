@@ -16,7 +16,7 @@ def dashscope_search(
     runtime: ToolRuntime[SearchTool],
     query: str,
 ) -> str:
-    """使用搜索 API 搜索互联网信息"""
+    """使用 DashScope 提供的搜索 API 搜索互联网信息"""
     dashscope.api_key = runtime.context.api_key
 
     response = Generation.call(

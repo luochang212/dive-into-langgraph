@@ -3,7 +3,6 @@ python-dotenv
 langchain
 langchain-openai
 langchain-mcp-adapters
-langchain-community
 langgraph
 fastmcp
 dashscope
