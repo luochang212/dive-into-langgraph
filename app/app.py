@@ -76,12 +76,12 @@ async def get_agent():
                 #     "transport": "streamable_http",
                 # },
                 # ============= 高德地图 MCP =============
-                # 🌟 streamable http
-                # 必须先申请高德地图 API_KEY，详见 .env.example
-                "高德地图": {
-                    "url": f"https://mcp.amap.com/mcp?key={os.getenv('AMAP_API_KEY')}",
-                    "transport": "streamable_http",
-                },
+                # # 🌟 streamable http
+                # # 必须先申请高德地图 API_KEY，详见 .env.example
+                # "高德地图": {
+                #     "url": f"https://mcp.amap.com/mcp?key={os.getenv('AMAP_API_KEY')}",
+                #     "transport": "streamable_http",
+                # },
                 # ============= 图表可视化 MCP =============
                 # # stdio
                 # "图表可视化": {
