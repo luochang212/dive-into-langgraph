@@ -9,7 +9,7 @@ from langgraph.checkpoint.memory import InMemorySaver
 
 
 # 加载模型配置
-_ = load_dotenv()
+load_dotenv()
 
 
 # 加载模型
