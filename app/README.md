@@ -19,10 +19,12 @@
     - **数学计算**：[tool_math](./tools/tool_math.py)
 - **MCP**：
     - **角色扮演**：[role-play](./mcp/role_play.py)
+    - **代码执行**：[code-execution](./mcp/code_execution.py)
     - **图表可视化**：[mcp-server-chart](./mcp/mcp-server-chart/README.md)
     - **高德地图**：[amap-maps](https://lbs.amap.com/api/mcp-server/summary)
     - **文件系统**：[filesystem](https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem)
 - **Middleware**：
+    - **动态系统提示词**：[dynamic_prompt](https://reference.langchain.com/python/langchain/middleware/#langchain.agents.middleware.dynamic_prompt)
     - **任务列表**：[TodoListMiddleware](https://reference.langchain.com/python/langchain/middleware/#langchain.agents.middleware.TodoListMiddleware)
     - **历史对话压缩**：[SummarizationMiddleware](https://reference.langchain.com/python/langchain/middleware/#langchain.agents.middleware.SummarizationMiddleware)
 
@@ -72,6 +74,7 @@ uv run app.py
 ├── mcp                     # MCP 模块
 │   ├── mcp-server-chart
 │   │   └── README.md
+│   ├── code_execution.py
 │   └── role_play.py
 ├── prompts                 # 系统提示词模块
 │   ├── __init__.py
