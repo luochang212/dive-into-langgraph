@@ -111,7 +111,7 @@ uv add -r requirements.txt
 ## 📝 更新记录
 
 - [x] 优化前端展示效果：优化输入框；优化 ChatBot 滑块、边距、工具调用显示、文字气泡框；优化背景颜色
-- [x] 增强的 MCP：加入高德地图 MCP；加入图表可视化 MCP；加入 filesystem MCP
+- [x] 增强的 MCP：加入角色扮演 MCP、代码执行 MCP、高德地图 MCP、图表可视化 MCP、文件系统 MCP
 - [x] 增强的 Middleware：加入任务列表中间件；加入历史对话压缩中间件
 - [x] 上下文工程：通过 runtime 无损传递 API_KEY 等敏感信息
 - [x] 多智能体：为 Agent 提供拥有独立上下文且具备搜索能力的 subagent（子智能体）

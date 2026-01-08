@@ -107,7 +107,7 @@ def create_doge_graph(llm):
     return doge_graph
 
 # 角色扮演工具
-mcp = FastMCP("role_play")
+mcp = FastMCP("role-play")
 
 @mcp.tool
 def role_play(

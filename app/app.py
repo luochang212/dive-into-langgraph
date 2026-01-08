@@ -6,7 +6,6 @@ import os
 import asyncio
 import textwrap
 
-from datetime import datetime
 from typing import List, Dict
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
@@ -81,6 +80,18 @@ async def get_agent():
                 # # streamable http
                 # "role-play": {
                 #     "url": "http://localhost:8000/mcp",
+                #     "transport": "streamable_http",
+                # },
+                # ============= 代码执行 MCP =============
+                # 🌟 stdio
+                "code-execution": {
+                    "command": "python",
+                    "args": [os.path.abspath("./mcp/code_execution.py")],
+                    "transport": "stdio",
+                },
+                # # streamable http
+                # "code-execution": {
+                #     "url": "http://localhost:8001/mcp",
                 #     "transport": "streamable_http",
                 # },
                 # ============= 高德地图 MCP =============
