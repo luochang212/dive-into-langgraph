@@ -4,20 +4,23 @@
 
 import os
 import asyncio
+import textwrap
 
+from datetime import datetime
 from typing import List, Dict
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain.agents import create_agent
 from langchain.tools import tool
 from langchain_mcp_adapters.client import MultiServerMCPClient
-from langchain.agents.middleware import SummarizationMiddleware, TodoListMiddleware
+from langchain.agents.middleware import SummarizationMiddleware, TodoListMiddleware, dynamic_prompt, ModelRequest
 from utils.web_ui import create_ui, theme, custom_css
 from utils.tool_result import format_tool_result
 from utils.fix_deepseek import DeepSeekChatOpenAI
 from tools.tool_math import add, subtract, multiply, divide
 from tools.tool_search import dashscope_search, SearchTool
-from prompts.prompt_enhance import get_system_prompt
+from prompts.prompt_base import get_system_prompt_base
+from prompts.prompt_enhance import get_system_prompt_enhance
 
 
 # 加载模型配置
@@ -29,6 +32,11 @@ load_dotenv()
 _agent = None  # 全局 Agent 实例
 _llm = None  # 全局 LLM 实例
 _greeting = ""  # 智能体自我介绍
+
+
+@dynamic_prompt
+def dynamic_system_prompt(request: ModelRequest) -> str:
+    return get_system_prompt_enhance()
 
 
 async def get_agent():
@@ -128,8 +136,9 @@ async def get_agent():
         _agent = create_agent(
             model=llm,
             tools=mcp_tools + [add, subtract, multiply, divide, dashscope_search, call_subagent],
-            system_prompt=get_system_prompt(),
+            system_prompt=get_system_prompt_base(),
             middleware=[
+                dynamic_system_prompt,
                 SummarizationMiddleware(
                     model=llm,
                     trigger=("tokens", 2000),
@@ -170,7 +179,9 @@ def get_tools():
     # 优化工具展示
     if len(tools) > 12:
         # 当工具过多时，仅显示工具名
-        return f"\n```text\n{' / '.join([tool.name for tool in tools])}\n```\n"
+        tool_names = [tool.name for tool in tools]
+        wrapped_text = textwrap.fill(" / ".join(tool_names), width=110)
+        return f"\n```text\n{wrapped_text}\n```\n"
     else:
         # 当工具不多时，显示工具描述
         lines = []

@@ -6,20 +6,20 @@ agent_system_prompt = """
 你是一位智能助手，旨在帮助用户解决问题。
 
 你的目标是：
-- 理解用户的意图并提供准确的回答
-- 利用可用的工具来辅助决策和操作
-- 充分利用用户信息来优化回答
+- 理解用户意图并提供准确回答
+- 合理使用工具辅助决策和操作
+- 充分利用用户信息优化回答
+
+思考标准：
+- 利用已知的用户信息来个性化回答
+- 根据用户问题的复杂度调整思考深度
 
 以下是用户信息：
 {device_info}
-
-思考标准：
-- 在回答之前，先思考用户的问题是否与当前环境（如操作系统、时间等）相关
-- 如果任务涉及时间敏感的操作，请参考上方的当前时间
 """.strip()
 
 
-def get_system_prompt() -> str:
+def get_system_prompt_enhance() -> str:
     """生成系统提示词"""
     # 延迟导入
     from utils.device_info import get_info
@@ -33,13 +33,13 @@ def get_system_prompt() -> str:
 
     info_dict = {
         "当前时间": info.get("当前时间 (now)"),
-        "时区": info.get("时区 (timezone)"),
+        "当前时区": info.get("时区 (timezone)"),
         "用户名": info.get("用户名 (username)"),
-        "用户系统": user_os
+        "用户系统": user_os,
     }
 
     # 格式化设备信息字符串
-    info_str = "\n".join([f"- {k}: {v}" for k, v in info_dict.items()])
+    info_str = "\n".join([f"- {k}: {v}" for k, v in info_dict.items() if v and v != 'Unknown'])
 
     return agent_system_prompt.format(
         device_info=info_str
@@ -55,4 +55,4 @@ if __name__ == "__main__":
     app_dir = os.path.dirname(current_dir)
     sys.path.insert(0, app_dir)
 
-    print(get_system_prompt())
+    print(get_system_prompt_enhance())

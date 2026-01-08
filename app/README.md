@@ -2,7 +2,7 @@
 
 ![gradio-app](./images/gradio_app.png)
 
-> 超实用 Agent Web APP。完全本地化部署，自主掌控架构和算力，压榨 LLM 潜力。
+> 超实用的 Agent Web APP。完全本地化部署，自主掌控架构和算力，榨干 LLM 潜力。
 
 ## 💻 技术栈
 
@@ -113,7 +113,7 @@ uv add -r requirements.txt
 - [x] 优化前端展示效果：优化输入框；优化 ChatBot 滑块、边距、工具调用显示、文字气泡框；优化背景颜色
 - [x] 增强的 MCP：加入高德地图 MCP；加入图表可视化 MCP；加入 filesystem MCP
 - [x] 增强的 Middleware：加入任务列表中间件；加入历史对话压缩中间件
-- [x] 上下文工程：通过上下文工程无损传递 API_KEY 等敏感信息
+- [x] 上下文工程：通过 runtime 无损传递 API_KEY 等敏感信息
 - [x] 多智能体：为 Agent 提供拥有独立上下文且具备搜索能力的 subagent（子智能体）
 - [x] 独立的系统提示词模块：提供多版本系统提示词，其中增强版提示词可获取用户名、当前时间、操作系统等信息
 - [x] 错误处理：增加 LLM 调用超时限制；开启 LLM 调用失败重试；MCP 运行失败免退出并总结失败原因

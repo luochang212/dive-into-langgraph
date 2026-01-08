@@ -151,7 +151,7 @@ html, body {
 #chatbot .user-row {
     margin-right: 15% !important; /* 用户消息向左移动 */
     max-width: 40% !important;
-    # width: 80% !important;
+    /* width: 80% !important; */
 }
 
 /* AI 回复气泡透明无边框 - 多版本兼容选择器 */
@@ -197,7 +197,6 @@ html, body {
     border-radius: 24px;
     padding: 0 !important; /* Gradio 内部 padding */
     background: var(--dark);
-    color: var(--dark);
     font-size: 16px;
     box-shadow: none !important; /* 移除输入框自身的阴影，统一由容器管理 */
     transition: all 0.3s ease !important;

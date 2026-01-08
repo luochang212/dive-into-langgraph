@@ -11,10 +11,10 @@ agent_system_prompt = """
 """.strip()
 
 
-def get_system_prompt() -> str:
+def get_system_prompt_base() -> str:
     """生成系统提示词"""
     return agent_system_prompt
 
 
 if __name__ == "__main__":
-    print(get_system_prompt())
+    print(get_system_prompt_base())
