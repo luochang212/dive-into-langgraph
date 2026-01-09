@@ -4,8 +4,8 @@
 处理规则：
 - 删除思维链块：匹配 <details class="think-result-details">...</details>
 - 删除工具块的 HTML，但保留 <pre> 内的工具输出，并替换为明确标签：
-  - 默认：工具返回：<output>
-  - include_tool_name=True 时：{tool_name} 工具返回：<output>（tool_name 来自 <code>）
+  - 默认：```tool_return\n...\n```（工具名省略）
+  - include_tool_name=True 时：```tool_return name="..."\n...\n```（name 来自 <code>）
 """
 
 import html
@@ -31,6 +31,7 @@ _PRE_TAG_RE: Final[re.Pattern[str]] = re.compile(
 )
 
 _MULTI_BLANK_LINES_RE: Final[re.Pattern[str]] = re.compile(r"\n{3,}")
+_BACKTICKS_RE: Final[re.Pattern[str]] = re.compile(r"`+")
 
 
 def get_cleaned_text(
@@ -39,7 +40,7 @@ def get_cleaned_text(
     think_details_class: str = "think-result-details",
     tool_details_class: str = "tool-result-details",
     decode_escaped_newlines: bool = True,
-    include_tool_name: bool = False,
+    include_tool_name: bool = True,
 ) -> str:
     if not text:
         return ""
@@ -52,6 +53,12 @@ def get_cleaned_text(
     tool_details_re = _compile_details_block_re(tool_details_class)
 
     without_think = think_details_re.sub("", normalized)
+
+    def _fence_for(text: str) -> str:
+        max_run = 0
+        for m in _BACKTICKS_RE.finditer(text):
+            max_run = max(max_run, len(m.group(0)))
+        return "`" * max(3, max_run + 1)
 
     def _replace_tool_block(match: re.Match[str]) -> str:
         block = match.group(0)
@@ -66,18 +73,9 @@ def get_cleaned_text(
         if m_pre:
             tool_output = html.unescape(m_pre.group("pre")).strip()
 
-        if not tool_output:
-            label = f"{tool_name} 工具返回：" if (include_tool_name and tool_name) else "工具返回："
-            return f"\n\n{label}\n\n"
-
-        if include_tool_name and tool_name:
-            label = f"{tool_name} 工具返回："
-        else:
-            label = "工具返回："
-
-        if "\n" in tool_output:
-            return f"\n\n{label}\n{tool_output}\n\n"
-        return f"\n\n{label}{tool_output}\n\n"
+        info = 'tool_return name="{}"'.format(tool_name) if (include_tool_name and tool_name) else "tool_return"
+        fence = _fence_for(tool_output)
+        return f"\n\n{fence}{info}\n{tool_output}\n{fence}\n\n"
 
     replaced = tool_details_re.sub(_replace_tool_block, without_think)
 

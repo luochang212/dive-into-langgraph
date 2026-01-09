@@ -30,6 +30,10 @@ from prompts.prompt_enhance import get_system_prompt_enhance
 load_dotenv()
 
 
+# 是否清洗历史对话记录中的 HTML 内容
+REMOVE_HTML = True
+
+
 # 全局变量
 _agent = None  # 全局 Agent 实例
 _llm = None  # 全局 LLM 实例
@@ -331,9 +335,9 @@ async def generate_response(message: str,
         yield "", history
         return
 
-    # 清洗上一条 AI 回复中的 html 内容
+    # 清洗上一条 AI 回复中的 html 内容，可以为上下文减负
     # 如果不加工具消息和思维链消息将没有这么多事(`ヮ´ )
-    if len(history) >= 1 and history[-1]["role"] == "assistant":
+    if REMOVE_HTML and len(history) >= 1 and history[-1]["role"] == "assistant":
         html_content = history[-1]["content"][0]['text']
         history[-1]["content"][0]['text'] = get_cleaned_text(html_content)
 
