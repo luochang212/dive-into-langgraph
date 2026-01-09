@@ -55,7 +55,7 @@ async def get_agent():
         # 如果觉得卡，可以使用付费模型：
         #   qwen3-coder-plus / qwen3-max / qwen3-max-preview
         llm = DashScopeChatOpenAI(
-            model="glm-4.7",
+            model="kimi-k2-thinking",
             api_key=os.getenv("DASHSCOPE_API_KEY"),
             base_url=os.getenv("DASHSCOPE_BASE_URL"),
             max_retries=3,

@@ -47,7 +47,7 @@ def execute_python(code: str) -> str:
             [sys.executable, file_path],
             capture_output=True,
             text=True,
-            timeout=5,          # hard stop
+            timeout=20,         # hard stop
             check=False,        # don't raise
             env=env,
         )
