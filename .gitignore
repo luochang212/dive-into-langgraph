@@ -12,6 +12,7 @@ __pycache__
 archived
 
 *.log
+*.err
 *.db
 *.db-wal
 *.db-shm

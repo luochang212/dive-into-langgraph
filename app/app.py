@@ -6,16 +6,19 @@ import os
 import asyncio
 import textwrap
 
-from typing import List, Dict
+from typing import List, Dict, AsyncIterator, Tuple
 from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
+# from langchain_openai import ChatOpenAI
 from langchain.agents import create_agent
 from langchain.tools import tool
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain.agents.middleware import SummarizationMiddleware, TodoListMiddleware, dynamic_prompt, ModelRequest
 from utils.web_ui import create_ui, theme, custom_css
+from utils.fix_dashscope import DashScopeChatOpenAI
+# from utils.fix_deepseek import DeepSeekChatOpenAI
 from utils.tool_result import format_tool_result
-from utils.fix_deepseek import DeepSeekChatOpenAI
+from utils.think_result import format_think_result
+from utils.remove_html import get_cleaned_text
 from tools.tool_math import add, subtract, multiply, divide
 from tools.tool_search import dashscope_search, SearchTool
 from prompts.prompt_base import get_system_prompt_base
@@ -23,7 +26,7 @@ from prompts.prompt_enhance import get_system_prompt_enhance
 
 
 # 加载模型配置
-# 请事先在 .env 中配置 DASHSCOPE_API_KEY
+# 注意‼️：请先在 .env 配置 DASHSCOPE_API_KEY
 load_dotenv()
 
 
@@ -42,20 +45,45 @@ async def get_agent():
     """获取全局 Agent 实例"""
     global _agent, _llm
     if _agent is None:
-        # 使用 DashScope
-        llm = ChatOpenAI(
-            # 阿里 DashScope 目前有免费额度，支持以下模型：
-            # kimi-k2-thinking / deepseek-v3.2 / glm-4.7 / qwen3-coder-plus-2025-07-22
-            # 如果觉得卡，可以使用付费模型：
-            # qwen3-coder-plus / qwen3-max / qwen3-max-preview
-            model="qwen3-max",
+        # ==================== 使用 DashScope ====================
+        # 阿里 DashScope 目前有免费额度，支持以下模型：
+        #   kimi-k2-thinking / deepseek-v3.2 / glm-4.7 / qwen3-coder-plus-2025-07-22
+        # 如果觉得卡，可以使用付费模型：
+        #   qwen3-coder-plus / qwen3-max / qwen3-max-preview
+        llm = DashScopeChatOpenAI(
+            model="deepseek-v3.2",
             api_key=os.getenv("DASHSCOPE_API_KEY"),
             base_url=os.getenv("DASHSCOPE_BASE_URL"),
             max_retries=3,
             timeout=30,
+            extra_body={
+                "chat_template_kwargs": {
+                    "enable_thinking": True,
+                }
+            }
         )
-
-        # # 使用 DeepSeek（不推荐，调用 MCP 经常有问题）
+        # ==================== 使用 Ollama ====================
+        # # 使用前需要：
+        # # 1. 下载 qwen3:4b 模型 
+        # #     ollama pull qwen3:4b
+        # # 2. 开启 Ollama 服务
+        # #     OLLAMA_HOST=0.0.0.0:11435 ollama serve
+        # llm = ChatOpenAI(
+        #     model="qwen3:4b",
+        #     base_url="http://127.0.0.1:11435/v1",
+        #     api_key="-",  # 非空
+        #     max_retries=1,
+        #     timeout=30,
+        #     temperature=0.7,
+        #     top_p=0.9,
+        #     extra_body={
+        #         "chat_template_kwargs": {
+        #             "enable_thinking": True,
+        #         }
+        #     }
+        # )
+        # ==================== 使用 DeepSeek ====================
+        # # 不推荐，调用 MCP 容易报错
         # llm = DeepSeekChatOpenAI(
         #     model="deepseek-chat",  # deepseek-chat / deepseek-reasoner
         #     api_key=os.getenv("DEEPSEEK_API_KEY"),
@@ -70,7 +98,7 @@ async def get_agent():
         client = MultiServerMCPClient(  
             {
                 # 下面标 🌟 的服务建议开启
-                # ============= 角色扮演 MCP =============
+                # =============== 角色扮演 MCP ===============
                 # 🌟 stdio
                 "role-play": {
                     "command": "python",
@@ -82,7 +110,7 @@ async def get_agent():
                 #     "url": "http://localhost:8000/mcp",
                 #     "transport": "streamable_http",
                 # },
-                # ============= 代码执行 MCP =============
+                # =============== 代码执行 MCP ===============
                 # 🌟 stdio
                 "code-execution": {
                     "command": "python",
@@ -94,14 +122,14 @@ async def get_agent():
                 #     "url": "http://localhost:8001/mcp",
                 #     "transport": "streamable_http",
                 # },
-                # ============= 高德地图 MCP =============
+                # =============== 高德地图 MCP ===============
                 # # 🌟 streamable http
                 # # 必须先申请高德地图 API_KEY，详见 .env.example
                 # "高德地图": {
                 #     "url": f"https://mcp.amap.com/mcp?key={os.getenv('AMAP_API_KEY')}",
                 #     "transport": "streamable_http",
                 # },
-                # ============= 图表可视化 MCP =============
+                # =============== 图表可视化 MCP ===============
                 # # stdio
                 # "图表可视化": {
                 #     "command": "npx",
@@ -113,7 +141,7 @@ async def get_agent():
                 #     "url": "http://localhost:1123/mcp",
                 #     "transport": "streamable_http",
                 # },
-                # # ============= 文件系统 MCP =============
+                # =============== 文件系统 MCP ===============
                 # # stdio
                 # "filesystem": {
                 #     "command": "npx",
@@ -219,6 +247,82 @@ def get_greeting():
     return _greeting
 
 
+def err_summary(err: Exception, limit: int = 300) -> str:
+    """总结 Agent 运行错误"""
+    # 优先输出日志摘要，失败则降级为原始日志
+    summary = ""
+    try:
+        abstract = _llm.invoke("\n".join([
+            str(err),
+            "---",
+            "以上是 LangChain Agent 的报错信息，请简述报错原因：",
+        ]))
+        summary = f"\n ⚠️ 发生错误，以下是摘要信息：\n{abstract}"
+    except Exception:
+        summary = f"\n ⚠️ 发生错误，以下是原始日志：\n{str(err)[:limit]}"
+
+    return summary
+
+
+async def _agent_events(
+    agent,
+    messages,
+    history: List[Dict[str, str]],
+) -> AsyncIterator[Tuple[str, List[Dict[str, str]]]]:
+    """处理 ChatOpenAI 的事件流"""
+    async for token, metadata in agent.astream(
+        {"messages": messages},
+        stream_mode="messages",
+        context=SearchTool(api_key=os.getenv("DASHSCOPE_API_KEY")),
+    ):
+        if metadata["langgraph_node"] == "model":
+            if token.content:
+                history[-1]["content"] += token.content
+                yield "", history
+        elif metadata["langgraph_node"] == "tools":
+            if token.content:
+                history[-1]["content"] += format_tool_result(token.name, token.content)
+                yield "", history
+
+
+async def _agent_events_for_dashscope(
+    agent,
+    messages,
+    history: List[Dict[str, str]],
+) -> AsyncIterator[Tuple[str, List[Dict[str, str]]]]:
+    """处理 DashScopeChatOpenAI 的事件流"""
+    reasoning_content = ""
+    answer_content = ""
+    base_content = ""
+    last_node = None
+
+    async for token, metadata in agent.astream(
+        {"messages": messages},
+        stream_mode="messages",
+        context=SearchTool(api_key=os.getenv("DASHSCOPE_API_KEY")),
+    ):
+        current_node = metadata["langgraph_node"]
+        if current_node == "model":
+            if last_node != "model":
+                base_content = history[-1]["content"]
+                reasoning_content = ""
+                answer_content = ""
+            if token.content:
+                msg_type = token.response_metadata.get("dashscope_type")
+                if msg_type == "reasoning":
+                    reasoning_content += token.content
+                else:
+                    answer_content += token.content
+                # 组合显示：先前内容 + 思考过程 + 回答
+                history[-1]["content"] = base_content + format_think_result(reasoning_content) + answer_content
+                yield "", history
+        elif current_node == "tools":
+            if token.content:
+                history[-1]["content"] += format_tool_result(token.name, token.content)
+                yield "", history
+        last_node = current_node
+
+
 async def generate_response(message: str,
                             history: List[Dict[str, str]]
 ):
@@ -226,6 +330,15 @@ async def generate_response(message: str,
     if not message:
         yield "", history
         return
+
+    # 清洗上一条 AI 回复中的 html 内容
+    # 如果不加工具消息和思维链消息将没有这么多事(`ヮ´ )
+    if len(history) >= 1 and history[-1]["role"] == "assistant":
+        html_content = history[-1]["content"][0]['text']
+        history[-1]["content"][0]['text'] = get_cleaned_text(html_content)
+
+    print("=================================")
+    print(history)
 
     history.append({"role": "user", "content": message})
     history.append({"role": "assistant", "content": ""})
@@ -235,43 +348,21 @@ async def generate_response(message: str,
     agent = await get_agent()
 
     # 避免 MCP 调用失败引发的退出
-    try:
-        async for token, metadata in agent.astream(
-            {"messages": messages},
-            stream_mode="messages",
-            context=SearchTool(api_key=os.getenv("DASHSCOPE_API_KEY")),
-        ):
-            if metadata["langgraph_node"] == "model":
-                content = token.content_blocks
-                if content and content[0].get("text", "") != "":
-                    history[-1]["content"] += content[0]["text"]
-                    yield "", history
-            elif metadata["langgraph_node"] == "tools":
-                content = token.content_blocks
-                if content and content[0].get("text", "") != "":
-                    tool_name = token.name
-                    tool_output = content[0]["text"]
-                    # Format the tool output
-                    formatted_output = format_tool_result(tool_name, tool_output)
-                    history[-1]["content"] += formatted_output
-                    yield "", history
-    except Exception as err:
-        print(f"发生错误: {err}")
+    # try:
 
-        # 优先输出日志摘要，否则降级输出原日志
-        summary = ""
-        try:
-            abstract = _llm.invoke("\n".join([
-                str(err),
-                "---",
-                "以上是 LangChain Agent 的报错信息，请简述报错原因：",
-            ]))
-            summary = f"\n⚠️ 发生错误，以下是摘要信息：\n{abstract}"
-        except Exception:
-            summary = f"\n⚠️ 发生错误，以下是原日志：\n{str(err)[:300]}"
+    # 注意‼️：以下二选一
+    # ============== 使用 ChatOpenAI ==============
+    # agent_events = _agent_events
+    # ========= 使用 DashScopeChatOpenAI =========
+    agent_events = _agent_events_for_dashscope
+    # =============================================
+    async for update in agent_events(agent, messages, history):
+        yield update
 
-        history[-1]["content"] += summary
-        yield "", history
+    # except Exception as err:
+    #     print(f"发生错误: {err}")
+    #     history[-1]["content"] += err_summary(err)
+    #     yield "", history
 
     yield "", history
 

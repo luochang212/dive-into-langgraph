@@ -285,6 +285,12 @@ html, body {
 .tool-result-details[open] .tool-result-icon { transform: rotate(180deg); }
 .tool-result-icon { transition: transform 0.2s ease; }
 
+/* Think Result 样式 */
+.think-result-summary::-webkit-details-marker { display: none; }
+.think-result-summary { list-style: none; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: bold; color: #aaa; outline: none; }
+.think-result-details[open] .think-result-icon { transform: rotate(180deg); }
+.think-result-icon { transition: transform 0.2s ease; }
+
 /* 隐藏 Chatbot 右上角的清空/删除按钮 */
 #chatbot button[aria-label="Clear"] {
     display: none !important;
