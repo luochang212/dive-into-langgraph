@@ -51,7 +51,7 @@ async def get_agent():
         # 如果觉得卡，可以使用付费模型：
         #   qwen3-coder-plus / qwen3-max / qwen3-max-preview
         llm = DashScopeChatOpenAI(
-            model="deepseek-v3.2",
+            model="glm-4.7",
             api_key=os.getenv("DASHSCOPE_API_KEY"),
             base_url=os.getenv("DASHSCOPE_BASE_URL"),
             max_retries=3,
@@ -348,21 +348,19 @@ async def generate_response(message: str,
     agent = await get_agent()
 
     # 避免 MCP 调用失败引发的退出
-    # try:
-
-    # 注意‼️：以下二选一
-    # ============== 使用 ChatOpenAI ==============
-    # agent_events = _agent_events
-    # ========= 使用 DashScopeChatOpenAI =========
-    agent_events = _agent_events_for_dashscope
-    # =============================================
-    async for update in agent_events(agent, messages, history):
-        yield update
-
-    # except Exception as err:
-    #     print(f"发生错误: {err}")
-    #     history[-1]["content"] += err_summary(err)
-    #     yield "", history
+    try:
+        # 注意‼️：以下二选一
+        # ============== 使用 ChatOpenAI ==============
+        # agent_events = _agent_events
+        # ========= 使用 DashScopeChatOpenAI =========
+        agent_events = _agent_events_for_dashscope
+        # =============================================
+        async for update in agent_events(agent, messages, history):
+            yield update
+    except Exception as err:
+        print(f"发生错误: {err}")
+        history[-1]["content"] += err_summary(err)
+        yield "", history
 
     yield "", history
 
