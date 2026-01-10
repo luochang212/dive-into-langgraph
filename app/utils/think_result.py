@@ -18,12 +18,12 @@ def format_think_result(think_content: str) -> str:
         return ""
 
     return "\n".join([
-        '<details class="think-result-details" style="border: 1px solid #555; border-radius: 8px; padding: 10px; margin: 10px 0; background-color: #2a2a3a;">',
-        '<summary class="think-result-summary" style="display: flex; justify-content: space-between; align-items: center; list-style: none;">',
-        '<div style="display: flex; align-items: center;"> 💭 Thinking</div>',
-        '<svg class="think-result-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>',
+        '<details class="think-result-details">',
+        '<summary class="think-result-summary">',
+        '<div class="think-result-title"> 💭 Thinking</div>',
+        '<svg class="think-result-icon" width="20" height="20" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>',
         '</summary>',
-        '<pre style="margin-top: 10px; padding: 10px; background-color: #1e1e2e; border-radius: 4px; color: #bbb; font-family: monospace; white-space: pre-wrap; max-height: 400px; overflow-y: auto; border: 1px solid #333; font-size: 0.9em;">',
+        '<pre class="think-result-pre">',
         f'\n{html.escape(think_content)}',
         '</pre>',
         '</details>\n\n',
