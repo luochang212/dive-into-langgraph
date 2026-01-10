@@ -1,0 +1,10 @@
+services:
+  gradio-agent:
+    build:
+      dockerfile: Dockerfile
+    container_name: gradio-agent-container
+    ports:
+      - "7860:7860"
+    working_dir: /app
+    env_file:
+      - .env

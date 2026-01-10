@@ -381,8 +381,8 @@ def main():
     # 配置网络参数
     # 为 docker 预留的操作入口，因为 docker 的 host 一般需要设置为 0.0.0.0
     parser = argparse.ArgumentParser(description="Gradio Agent APP")
-    parser.add_argument("-h", "--host", type=str, default="localhost", help="主机地址")
-    parser.add_argument("-p", "--port", type=int, default=7860, help="端口号")
+    parser.add_argument("--host", type=str, default="localhost", help="主机地址")
+    parser.add_argument("--port", type=int, default=7860, help="端口号")
     args = parser.parse_args()
 
     app = create_ui(

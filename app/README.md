@@ -73,13 +73,17 @@ uv run app.py
   pip install -r requirements.txt -U -i https://mirrors.cloud.tencent.com/pypi/simple/
   # 注释：
   #   -i 为使用镜像源，全称 --index-url
-  #   -U 为升级到最新包版本，全称 --upgrades
+  #   -U 为升级到最新包版本，全称 --upgrade
 
   # 2. 运行应用
   python app.py
   ```
   
 </details>
+
+## 🐒 测试问题列表
+
+详见 [query.md](./docs/query.md)
 
 ## 🔭 架构
 
@@ -123,9 +127,34 @@ uv run app.py
     └── web_ui.py
 ```
 
-## 🐒 测试问题列表
+## 📦 容器部署
 
-详见 [query.md](./docs/query.md)
+### 1）启动应用
+
+```bash
+docker compose up -d
+```
+
+待初始化完成后，可在浏览器访问应用：[http://localhost:7860/](http://localhost:7860/)
+
+### 2）一些调试命令
+
+```bash
+# 查看所有运行中的容器
+docker ps
+
+# 查看 gradio-agent-container 容器日志
+docker compose logs gradio-agent -f
+
+# 停止并删除当前项目的所有容器
+docker compose down
+
+# 停止并删除容器，同时删除本地构建的镜像
+docker compose down --rmi local
+
+# 重新构建镜像并在后台启动容器
+docker compose up -d --build
+```
 
 ## 🌱 依赖管理
 
@@ -134,7 +163,7 @@ uv run app.py
 pip install uv -U
 
 # 2. 初始化项目，这会创建一个包含基础信息的 pyproject.toml 文件
-uv init --name dive-into-langgraph --description "基于 LangChain 构建流式对话应用" --python 3.12
+uv init --name gradio-agent-app --description "基于 LangChain 构建流式对话智能体" --python 3.13
 
 # 3. 更新 pyproject.toml 中的 dependencies 部分
 # 这会自动创建 .venv 虚拟环境，并创建 uv.lock 文件
@@ -156,3 +185,4 @@ uv add -r requirements.txt
 - [x] **思维链展示优化**：开发 [_agent_events_for_dashscope](./app.py) 函数，优化 DashScope 中 thinking 模型的思维链展示
 - [x] **删除对话记录中的 HTML 标签**：删除为了优化前端展示效果引入的 HTML 标签，减轻上下文负担
 - [x] **支持本地模型**：增加了使用 Ollama 部署本地模型的 [说明](./docs/ollama.md)
+- [x] **支持容器部署**：可使用 docker compose 一键部署智能体应用
