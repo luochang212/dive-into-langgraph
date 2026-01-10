@@ -129,27 +129,29 @@ uv run app.py
 
 ## 📦 容器部署
 
+在启动容器前，请确保已经配置好 `.env` 文件。
+
 ### 1）启动应用
 
 ```bash
 docker compose up -d
 ```
 
-待初始化完成后，可在浏览器访问应用：[http://localhost:7860/](http://localhost:7860/)
+初始化完成后，可在浏览器访问：[http://localhost:7860/](http://localhost:7860/)
 
 ### 2）一些调试命令
 
 ```bash
-# 查看所有运行中的容器
+# 查看运行中的容器
 docker ps
 
 # 查看 gradio-agent-container 容器日志
-docker compose logs gradio-agent -f
+docker logs gradio-agent-container -f
 
 # 停止并删除当前项目的所有容器
 docker compose down
 
-# 停止并删除容器，同时删除本地构建的镜像
+# 停止并删除当前项目的所有容器、本地镜像
 docker compose down --rmi local
 
 # 重新构建镜像并在后台启动容器
