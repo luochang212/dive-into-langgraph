@@ -31,8 +31,8 @@
 > \[!NOTE\]
 > 
 > - **图表可视化** 和 **文件系统** 两个 MCP 默认关闭。因为这俩启动前，需要通过 `npx` 安装软件包。我对国内网速没有信心，担心启动时间太长，所以还是关了。如需使用，请在 [app.py](./app.py) 中解开它俩 `stdio` 部分的注释。解开注释后，首次启动时间较长是正常现象，请耐心等待。
-> - **高德地图** MCP 也是默认关闭的。因为它需要 [高德开放平台](https://lbs.amap.com/api/mcp-server/create-project-and-key) 的 `API_KEY`。将 `API_KEY` 配置到 `.env` 文件后，解开 `app.py` 中的注释即可运行。
-> - `stdio` 终究是权宜之法。如果需要长驻后台，建议使用 `http` (Streamable HTTP) 的传输方式。虽然使用 `http` 需要额外开端口为主程序 `app.py` 提供服务，但是延迟更低、效率更高。
+> - **高德地图** MCP 也默认关闭。因为它需要 [高德开放平台](https://lbs.amap.com/api/mcp-server/create-project-and-key) 的 `API_KEY`。将 `API_KEY` 配置到 `.env` 文件后，解开 `app.py` 中的注释即可运行。
+> - `stdio` 终究是权宜之计。如果需要长驻后台，建议使用 `http` (Streamable HTTP) 的传输方式。虽然使用 `http` 需要额外开端口为 `app.py` 提供服务，但是延迟更低、效率更高。
 
 <!-- ## 👷 技能 (Skills) -->
 
@@ -129,7 +129,7 @@ uv run app.py
 
 ## 📦 容器部署
 
-在启动容器前，请确保已经配置好 `.env` 文件。
+启动容器前，请确保已经配置好 `.env` 文件。
 
 ### 1）启动应用
 
