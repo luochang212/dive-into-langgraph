@@ -1,4 +1,4 @@
-# 实战：基于 LangChain 构建流式对话应用
+# 实战：基于 LangChain 构建流式对话智能体
 
 ![gradio-app](./images/gradio_app.png)
 
@@ -70,6 +70,7 @@ uv run app.py
 │   ├── gradio_app.png
 │   ├── gradio_app_raw.png
 │   └── user.png
+├── tests                   # 测试目录
 ├── logs                    # 日志目录
 ├── mcp                     # MCP 模块
 │   ├── mcp-server-chart
@@ -89,6 +90,9 @@ uv run app.py
 └── utils                   # 实用脚本模块
     ├── device_info.py
     ├── fix_deepseek.py
+    ├── fix_dashscope.py
+    ├── remove_html.py
+    ├── think_result.py
     ├── tool_result.py
     └── web_ui.py
 ```
