@@ -5,17 +5,18 @@
 import os
 import asyncio
 import textwrap
+import argparse
 
 from typing import List, Dict, AsyncIterator, Tuple
 from dotenv import load_dotenv
-# from langchain_openai import ChatOpenAI
+from langchain_openai import ChatOpenAI
 from langchain.agents import create_agent
 from langchain.tools import tool
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain.agents.middleware import SummarizationMiddleware, TodoListMiddleware, dynamic_prompt, ModelRequest
 from utils.web_ui import create_ui, theme, custom_css
 from utils.fix_dashscope import DashScopeChatOpenAI
-# from utils.fix_deepseek import DeepSeekChatOpenAI
+from utils.fix_deepseek import DeepSeekChatOpenAI
 from utils.tool_result import format_tool_result
 from utils.think_result import format_think_result
 from utils.remove_html import get_cleaned_text
@@ -26,7 +27,7 @@ from prompts.prompt_enhance import get_system_prompt_enhance
 
 
 # 加载模型配置
-# 注意‼️：请先在 .env 配置 DASHSCOPE_API_KEY
+# 注意‼️：请先在 .env 中配置 DASHSCOPE_API_KEY
 load_dotenv()
 
 
@@ -53,9 +54,9 @@ async def get_agent():
         # 阿里 DashScope 目前有免费额度，支持以下模型：
         #   kimi-k2-thinking / deepseek-v3.2 / glm-4.7 / qwen3-coder-plus-2025-07-22
         # 如果觉得卡，可以使用付费模型：
-        #   qwen3-coder-plus / qwen3-max / qwen3-max-preview
+        #   qwen3-max / qwen3-max-preview / qwen3-coder-plus
         llm = DashScopeChatOpenAI(
-            model="kimi-k2-thinking",
+            model="qwen3-coder-plus",
             api_key=os.getenv("DASHSCOPE_API_KEY"),
             base_url=os.getenv("DASHSCOPE_BASE_URL"),
             max_retries=3,
@@ -134,27 +135,30 @@ async def get_agent():
                 #     "transport": "streamable_http",
                 # },
                 # =============== 图表可视化 MCP ===============
-                # # stdio
+                # # 🌟 stdio
                 # "图表可视化": {
                 #     "command": "npx",
                 #     "args": ["-y", "@antv/mcp-server-chart"],
+                #     "transport": "stdio",
                 # },
-                # # 🌟 streamable http
+                # # streamable http
                 # # 必须先启动服务，参考 mcp/mcp-server-chart/README.md
                 # "图表可视化": {
                 #     "url": "http://localhost:1123/mcp",
                 #     "transport": "streamable_http",
                 # },
                 # =============== 文件系统 MCP ===============
-                # # stdio
+                # # 🌟 stdio
                 # "filesystem": {
                 #     "command": "npx",
                 #     "args": [
                 #         "-y",
                 #         "@modelcontextprotocol/server-filesystem",
-                #         os.path.abspath("./space/"),
-                #     ]
+                #         os.path.abspath("./space"),
+                #     ],
+                #     "transport": "stdio",
                 # },
+                # =============== The End ===============
             }
         )
         mcp_tools = await client.get_tools()
@@ -315,8 +319,11 @@ async def _agent_events_for_dashscope(
                 msg_type = token.response_metadata.get("dashscope_type")
                 if msg_type == "reasoning":
                     reasoning_content += token.content
-                else:
+                elif msg_type == "content":
                     answer_content += token.content
+                else:
+                    print(f"未知消息类型: {msg_type}")
+
                 # 组合显示：先前内容 + 思考过程 + 回答
                 history[-1]["content"] = base_content + format_think_result(reasoning_content) + answer_content
                 yield "", history
@@ -341,8 +348,8 @@ async def generate_response(message: str,
         html_content = history[-1]["content"][0]['text']
         history[-1]["content"][0]['text'] = get_cleaned_text(html_content)
 
-    print("=================================")
-    print(history)
+    # print("=================================")
+    # print(history)
 
     history.append({"role": "user", "content": message})
     history.append({"role": "assistant", "content": ""})
@@ -371,6 +378,13 @@ async def generate_response(message: str,
 
 def main():
     """主函数"""
+    # 配置网络参数
+    # 为 docker 预留的操作入口，因为 docker 的 host 一般需要设置为 0.0.0.0
+    parser = argparse.ArgumentParser(description="Gradio Agent APP")
+    parser.add_argument("-h", "--host", type=str, default="localhost", help="主机地址")
+    parser.add_argument("-p", "--port", type=int, default=7860, help="端口号")
+    args = parser.parse_args()
+
     app = create_ui(
         llm_func=generate_response,
         tab_name="Gradio APP - WebUI",
@@ -379,8 +393,8 @@ def main():
     )
 
     app.launch(
-        server_name="0.0.0.0",
-        server_port=7860,
+        server_name=args.host,
+        server_port=args.port,
         share=False,
         theme=theme,
         css=custom_css

@@ -28,9 +28,17 @@
     - **任务列表**：[TodoListMiddleware](https://reference.langchain.com/python/langchain/middleware/#langchain.agents.middleware.TodoListMiddleware)
     - **历史对话压缩**：[SummarizationMiddleware](https://reference.langchain.com/python/langchain/middleware/#langchain.agents.middleware.SummarizationMiddleware)
 
+> \[!NOTE\]
+> 
+> - **图表可视化** 和 **文件系统** 两个 MCP 没有默认开启。因为这俩启动前，需要通过 `npx` 安装软件包。我对国内网速没有信心，担心启动时间太长，所以还是关了。如需使用，请在 [app.py](./app.py) 中解开它俩 `stdio` 部分的注释。解开注释后，首次启动时间较长是正常现象，请耐心等待。
+> - **高德地图** MCP 也是默认关闭的。因为它需要 [高德开放平台](https://lbs.amap.com/api/mcp-server/create-project-and-key) 的 `API_KEY`。将 `API_KEY` 配置到 `.env` 文件后，解开 `app.py` 中的注释即可运行。
+> - `stdio` 终究只是权宜之法。如需长驻后台，建议使用 `http` (Streamable HTTP) 的传输方式。使用 `http` 需要额外开端口为主程序 `app.py` 提供服务。
+
 <!-- ## 👷 技能 (Skills) -->
 
 ## 🚀 启动方式
+
+**前置条件：**`Python ≥ 3.10`
 
 ### 1）配置环境变量
 
@@ -44,6 +52,8 @@ cp .env.example .env
 
 ### 2）启动 Agent 和 MCP Server
 
+使用 uv 安装依赖包，并启动应用：
+
 ```bash
 # 1. 安装 uv
 pip install uv -U
@@ -53,6 +63,24 @@ uv sync
 
 # 3. 使用 uv 运行应用
 uv run app.py
+```
+
+如果使用 uv 安装失败，尝试使用 pip 安装。
+
+``` {dropdown} pip 安装 + python 启动
+
+    安装依赖包：
+
+    ```bash
+    pip install -r requirements.txt -U
+    ```
+
+    启动应用：
+
+    ```bash
+    python app.py
+    ```
+
 ```
 
 ## 🔭 架构
@@ -128,5 +156,5 @@ uv add -r requirements.txt
 - [x] **欢迎语**：在用户打开 APP 时，展示所有工具（包括 MCP）的名称与描述。当工具过多时，仅展示工具名称
 - [x] **思维链捕获**：针对 DashScope API 开发 [DashScopeChatOpenAI](./utils/fix_dashscope.py) 用于获取思维链内容
 - [x] **思维链展示优化**：开发 [_agent_events_for_dashscope](./app.py) 函数，优化 DashScope 中 thinking 模型的思维链展示
-- [x] **删除对话记录中的 HTML 标签**：删除历史对话记录中，为了优化前端展示效果引入的 HTML 标签，以减轻上下文负担
+- [x] **删除对话记录中的 HTML 标签**：删除为了优化前端展示效果引入的 HTML 标签，减轻上下文负担
 - [x] **支持本地模型**：增加了使用 Ollama 部署本地模型的 [说明](./docs/ollama.md)
