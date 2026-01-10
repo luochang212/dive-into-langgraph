@@ -67,25 +67,18 @@ uv run app.py
 
 <details>
   <summary>如果使用 uv 安装失败，尝试使用 pip 安装</summary>
-
-  安装依赖包：
-
+  
   ```bash
-  pip install -r requirements.txt -U
-
-  # 国内使用镜像源加速
+  # 1. 安装依赖包
   pip install -r requirements.txt -U -i https://mirrors.cloud.tencent.com/pypi/simple/
   # 注释：
   #   -i 为使用镜像源，全称 --index-url
-  #   -U 为升级到最新软件包，全称 --upgrades
-  ```
+  #   -U 为升级到最新包版本，全称 --upgrades
 
-  启动应用：
-
-  ```bash
+  # 2. 运行应用
   python app.py
   ```
-
+  
 </details>
 
 ## 🔭 架构
