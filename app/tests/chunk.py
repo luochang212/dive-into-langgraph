@@ -13,8 +13,8 @@ load_dotenv("../.env")
 
 llm = ChatOpenAI(
     model="kimi-k2-thinking",
-    api_key=os.getenv("DASHSCOPE_API_KEY"),
     base_url=os.getenv("DASHSCOPE_BASE_URL"),
+    api_key=os.getenv("DASHSCOPE_API_KEY"),
     max_retries=3,
     timeout=30,
     extra_body={

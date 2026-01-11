@@ -289,6 +289,16 @@ html, body {
 .tool-result-details[open] .tool-result-icon { transform: rotate(180deg); }
 .tool-result-icon { transition: transform 0.2s ease; fill: none; stroke: #eee; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
+/* Tool Call 样式 */
+.tool-call-details { border: 1px solid #3d4a5f; border-radius: 8px; padding: 10px; margin: 10px 0; background-color: #252b33; }
+.tool-call-summary::-webkit-details-marker { display: none; }
+.tool-call-summary { list-style: none; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: bold; color: #d9e6ff; outline: none; }
+.tool-call-title { display: flex; align-items: center; }
+.tool-call-name { color: #7cc0ff; background: none; border: none; margin-left: 5px; font-size: 1em; line-height: inherit; }
+.tool-call-pre { margin-top: 10px; padding: 10px; background-color: #1d222a; border-radius: 4px; color: #d9e6ff; font-family: monospace; white-space: pre-wrap; max-height: 400px; overflow-y: auto; border: 1px solid #2c3440; }
+.tool-call-details[open] .tool-call-icon { transform: rotate(180deg); }
+.tool-call-icon { transition: transform 0.2s ease; fill: none; stroke: #d9e6ff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
 /* Think Result 样式 */
 .think-result-details { border: 1px solid #555; border-radius: 8px; padding: 10px; margin: 10px 0; background-color: #2a2a3a; }
 .think-result-summary::-webkit-details-marker { display: none; }

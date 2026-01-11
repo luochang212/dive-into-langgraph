@@ -39,6 +39,7 @@ def get_cleaned_text(
     *,
     think_details_class: str = "think-result-details",
     tool_details_class: str = "tool-result-details",
+    tool_call_details_class: str = "tool-call-details",
     decode_escaped_newlines: bool = True,
     include_tool_name: bool = True,
 ) -> str:
@@ -51,6 +52,7 @@ def get_cleaned_text(
 
     think_details_re = _compile_details_block_re(think_details_class)
     tool_details_re = _compile_details_block_re(tool_details_class)
+    tool_call_details_re = _compile_details_block_re(tool_call_details_class)
 
     without_think = think_details_re.sub("", normalized)
 
@@ -60,7 +62,7 @@ def get_cleaned_text(
             max_run = max(max_run, len(m.group(0)))
         return "`" * max(3, max_run + 1)
 
-    def _replace_tool_block(match: re.Match[str]) -> str:
+    def _replace_details_block(match: re.Match[str], *, kind: str) -> str:
         block = match.group(0)
 
         tool_name = ""
@@ -73,11 +75,15 @@ def get_cleaned_text(
         if m_pre:
             tool_output = html.unescape(m_pre.group("pre")).strip()
 
-        info = 'tool_return name="{}"'.format(tool_name) if (include_tool_name and tool_name) else "tool_return"
+        if include_tool_name and tool_name:
+            info = '{} name="{}"'.format(kind, tool_name)
+        else:
+            info = kind
         fence = _fence_for(tool_output)
         return f"\n\n{fence}{info}\n{tool_output}\n{fence}\n\n"
 
-    replaced = tool_details_re.sub(_replace_tool_block, without_think)
+    replaced = tool_details_re.sub(lambda m: _replace_details_block(m, kind="tool_return"), without_think)
+    replaced = tool_call_details_re.sub(lambda m: _replace_details_block(m, kind="tool_call"), replaced)
 
     cleaned = _MULTI_BLANK_LINES_RE.sub("\n\n", replaced)
     return cleaned.strip()

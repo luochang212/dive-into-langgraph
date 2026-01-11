@@ -25,8 +25,8 @@ env_path = os.path.join(app_dir, '.env')
 load_dotenv(dotenv_path=env_path)
 
 # 加载环境变量
-DASHSCOPE_API_KEY = os.getenv("DASHSCOPE_API_KEY")
 DASHSCOPE_BASE_URL = os.getenv("DASHSCOPE_BASE_URL")
+DASHSCOPE_API_KEY = os.getenv("DASHSCOPE_API_KEY")
 
 # 角色扮演的提示词
 role_play_prompt = "面对女神{situation}的情况，作为一个{role}，你应该如何一句话回复女神？请以JSON格式返回，包含response字段"
@@ -137,8 +137,8 @@ def role_play(
     llm = init_chat_model(
         model=model_name,
         model_provider="openai",
-        api_key=DASHSCOPE_API_KEY,
         base_url=DASHSCOPE_BASE_URL,
+        api_key=DASHSCOPE_API_KEY,
     )
     doge_graph = create_doge_graph(llm)
     response = doge_graph.invoke({"roles": roles, "situation": situation})

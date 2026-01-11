@@ -122,8 +122,8 @@ uv run app.py
     ├── fix_deepseek.py
     ├── fix_dashscope.py
     ├── remove_html.py
-    ├── think_result.py
-    ├── tool_result.py
+    ├── think_view.py
+    ├── tool_view.py
     └── web_ui.py
 ```
 
@@ -184,7 +184,7 @@ uv add -r requirements.txt
 - [x] **错误处理**：增加 LLM 调用超时限制；开启 LLM 调用失败重试；MCP 运行失败免退出并总结失败原因
 - [x] **欢迎语**：在用户打开 APP 时，展示所有工具（包括 MCP）的名称与描述。当工具过多时，仅展示工具名称
 - [x] **思维链捕获**：针对 DashScope API 开发 [DashScopeChatOpenAI](./utils/fix_dashscope.py) 用于获取思维链内容
-- [x] **思维链展示优化**：开发 [_agent_events_for_dashscope](./app.py) 函数，优化 DashScope 中 thinking 模型的思维链展示
+- [x] **工具调用展示优化**：开发 [_agent_events_optimize](./app.py) 函数，优化 Tool 和 MCP 调用时的输入、输出展示
 - [x] **删除对话记录中的 HTML 标签**：删除为了优化前端展示效果引入的 HTML 标签，减轻上下文负担
 - [x] **支持本地模型**：增加了使用 Ollama 部署本地模型的 [说明](./docs/ollama.md)
-- [x] **支持容器部署**：可使用 docker compose 一键部署智能体应用
+- [x] **容器部署**：支持使用 docker compose 一键部署智能体应用

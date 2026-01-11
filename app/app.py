@@ -15,10 +15,7 @@ from langchain.tools import tool
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain.agents.middleware import SummarizationMiddleware, TodoListMiddleware, dynamic_prompt, ModelRequest
 from utils.web_ui import create_ui, theme, custom_css
-from utils.fix_dashscope import DashScopeChatOpenAI
-from utils.fix_deepseek import DeepSeekChatOpenAI
-from utils.tool_result import format_tool_result
-from utils.think_result import format_think_result
+from utils.tool_view import format_tool_call, format_tool_result
 from utils.remove_html import get_cleaned_text
 from tools.tool_math import add, subtract, multiply, divide
 from tools.tool_search import dashscope_search, SearchTool
@@ -32,7 +29,7 @@ load_dotenv()
 
 
 # 是否清洗历史对话记录中的 HTML 内容
-REMOVE_HTML = True
+REMOVE_HTML = False
 
 
 # 全局变量
@@ -55,11 +52,10 @@ async def get_agent():
         #   kimi-k2-thinking / deepseek-v3.2 / glm-4.7 / qwen3-coder-plus-2025-07-22
         # 如果觉得卡，可以使用付费模型：
         #   qwen3-max / qwen3-max-preview / qwen3-coder-plus
-        llm = DashScopeChatOpenAI(
+        llm = ChatOpenAI(
             model="qwen3-coder-plus",
-            api_key=os.getenv("DASHSCOPE_API_KEY"),
             base_url=os.getenv("DASHSCOPE_BASE_URL"),
-            max_retries=3,
+            api_key=os.getenv("DASHSCOPE_API_KEY"),
             timeout=30,
             extra_body={
                 "chat_template_kwargs": {
@@ -67,6 +63,16 @@ async def get_agent():
                 }
             }
         )
+        # ==================== 使用 Ark ====================
+        # # 字节火山方舟 目前有免费额度，支持以下模型：
+        # #   deepseek-v3-2-251201 / kimi-k2-thinking-251104 / doubao-seed-1-8-251228
+        # llm = ChatOpenAI(
+        #     model="deepseek-v3-2-251201",
+        #     base_url=os.getenv("ARK_BASE_URL"),
+        #     api_key=os.getenv("ARK_API_KEY"),
+        #     max_retries=1,
+        #     timeout=30,
+        # )
         # ==================== 使用 Ollama ====================
         # # 使用前需要：
         # # 1. 下载 qwen3:4b 模型 
@@ -87,15 +93,7 @@ async def get_agent():
         #         }
         #     }
         # )
-        # ==================== 使用 DeepSeek ====================
-        # # 不推荐，调用 MCP 容易报错
-        # llm = DeepSeekChatOpenAI(
-        #     model="deepseek-chat",  # deepseek-chat / deepseek-reasoner
-        #     api_key=os.getenv("DEEPSEEK_API_KEY"),
-        #     base_url=os.getenv("DEEPSEEK_BASE_URL"),
-        #     max_retries=3,
-        #     timeout=30,
-        # )
+        # ==================== The End ====================
 
         _llm = llm
 
@@ -128,12 +126,12 @@ async def get_agent():
                 #     "transport": "streamable_http",
                 # },
                 # =============== 高德地图 MCP ===============
-                # # 🌟 streamable http
-                # # 必须先申请高德地图 API_KEY，详见 .env.example
-                # "高德地图": {
-                #     "url": f"https://mcp.amap.com/mcp?key={os.getenv('AMAP_API_KEY')}",
-                #     "transport": "streamable_http",
-                # },
+                # 🌟 streamable http
+                # 必须先申请高德地图 API_KEY，详见 .env.example
+                "高德地图": {
+                    "url": f"https://mcp.amap.com/mcp?key={os.getenv('AMAP_API_KEY')}",
+                    "transport": "streamable_http",
+                },
                 # =============== 图表可视化 MCP ===============
                 # # 🌟 stdio
                 # "图表可视化": {
@@ -224,18 +222,18 @@ def get_tools():
     tools = list(node.data.tools_by_name.values())
 
     # 优化工具展示
-    if len(tools) > 12:
-        # 当工具过多时，仅显示工具名
-        tool_names = [tool.name for tool in tools]
-        wrapped_text = textwrap.fill(" / ".join(tool_names), width=110)
-        return f"\n```text\n{wrapped_text}\n```\n"
-    else:
-        # 当工具不多时，显示工具描述
+    if len(tools) < 13:
+        # 当工具不多时，展示工具描述
         lines = []
         for tool in tools:
             desc = (tool.description or "").split('\n')[0]
             lines.append(f"- `{tool.name}`: {desc}")
         return "\n".join(lines)
+    else:
+        # 当工具过多时，仅展示工具名称
+        tool_names = [tool.name for tool in tools]
+        wrapped_text = textwrap.fill(" / ".join(tool_names), width=110)
+        return f"\n```text\n{wrapped_text}\n```\n"
 
 
 def get_greeting():
@@ -277,61 +275,63 @@ async def _agent_events(
     messages,
     history: List[Dict[str, str]],
 ) -> AsyncIterator[Tuple[str, List[Dict[str, str]]]]:
-    """处理 ChatOpenAI 的事件流"""
+    """简化显示，仅处理 messages 事件流"""
     async for token, metadata in agent.astream(
         {"messages": messages},
         stream_mode="messages",
         context=SearchTool(api_key=os.getenv("DASHSCOPE_API_KEY")),
     ):
         if metadata["langgraph_node"] == "model":
+            # 模型回复
             if token.content:
                 history[-1]["content"] += token.content
                 yield "", history
         elif metadata["langgraph_node"] == "tools":
+            # 工具调用结果
             if token.content:
                 history[-1]["content"] += format_tool_result(token.name, token.content)
                 yield "", history
 
 
-async def _agent_events_for_dashscope(
+async def _agent_events_optimize(
     agent,
     messages,
     history: List[Dict[str, str]],
 ) -> AsyncIterator[Tuple[str, List[Dict[str, str]]]]:
-    """处理 DashScopeChatOpenAI 的事件流"""
-    reasoning_content = ""
-    answer_content = ""
-    base_content = ""
-    last_node = None
-
-    async for token, metadata in agent.astream(
+    """优化显示，处理 messages 和 values 事件流"""
+    async for mode, payload in agent.astream(
         {"messages": messages},
-        stream_mode="messages",
+        stream_mode=["messages", "values"],
         context=SearchTool(api_key=os.getenv("DASHSCOPE_API_KEY")),
     ):
-        current_node = metadata["langgraph_node"]
-        if current_node == "model":
-            if last_node != "model":
-                base_content = history[-1]["content"]
-                reasoning_content = ""
-                answer_content = ""
-            if token.content:
-                msg_type = token.response_metadata.get("dashscope_type")
-                if msg_type == "reasoning":
-                    reasoning_content += token.content
-                elif msg_type == "content":
-                    answer_content += token.content
-                else:
-                    print(f"未知消息类型: {msg_type}")
+        if mode == "messages":
+            token, metadata = payload
+            current_node = metadata["langgraph_node"]
+            if current_node == "model":
+                # 模型回复
+                if token.content:
+                    history[-1]["content"] += token.content
+                    yield "", history
+            elif current_node == "tools":
+                # 工具调用结果
+                if token.content:
+                    history[-1]["content"] += format_tool_result(token.name, token.content)
+                    yield "", history
+        elif mode == "values":
+            state = payload
+            state_messages = state.get("messages") if isinstance(state, dict) else None
+            if not state_messages:
+                continue
+            last_message = state_messages[-1]
 
-                # 组合显示：先前内容 + 思考过程 + 回答
-                history[-1]["content"] = base_content + format_think_result(reasoning_content) + answer_content
+            # 工具调用入参
+            tool_calls = getattr(last_message, "tool_calls", None)
+            if tool_calls:
+                history[-1]["content"] += "".join(
+                    format_tool_call((tc.get("name") or "unknown"), (tc.get("args") or {}))
+                    for tc in tool_calls
+                )
                 yield "", history
-        elif current_node == "tools":
-            if token.content:
-                history[-1]["content"] += format_tool_result(token.name, token.content)
-                yield "", history
-        last_node = current_node
 
 
 async def generate_response(message: str,
@@ -360,13 +360,8 @@ async def generate_response(message: str,
 
     # 避免 MCP 调用失败引发的退出
     try:
-        # 注意‼️：以下二选一
-        # ============== 使用 ChatOpenAI ==============
-        # agent_events = _agent_events
-        # ========= 使用 DashScopeChatOpenAI =========
-        agent_events = _agent_events_for_dashscope
-        # =============================================
-        async for update in agent_events(agent, messages, history):
+        # 使用优化显示
+        async for update in _agent_events_optimize(agent, messages, history):
             yield update
     except Exception as err:
         print(f"发生错误: {err}")
@@ -379,7 +374,7 @@ async def generate_response(message: str,
 def main():
     """主函数"""
     # 配置网络参数
-    # 为 docker 预留的操作入口，因为 docker 的 host 一般需要设置为 0.0.0.0
+    # 为 docker 预留的操作入口，因为 docker 的 host 一般设置为 0.0.0.0
     parser = argparse.ArgumentParser(description="Gradio Agent APP")
     parser.add_argument("--host", type=str, default="localhost", help="主机地址")
     parser.add_argument("--port", type=int, default=7860, help="端口号")
