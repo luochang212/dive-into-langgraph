@@ -1,5 +1,7 @@
 # 实战：基于 LangChain 构建流式对话智能体
 
+中文 | [English](./docs/README-en.md)
+
 ![gradio-app](./images/gradio_app.png)
 
 > 超实用的 Agent Web APP。完全本地化部署，自主掌控架构和算力，榨干 LLM 潜力。
