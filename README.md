@@ -104,9 +104,7 @@ langgraph dev
 
 ## 五、实战章节
 
-[第 13 章](./13.gradio_app.ipynb) 开源了一个基于 Gradio + LangChain 实现的流式对话智能体应用，它的效果如下。
-
-你可以为这个应用添加更多功能，定制专属于你的智能体。代码见：[/app](./app/)
+[第 13 章](./13.gradio_app.ipynb) 开源了一个基于 Gradio + LangChain 实现的智能体应用，效果如下。你可以为这个应用添加更多功能，定制专属于你的智能体。详见：[/app](./app/)
 
 ![](./app/images/gradio_app.png)
 
