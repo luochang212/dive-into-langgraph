@@ -100,9 +100,17 @@ pip install -r requirements.txt
 langgraph dev
 ```
 
-详见 [第14章](./14.langgraph_cli.ipynb)
+详见：[第 14 章](./14.langgraph_cli.ipynb)
 
-## 五、延伸阅读
+## 五、实战章节
+
+[第 13 章](./13.gradio_app.ipynb) 开源了一个基于 Gradio + LangChain 实现的流式对话智能体应用，它的效果如下。
+
+你可以为这个应用添加更多功能，定制专属于你的智能体。代码见：[/app](./app/)
+
+![](./app/images/gradio_app.png)
+
+## 六、延伸阅读
 
 **官方文档：**
 
@@ -116,7 +124,7 @@ langgraph dev
 - [langgraph-101](https://github.com/langchain-ai/langgraph-101)
 - [langchain-academy](https://github.com/langchain-ai/langchain-academy)
 
-## 六、如何贡献
+## 七、如何贡献
 
 我们欢迎任何形式的贡献！
 
@@ -125,6 +133,6 @@ langgraph dev
 - 📝 内容完善 - 帮助改进教程内容
 - 🔧 代码优化 - 提交 Pull Request
 
-## 七、开源协议
+## 八、开源协议
 
 本作品采用 [知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议](http://creativecommons.org/licenses/by-nc-sa/4.0/) 进行许可。
