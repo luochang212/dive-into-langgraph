@@ -1,6 +1,6 @@
 <div align="center">
-    <img src="./img/social-preview.jpg" width="100%">
-    <h1>Dive into LangGraph</h1>
+  <img src="./img/social-preview.jpg" width="100%">
+  <h1>Dive into LangGraph</h1>
 </div>
 
 <div align="center">
@@ -104,9 +104,11 @@ langgraph dev
 
 ## 五、实战章节
 
-[第 13 章](https://www.luochang.ink/dive-into-langgraph/gradio-app/) 开源了一个基于 Gradio + LangChain 实现的智能体应用，效果如下。你可以为这个应用添加更多功能，定制专属于你的智能体。详见：[/app](./app/)
+[第 13 章](https://www.luochang.ink/dive-into-langgraph/gradio-app/) 开源了一个基于 Gradio + LangChain 实现的智能体应用，效果如下。你可以为这个应用添加更多功能，定制专属于你的智能体。
 
-![](./app/images/gradio_app.png)
+![gradio_app](./app/images/gradio_app.png)
+
+详见：[/app](./app/)
 
 ## 六、延伸阅读
 
