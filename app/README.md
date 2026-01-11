@@ -139,7 +139,7 @@ docker compose up -d
 
 初始化完成后，可在浏览器访问：[http://localhost:7860/](http://localhost:7860/)
 
-### 2）一些调试命令
+### 2）调试命令
 
 ```bash
 # 查看运行中的容器
@@ -187,4 +187,4 @@ uv add -r requirements.txt
 - [x] **工具调用展示优化**：开发 [_agent_events_optimize](./app.py) 函数，优化 Tool 和 MCP 调用时的输入、输出展示
 - [x] **删除对话记录中的 HTML 标签**：删除为了优化前端展示效果引入的 HTML 标签，减轻上下文负担
 - [x] **支持本地模型**：增加了使用 Ollama 部署本地模型的 [说明](./docs/ollama.md)
-- [x] **容器部署**：支持使用 docker compose 一键部署智能体应用
+- [x] **支持容器部署**：支持使用 docker compose 一键部署智能体应用
