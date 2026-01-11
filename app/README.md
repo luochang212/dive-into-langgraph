@@ -1,4 +1,4 @@
-# 实战：基于 LangChain 构建流式对话智能体
+# 实战：基于 LangChain 构建流式对话智能体应用
 
 中文 | [English](./docs/README-en.md)
 
@@ -68,7 +68,7 @@ uv run app.py
 ```
 
 <details>
-  <summary>如果使用 uv 安装失败，尝试使用 pip 安装</summary>
+  <summary>如果使用 uv 安装失败，可以使用 pip 安装</summary>
   
   ```bash
   # 1. 安装依赖包

@@ -16,7 +16,7 @@ mcp = FastMCP("code-execution")
 @mcp.tool
 def execute_python(code: str) -> str:
     """
-    在单独的子进程中执行 Python 代码并返回标准输出或标准错误。
+    在单独的子进程中执行 Python 代码并返回标准输出或标准错误输出。
     用于数学计算、数据分析和逻辑处理。
 
     Args:

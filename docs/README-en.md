@@ -29,7 +29,7 @@
 
 > In mid-October 2025, LangGraph released version 1.0. The team announced this as a stable release and expects the interfaces not to change significantly, so now is a great time to learn it.
 
-This is an open-source ebook project designed to help Agent developers quickly master the LangGraph framework. [LangGraph](https://github.com/langchain-ai/langgraph) is an open-source agent framework developed by the LangChain team. It's powerful — memory, MCP, guardrails, state management, and multi-agent capabilities are all built in. LangGraph is typically used together with [LangChain](https://github.com/langchain-ai/langchain): LangChain provides the building blocks and tools, while LangGraph focuses on workflow orchestration and state management. Therefore, both libraries need to be learned. To help you ramp up quickly, this tutorial extracts the most important features from both libraries and organizes them into 13 chapters.
+This is an open-source ebook project designed to help Agent developers quickly master the LangGraph framework. [LangGraph](https://github.com/langchain-ai/langgraph) is an open-source agent framework developed by the LangChain team. It's powerful — memory, MCP, guardrails, state management, and multi-agent capabilities are all built in. LangGraph is typically used together with [LangChain](https://github.com/langchain-ai/langchain): LangChain provides the building blocks and tools, while LangGraph focuses on workflow orchestration and state management. Therefore, both libraries need to be learned. To help you ramp up quickly, this tutorial extracts the most important features from both libraries and organizes them into 14 chapters.
 
 ## 2. Installation
 
@@ -78,19 +78,8 @@ Quick overview of the tutorial:
 | 10 | [RAG](../10.rag.ipynb) | Implement RAG: Vector Retrieval, Keyword Retrieval, Hybrid Retrieval |
 | 11 | [Web Search](../11.web_search.ipynb) | Implement web search functionality: DashScope, Tavily, DDGS |
 | 12 | [Deep Agents](../12.deep_agents.ipynb) | Brief introduction to Deep Agents |
-| 13 | [Debug UI](../13.langgraph_cli.ipynb) | Introduction to the debug UI provided by langgraph-cli |
-
-<!-- | 12 | [Complex Memory](../12.complex_memory.ipynb) | Implement complex memory features: user profiling, cross-dialogue memory |
-| 13 | [Todo List](../13.todo_list.ipynb) | Update Todo List state | -->
-
-Important examples not covered above are placed under the repository’s `tests` directory:
-
-| Code | Description |
-| -- | -- |
-| [/tests/test_rag.py](../tests/test_rag.py) | Use `RAG` to inject local document snippets into the agent |
-| [/tests/test_langmem.py](../tests/test_langmem.py) | Use `LangMem` to manage an agent’s long-term memory |
-| [/tests/test_store.py](../tests/test_store.py) | Use `RedisStore` for fast read/write of long-term memory |
-| [/tests/test_router.py](../tests/test_router.py) | Implement a simple agent router |
+| 13 | [Gradio APP](../13.gradio_app.ipynb) | Build a streaming chat agent app with Gradio |
+| 14 | [Appendix: Debug UI](../14.langgraph_cli.ipynb) | Introduction to the debug UI provided by langgraph-cli |
 
 > [!NOTE]
 >
@@ -104,7 +93,7 @@ Important examples not covered above are placed under the repository’s `tests`
 langgraph dev
 ```
 
-See [Chapter 13](../13.langgraph_cli.ipynb) for details.
+See [Chapter 14](../14.langgraph_cli.ipynb) for details.
 
 ## 5. Further Reading
 

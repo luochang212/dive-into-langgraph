@@ -29,7 +29,7 @@
 
 > 2025 年 10 月中旬，LangGraph 发布 1.0 版本。开发团队承诺这是一个稳定版本，预计未来接口不会大改，因此现在正是学习它的好时机。
 
-这是一个开源电子书项目，旨在帮助 Agent 开发者快速掌握 LangGraph 框架。[LangGraph](https://github.com/langchain-ai/langgraph) 是由 LangChain 团队开发的开源智能体框架。它功能强大，你要的记忆、MCP、护栏、状态管理、多智能体它全都有。LangGraph 通常与 [LangChain](https://github.com/langchain-ai/langchain) 一起使用：LangChain 提供基础组件和工具，LangGraph 负责工作流和状态管理。因此，两个库都需要学习。为了让大家快速入门，本教程将两个库的主要功能提取出来，分成 13 个章节进行介绍。
+这是一个开源电子书项目，旨在帮助 Agent 开发者快速掌握 LangGraph 框架。[LangGraph](https://github.com/langchain-ai/langgraph) 是由 LangChain 团队开发的开源智能体框架。它功能强大，你要的记忆、MCP、护栏、状态管理、多智能体它全都有。LangGraph 通常与 [LangChain](https://github.com/langchain-ai/langchain) 一起使用：LangChain 提供基础组件和工具，LangGraph 负责工作流和状态管理。因此，两个库都需要学习。为了让大家快速入门，本教程将两个库的主要功能提取出来，分成 14 个章节进行介绍。
 
 ## 二、安装依赖
 
@@ -85,19 +85,8 @@ pip install -r requirements.txt
 | 10 | [RAG](./10.rag.ipynb) | 三种方式实现 RAG：向量检索、关键词检索、混合检索 |
 | 11 | [网络搜索](./11.web_search.ipynb) | 实现联网搜索：DashScope、Tavily 和 DDGS |
 | 12 | [Deep Agents](./12.deep_agents.ipynb) | 简单介绍 Deep Agents |
-| 13 | [调试页面](./13.langgraph_cli.ipynb) | 介绍 langgraph-cli 提供的调试页面 |
-
-<!-- | 12 | [复杂记忆](./12.complex_memory.ipynb) | 实现复杂记忆功能：用户画像、跨对话记忆 |
-| 13 | [多步规划](./13.todo_list.ipynb) | Todo List 状态更新 | -->
-
-未出现在上述章节但比较重要的代码，我放在仓库的 tests 目录下：
-
-|代码|说明|
-| -- | -- |
-| [/tests/test_rag.py](./tests/test_rag.py) | 使用 `RAG` 将本地文档片段注入智能体 |
-| [/tests/test_langmem.py](./tests/test_langmem.py) | 使用 `LangMem` 管理智能体长期记忆 |
-| [/tests/test_store.py](./tests/test_store.py) | 使用 `RedisStore` 快速读写长期记忆 |
-| [/tests/test_router.py](./tests/test_router.py) | 实现一个简单的智能体路由 |
+| 13 | [Gradio APP](./13.gradio_app.ipynb) | 基于 Gradio 开发流式对话智能体应用 |
+| 14 | [附录：调试页面](./14.langgraph_cli.ipynb) | 介绍 langgraph-cli 提供的调试页面 |
 
 > \[!NOTE\]
 > 
@@ -111,7 +100,7 @@ pip install -r requirements.txt
 langgraph dev
 ```
 
-详见 [第13章](./13.langgraph_cli.ipynb)
+详见 [第14章](./14.langgraph_cli.ipynb)
 
 ## 五、延伸阅读
 

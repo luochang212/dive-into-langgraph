@@ -19,10 +19,9 @@ project:
     - file: 9.parallelization.ipynb
     - file: 10.rag.ipynb
     - file: 11.web_search.ipynb
-    # - file: 12.complex_memory.ipynb
-    # - file: 13.todo_list.ipynb
     - file: 12.deep_agents.ipynb
-    - file: 13.langgraph_cli.ipynb
+    - file: 13.gradio_app.ipynb
+    - file: 14.langgraph_cli.ipynb
 site:
   template: book-theme
   options:
