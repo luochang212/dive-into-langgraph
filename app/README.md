@@ -158,6 +158,9 @@ docker compose down --rmi local
 
 # 重新构建镜像并在后台启动容器
 docker compose up -d --build
+
+# 进入容器的 bash 终端
+docker compose exec -it gradio-agent bash
 ```
 
 ## 🌱 依赖管理

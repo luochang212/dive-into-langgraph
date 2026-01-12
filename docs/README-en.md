@@ -93,16 +93,15 @@ Quick overview of the tutorial:
 langgraph dev
 ```
 
-See [Chapter 14](../14.langgraph_cli.ipynb) for details.
-
+See [Appendix](../14.langgraph_cli.ipynb) for details.
 
 ## 5. Hands-on Project
 
-[Chapter 13](../13.gradio_app.ipynb) open-sources a streaming conversational agent app built with Gradio + LangChain. It looks like this 👇.
+[Chapter 13](https://www.luochang.ink/dive-into-langgraph/gradio-app/) open-sources an agent application built with Gradio + LangChain, as shown below. You can add more features to this app and customize your own agent.
 
-You can add more features to this app and customize your own agent. Code: [/app](../app/)
+![gradio_app](../app/images/gradio_app.png)
 
-![](../app/images/gradio_app.png)
+See: [/app](../app/)
 
 ## 6. Further Reading
 

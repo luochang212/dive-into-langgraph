@@ -8,6 +8,8 @@ RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debi
     apt-get update && apt-get install -y \
     curl \
     supervisor \
+    procps \
+    vim \
     && rm -rf /var/lib/apt/lists/*
 
 # 复制依赖文件并安装Python依赖

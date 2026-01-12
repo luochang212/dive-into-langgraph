@@ -8,3 +8,5 @@ services:
     working_dir: /app
     env_file:
       - .env
+    environment:
+      - TZ=Asia/Shanghai
