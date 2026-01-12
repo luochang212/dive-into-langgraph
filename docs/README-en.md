@@ -93,7 +93,7 @@ Quick overview of the tutorial:
 langgraph dev
 ```
 
-See [Appendix](../14.langgraph_cli.ipynb) for details.
+See [Appendix](https://www.luochang.ink/dive-into-langgraph/langgraph-cli/) for details.
 
 ## 5. Hands-on Project
 

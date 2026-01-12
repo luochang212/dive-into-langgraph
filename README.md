@@ -100,7 +100,7 @@ pip install -r requirements.txt
 langgraph dev
 ```
 
-详见：[附录](./14.langgraph_cli.ipynb)
+详见：[附录](https://www.luochang.ink/dive-into-langgraph/langgraph-cli/)
 
 ## 五、实战章节
 
