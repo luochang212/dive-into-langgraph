@@ -1,6 +1,6 @@
 ﻿﻿# Practical: Build a Streaming Conversational Agent App with LangChain
 
-English | [中文](../README.md)
+[中文](../README.md) | English
 
 ![gradio-app](../images/gradio_app.webp)
 
