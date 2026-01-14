@@ -2,7 +2,7 @@
 
 中文 | [English](./docs/README-en.md)
 
-![gradio-app](./images/gradio_app.png)
+![gradio-app](./images/gradio_app.webp)
 
 > 超实用的 Agent Web APP。完全本地化部署，自主掌控架构和算力，榨干 LLM 潜力。
 
@@ -19,8 +19,8 @@
 - **tools**：
     - **联网搜索**：[tool_search](./tools/tool_search.py)
     - **数学计算**：[tool_math](./tools/tool_math.py)
+    - **角色扮演**：[role-play](./tools/tool_role.py)
 - **MCP**：
-    - **角色扮演**：[role-play](./mcp/role_play.py)
     - **代码执行**：[code-execution](./mcp/code_execution.py)
     - **图表可视化**：[mcp-server-chart](./mcp/mcp-server-chart/README.md)
     - **高德地图**：[amap-maps](https://lbs.amap.com/api/mcp-server/summary)
@@ -91,42 +91,49 @@ uv run app.py
 
 ```text
 .
-├── README.md
+├── Dockerfile
+├── README.md               # 项目说明
 ├── app.py                  # 主应用入口
-├── requirements.txt        # 项目依赖
 ├── .env.example            # 环境变量示例
+├── config                  # 配置模块
+│   ├── __init__.py
+│   └── mcp_config.py       # MCP 配置
+├── docker-compose.yml
+├── docker.conf
 ├── docs                    # 文档目录
-│   └── query.md
 ├── images                  # 图片资源
-│   ├── ai.png
-│   ├── gradio_app.png
-│   ├── gradio_app_raw.png
-│   └── user.png
-├── tests                   # 测试目录
 ├── logs                    # 日志目录
 ├── mcp                     # MCP 模块
-│   ├── mcp-server-chart
-│   │   └── README.md
 │   ├── code_execution.py
-│   └── role_play.py
+│   └── mcp-server-chart
+│       └── README.md
 ├── prompts                 # 系统提示词模块
 │   ├── __init__.py
-│   ├── prompt.py
+│   ├── middleware_todolist.py
 │   ├── prompt_base.py
-│   └── prompt_enhance.py
+│   ├── prompt_enhance.py
+│   └── subagent_search.py
+├── pyproject.toml
+├── requirements.txt        # 项目依赖
 ├── space                   # filesystem 读写空间
 │   └── food.md
+├── tests                   # 测试目录
 ├── tools                   # 工具模块
+│   ├── __init__.py
 │   ├── tool_math.py
+│   ├── tool_role.py
+│   ├── tool_runtime.py
 │   └── tool_search.py
-└── utils                   # 实用脚本模块
-    ├── device_info.py
-    ├── fix_deepseek.py
-    ├── fix_dashscope.py
-    ├── remove_html.py
-    ├── think_view.py
-    ├── tool_view.py
-    └── web_ui.py
+├── utils                   # 实用脚本模块
+│   ├── __init__.py
+│   ├── device_info.py
+│   ├── fix_dashscope.py
+│   ├── fix_deepseek.py
+│   ├── remove_html.py
+│   ├── think_view.py
+│   ├── tool_view.py
+│   └── web_ui.py
+└── uv.lock
 ```
 
 ## 📦 容器部署
@@ -193,3 +200,5 @@ uv add -r requirements.txt
 - [x] **删除对话记录中的 HTML 标签**：删除为了优化前端展示效果引入的 HTML 标签，减轻上下文负担
 - [x] **支持本地模型**：增加了使用 Ollama 部署本地模型的 [说明](./docs/ollama.md)
 - [x] **支持容器部署**：支持使用 docker compose 一键部署智能体应用
+- [x] **增强错误处理**：使用 traceback 获取详细的错误信息，提升 LLM 摘要的准确度
+- [x] **新增配置模块**：新增 [config](./config) 模块，用于存储 MCP 配置

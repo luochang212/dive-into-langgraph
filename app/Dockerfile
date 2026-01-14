@@ -19,7 +19,7 @@ RUN uv sync -i https://mirrors.aliyun.com/pypi/simple/
 
 # 复制应用代码
 COPY app.py .
-COPY .env .
+COPY config/ ./config/
 COPY images/ ./images/
 COPY mcp/ ./mcp/
 COPY prompts/ ./prompts/

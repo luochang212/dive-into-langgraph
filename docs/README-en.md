@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="../img/social-preview.jpg" width="100%">
+    <img src="../img/social-preview.webp" width="100%">
     <h1>Dive into LangGraph</h1>
 </div>
 
@@ -99,7 +99,7 @@ See [Appendix](https://www.luochang.ink/dive-into-langgraph/langgraph-cli/) for 
 
 [Chapter 13](https://www.luochang.ink/dive-into-langgraph/gradio-app/) open-sources an agent application built with Gradio + LangChain, as shown below. You can add more features to this app and customize your own agent.
 
-![gradio_app](../app/images/gradio_app.png)
+![gradio_app](../app/images/gradio_app.webp)
 
 See: [/app](../app/)
 

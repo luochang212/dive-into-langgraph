@@ -10,8 +10,10 @@ import os
 
 from fastmcp import FastMCP
 
+
 # 代码执行工具
 mcp = FastMCP("code-execution")
+
 
 @mcp.tool
 def execute_python(code: str) -> str:

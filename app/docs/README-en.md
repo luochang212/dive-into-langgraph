@@ -1,10 +1,10 @@
-﻿# Hands-on: Build a Streaming Chat Agent with LangChain
+﻿﻿# Practical: Build a Streaming Conversational Agent App with LangChain
 
-[中文](../README.md) | English
+English | [中文](../README.md)
 
-![gradio-app](../images/gradio_app.png)
+![gradio-app](../images/gradio_app.webp)
 
-> A super practical Agent Web APP. Fully local deployment, full control over your architecture and compute, squeezing the most out of LLMs.
+> A super practical Agent web app. Fully local deployment, full control over architecture and compute, squeezing the most out of your LLM.
 
 ## 💻 Tech Stack
 
@@ -19,28 +19,28 @@
 - **tools**:
     - **Web search**: [tool_search](../tools/tool_search.py)
     - **Math**: [tool_math](../tools/tool_math.py)
+    - **Role-play**: [role-play](../tools/tool_role.py)
 - **MCP**:
-    - **Role play**: [role-play](../mcp/role_play.py)
     - **Code execution**: [code-execution](../mcp/code_execution.py)
     - **Chart visualization**: [mcp-server-chart](../mcp/mcp-server-chart/README.md)
-    - **Amap (Gaode Maps)**: [amap-maps](https://lbs.amap.com/api/mcp-server/summary)
+    - **AMap (Gaode Maps)**: [amap-maps](https://lbs.amap.com/api/mcp-server/summary)
     - **Filesystem**: [filesystem](https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem)
 - **Middleware**:
-    - **Dynamic system prompts**: [dynamic_prompt](https://reference.langchain.com/python/langchain/middleware/#langchain.agents.middleware.dynamic_prompt)
+    - **Dynamic system prompt**: [dynamic_prompt](https://reference.langchain.com/python/langchain/middleware/#langchain.agents.middleware.dynamic_prompt)
     - **Todo list**: [TodoListMiddleware](https://reference.langchain.com/python/langchain/middleware/#langchain.agents.middleware.TodoListMiddleware)
     - **Conversation summarization**: [SummarizationMiddleware](https://reference.langchain.com/python/langchain/middleware/#langchain.agents.middleware.SummarizationMiddleware)
 
 > \[!NOTE\]
 >
-> - **Chart visualization** and **Filesystem** MCPs are disabled by default. They require installing npm packages via `npx` before startup. I’m not confident about network speed in China, and I don’t want the startup to take too long, so they’re turned off. To use them, uncomment the `stdio` blocks for these two MCPs in [app.py](../app.py). The first startup may take a while; this is expected.
-> - **Amap (Gaode Maps)** MCP is also disabled by default because it requires an `API_KEY` from the [Amap Open Platform](https://lbs.amap.com/api/mcp-server/create-project-and-key). Put `API_KEY` into your `.env` file, then uncomment the related code in `app.py` to run it.
-> - `stdio` is ultimately a workaround. If you need long-running background services, `http` (Streamable HTTP) is recommended. Although `http` requires an extra port to serve `app.py`, it has lower latency and higher efficiency.
+> - The **Chart visualization** and **Filesystem** MCPs are disabled by default. Before starting them, you need to install packages via `npx`. I’m not confident about typical network speeds in China and worry the startup time could be too long, so they’re kept off. If you want to use them, uncomment the `stdio` sections for both in [app.py](../app.py). After uncommenting, a long first startup is normal—please be patient.
+> - The **AMap** MCP is also disabled by default because it requires an `API_KEY` from the [AMap Open Platform](https://lbs.amap.com/api/mcp-server/create-project-and-key). Put the `API_KEY` in the `.env` file, then uncomment the corresponding part in `app.py` to run it.
+> - `stdio` is ultimately a stopgap. For a long-running background service, `http` (Streamable HTTP) is recommended. Although `http` requires an extra port for `app.py`, it has lower latency and higher efficiency.
 
 <!-- ## 👷 Skills -->
 
 ## 🚀 Getting Started
 
-**Prerequisite**: `Python ≥ 3.10`
+**Prerequisites:** `Python ≥ 3.10`
 
 ### 1) Configure environment variables
 
@@ -50,7 +50,7 @@ Create a `.env` file:
 cp .env.example .env
 ```
 
-Then register for [Alibaba Cloud Bailian](https://bailian.console.aliyun.com/?tab=model#/model-market), obtain an `API_KEY`, and set it in the `.env` file.
+Then register for [Alibaba Cloud Bailian](https://bailian.console.aliyun.com/?tab=model#/model-market), get an `API_KEY`, and set it in the `.env` file.
 
 ### 2) Start the Agent and MCP Server
 
@@ -68,14 +68,14 @@ uv run app.py
 ```
 
 <details>
-  <summary>If uv installation fails, try installing with pip</summary>
+  <summary>If uv installation fails, you can use pip</summary>
   
   ```bash
   # 1. Install dependencies
   pip install -r requirements.txt -U -i https://mirrors.cloud.tencent.com/pypi/simple/
   # Notes:
-  #   -i uses a mirror (full option: --index-url)
-  #   -U upgrades to the latest package versions (full option: --upgrade)
+  #   -i uses a mirror (full name: --index-url)
+  #   -U upgrades to the latest versions (full name: --upgrade)
 
   # 2. Run the app
   python app.py
@@ -85,53 +85,60 @@ uv run app.py
 
 ## 🐒 Test Questions
 
-See [query.md](./query.md)
+See: [query.md](./query.md)
 
 ## 🔭 Architecture
 
 ```text
 .
-├── README.md               # Main entry README
+├── Dockerfile
+├── README.md               # Project overview
 ├── app.py                  # Main app entry
-├── requirements.txt        # Project dependencies
-├── .env.example            # Environment variable example
+├── .env.example            # Example environment variables
+├── config                  # Config module
+│   ├── __init__.py
+│   └── mcp_config.py       # MCP configuration
+├── docker-compose.yml
+├── docker.conf
 ├── docs                    # Documentation
-│   └── query.md
 ├── images                  # Image assets
-│   ├── ai.png
-│   ├── gradio_app.png
-│   ├── gradio_app_raw.png
-│   └── user.png
-├── tests                   # Tests
 ├── logs                    # Logs
-├── mcp                     # MCP modules
-│   ├── mcp-server-chart
-│   │   └── README.md
+├── mcp                     # MCP module
 │   ├── code_execution.py
-│   └── role_play.py
+│   └── mcp-server-chart
+│       └── README.md
 ├── prompts                 # System prompts
 │   ├── __init__.py
-│   ├── prompt.py
+│   ├── middleware_todolist.py
 │   ├── prompt_base.py
-│   └── prompt_enhance.py
+│   ├── prompt_enhance.py
+│   └── subagent_search.py
+├── pyproject.toml
+├── requirements.txt        # Dependencies
 ├── space                   # Filesystem read/write space
 │   └── food.md
+├── tests                   # Tests
 ├── tools                   # Tools
+│   ├── __init__.py
 │   ├── tool_math.py
+│   ├── tool_role.py
+│   ├── tool_runtime.py
 │   └── tool_search.py
-└── utils                   # Utilities
-    ├── device_info.py
-    ├── fix_deepseek.py
-    ├── fix_dashscope.py
-    ├── remove_html.py
-    ├── think_view.py
-    ├── tool_view.py
-    └── web_ui.py
+├── utils                   # Utility scripts
+│   ├── __init__.py
+│   ├── device_info.py
+│   ├── fix_dashscope.py
+│   ├── fix_deepseek.py
+│   ├── remove_html.py
+│   ├── think_view.py
+│   ├── tool_view.py
+│   └── web_ui.py
+└── uv.lock
 ```
 
 ## 📦 Container Deployment
 
-Before starting the container, make sure `.env` is properly configured.
+Before starting containers, make sure you’ve configured the `.env` file.
 
 ### 1) Start the app
 
@@ -144,49 +151,54 @@ After initialization, open in your browser: [http://localhost:7860/](http://loca
 ### 2) Debug commands
 
 ```bash
-# View running containers
+# List running containers
 docker ps
 
-# View logs of the gradio-agent-container container
+# View logs for the gradio-agent-container container
 docker logs gradio-agent-container -f
 
-# Stop and remove all containers for the current project
+# Stop and remove all containers for this project
 docker compose down
 
-# Stop and remove all containers and local images for the current project
+# Stop and remove all containers and local images for this project
 docker compose down --rmi local
 
-# Rebuild and start in the background
+# Rebuild the image and start in the background
 docker compose up -d --build
+
+# Enter the container bash shell
+docker compose exec -it gradio-agent bash
 ```
 
 ## 🌱 Dependency Management
 
 ```bash
-# 1. Ensure uv is installed
+# 1. Make sure uv is installed
 pip install uv -U
 
-# 2. Initialize the project (creates a pyproject.toml with basic metadata)
-uv init --name gradio-agent-app --description "Build a streaming chat agent with LangChain" --python 3.13
+# 2. Initialize the project (creates a pyproject.toml with basic info)
+uv init --name gradio-agent-app --description "Streaming conversational agent built with LangChain" --python 3.13
 
 # 3. Update the dependencies section in pyproject.toml
-# This automatically creates a .venv and generates uv.lock
+# This creates a .venv virtual environment and an uv.lock file
 uv add -r requirements.txt
 ```
 
 ## 📝 Changelog
 
-- [x] **Polished frontend UI**: improved input box; improved ChatBot slider/margins/tool-call display/bubbles; improved background color
-- [x] **Enhanced MCP**: added role-play MCP, code-execution MCP, Amap MCP, chart-visualization MCP, filesystem MCP
+- [x] **Improved frontend UI**: improved input box; improved ChatBot slider, margins, tool-call display, text bubbles; improved background color
+- [x] **Enhanced MCP**: added role-play MCP, code execution MCP, AMap MCP, chart visualization MCP, filesystem MCP
 - [x] **Enhanced middleware**: added todo-list middleware; added conversation summarization middleware
 - [x] **Context engineering**: pass sensitive info like API_KEY losslessly via runtime
-- [x] **Multi-agent**: provide a subagent with its own context and search capability
-- [x] **Standalone prompt module**: multiple system prompts; can inject current time, username, OS, etc.
-- [x] **Dynamic system prompts**: update system prompts per query; time awareness down to seconds
-- [x] **Error handling**: add LLM timeout limits; enable retries on LLM failures; MCP failures won’t exit and are summarized
-- [x] **Welcome message**: show all tools (including MCP) names and descriptions on app open; show only names when too many tools exist
-- [x] **Chain-of-thought capture**: developed [DashScopeChatOpenAI](../utils/fix_dashscope.py) to retrieve chain-of-thought for DashScope API
-- [x] **Tool-call display optimization**: developed `_agent_events_optimize` in [app.py](../app.py) to optimize tool/MCP call input/output display
-- [x] **Remove HTML tags from chat history**: remove HTML tags introduced for UI optimization to reduce context load
-- [x] **Support local models**: added instructions for using Ollama in [ollama.md](./ollama.md)
-- [x] **Support container deployment**: one-click deployment via docker compose
+- [x] **Multi-agent**: provide subagents with independent context and search capability
+- [x] **Standalone prompt modules**: multiple system prompts; can inject current time, username, OS info, etc.
+- [x] **Dynamic system prompt**: update system prompt per query; time awareness down to the second
+- [x] **Error handling**: add LLM call timeout; enable LLM call retries; MCP failures won’t exit and will be summarized
+- [x] **Welcome message**: show all tool (including MCP) names and descriptions when opening the app; show only names if too many tools
+- [x] **Chain-of-thought capture**: developed [DashScopeChatOpenAI](../utils/fix_dashscope.py) for DashScope API to capture chain-of-thought
+- [x] **Tool-call UI optimization**: developed `_agent_events_optimize` in [app.py](../app.py) to optimize tool/MCP input-output display
+- [x] **Remove HTML tags from chat history**: remove HTML introduced for UI optimization to reduce context load
+- [x] **Local model support**: added instructions for deploying local models with Ollama in [ollama.md](./ollama.md)
+- [x] **Container deployment support**: one-click deployment via docker compose
+- [x] **Enhanced error handling**: use traceback for detailed error info to improve LLM summary accuracy
+- [x] **New config module**: added [config](../config) module for storing MCP configuration
