@@ -135,9 +135,9 @@ async def get_agent():
                 # 开启的 MCP
                 "code-execution:stdio",
                 # # 未开启的 MCP
-                # "amap-maps:http",
-                # "antv-chart:stdio"
+                # "antv-chart:stdio",
                 # "filesystem:stdio",
+                # "amap-maps:http",
             }}
         )
 
