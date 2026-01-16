@@ -18,14 +18,14 @@ mcp = FastMCP("code-execution")
 @mcp.tool
 def execute_python(code: str) -> str:
     """
-    在单独的子进程中执行 Python 代码并返回标准输出或标准错误输出。
-    用于数学计算、数据分析和逻辑处理。
+    执行 Python 代码并返回结果
+    用于数学计算、数据分析和逻辑处理
 
     Args:
-        code (str): 要执行的 Python 代码。
+        code (str): 要执行的 Python 代码
 
     Returns:
-        str: 代码执行的标准输出或标准错误输出。
+        str: 代码执行的标准输出或标准错误输出
     """
     # Normalize indentation (LLMs love extra spaces)
     code = textwrap.dedent(code)

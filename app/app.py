@@ -20,7 +20,7 @@ from utils.web_ui import create_ui, theme, custom_css
 from utils.tool_view import format_tool_call, format_tool_result
 from utils.remove_html import get_cleaned_text
 from tools.tool_runtime import ToolSchema
-from tools.tool_math import add, subtract, multiply, divide
+from tools.tool_sci import calculator
 from tools.tool_search import dashscope_search
 from tools.tool_role import role_play
 from config.mcp_config import get_mcp_dict
@@ -147,7 +147,7 @@ async def get_agent():
         # 创建智能体
         _agent = create_agent(
             model=llm,
-            tools=mcp_tools + [add, subtract, multiply, divide, role_play, dashscope_search, search_brief],
+            tools=mcp_tools + [calculator, role_play, dashscope_search, search_brief],
             middleware=[
                 dynamic_system_prompt,
                 SummarizationMiddleware(

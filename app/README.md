@@ -18,7 +18,8 @@
 
 - **tools**：
     - **联网搜索**：[tool_search](./tools/tool_search.py)
-    - **数学计算**：[tool_math](./tools/tool_math.py)
+    - **四则运算**：[tool_math](./tools/tool_math.py)
+    - **科学计算**：[tool_sci](./tools/tool_sci.py)
     - **角色扮演**：[role-play](./tools/tool_role.py)
 - **MCP**：
     - **代码执行**：[code-execution](./mcp/code_execution.py)
