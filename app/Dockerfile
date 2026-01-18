@@ -4,6 +4,7 @@ FROM python:3.13-slim
 WORKDIR /app
 
 # 更换为国内镜像源并安装系统依赖
+# 如需使用 npx 请安装 nodejs npm 
 RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources && \
     apt-get update && apt-get install -y \
     curl \

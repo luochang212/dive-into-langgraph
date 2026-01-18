@@ -180,7 +180,7 @@ def get_tools():
     else:
         # 当工具过多时，仅展示工具名称
         tool_names = [tool.name for tool in tools]
-        wrapped_text = textwrap.fill(" / ".join(tool_names), width=110)
+        wrapped_text = textwrap.fill(" / ".join(tool_names), width=100)
         return f"\n```text\n{wrapped_text}\n```\n"
 
 
