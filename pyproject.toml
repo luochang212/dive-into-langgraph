@@ -1,0 +1,29 @@
+[project]
+name = "dive-into-langgraph"
+version = "0.1.0"
+description = "LangGraph 1.0 Tutorial"
+readme = "README.md"
+requires-python = ">=3.11, <3.14"
+dependencies = [
+    "bs4>=0.0.2",
+    "dashscope>=1.25.5",
+    "ddgs>=9.10.0",
+    "fastmcp>=2.14.1",
+    "ipynbname>=2025.8.0.0",
+    "jieba>=0.42.1",
+    "langchain-community>=0.4.1",
+    "langchain-mcp-adapters>=0.2.1",
+    "langchain-text-splitters>=1.1.0",
+    "langchain[openai]>=1.2.0",
+    "langgraph>=1.0.5",
+    "langgraph-checkpoint-redis>=0.3.1",
+    "langgraph-checkpoint-sqlite>=3.0.1",
+    "langgraph-cli[inmem]>=0.4.11",
+    "langgraph-supervisor>=0.0.31",
+    "langmem>=0.0.30",
+    "pydantic>=2.12.5",
+    "python-dotenv>=1.2.1",
+    "scikit-learn>=1.8.0",
+    "supervisor>=4.3.0",
+    "tavily-python>=0.7.17",
+]

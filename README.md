@@ -34,6 +34,9 @@
 ## 二、安装依赖
 
 ```bash
+# 要求 python 版本 >=3.11, <3.14
+python -m venv ./venv/
+source ./venv/bin/activate
 pip install -r requirements.txt
 ```
 
@@ -66,6 +69,12 @@ pip install -r requirements.txt
   ddgs
   ```
 </details>
+
+或者你可以通过 [uv](https://docs.astral.sh/uv/) 来安装依赖：
+
+```bash
+uv sync
+```
 
 ## 三、章节目录
 
