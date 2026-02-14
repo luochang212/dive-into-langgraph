@@ -110,7 +110,7 @@ search_subagent = create_agent(
 
 
 @tool(
-    "subagent:search-brief",
+    "subagent_search_brief",
     description=subagent_search.get_tool_description(),
 )
 async def search_brief(

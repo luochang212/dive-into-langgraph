@@ -4,11 +4,11 @@
 </div>
 
 <div align="center">
-  <img src="https://img.shields.io/github/stars/luochang212/dive-into-langgraph?style=flat&logo=github" alt="GitHub stars"/>
-  <img src="https://img.shields.io/github/forks/luochang212/dive-into-langgraph?style=flat&logo=github" alt="GitHub forks"/>
+  <img src="https://img.shields.io/github/stars/luochang212/dive-into-langgraph-en?style=flat&logo=github" alt="GitHub stars"/>
+  <img src="https://img.shields.io/github/forks/luochang212/dive-into-langgraph-en?style=flat&logo=github" alt="GitHub forks"/>
   <img src="https://img.shields.io/badge/language-English-brightgreen?style=flat" alt="Language"/>
-  <a href="https://github.com/luochang212/dive-into-langgraph"><img src="https://img.shields.io/badge/GitHub-Project-blue?style=flat&logo=github" alt="GitHub Project"></a>
-  <a href="https://github.com/luochang212/dive-into-langgraph/actions/workflows/deploy-book.yml"><img src="https://github.com/luochang212/dive-into-langgraph/actions/workflows/deploy-book.yml/badge.svg?branch=main" alt="deploy-book"/></a>
+  <a href="https://github.com/luochang212/dive-into-langgraph-en"><img src="https://img.shields.io/badge/GitHub-Project-blue?style=flat&logo=github" alt="GitHub Project"></a>
+  <a href="https://github.com/luochang212/dive-into-langgraph-en/actions/workflows/deploy-book.yml"><img src="https://github.com/luochang212/dive-into-langgraph-en/actions/workflows/deploy-book.yml/badge.svg?branch=main" alt="deploy-book"/></a>
 </div>
 
 <div align="center">
@@ -18,9 +18,9 @@
 </div>
 
 <div align="center">
-  <p><a href="https://www.luochang.ink/dive-into-langgraph/">📚 Online Reading</a></p>
-  <h3>📖 LangGraph 1.0 Complete Guide</h3>
-  <p><em>Build powerful agents from scratch</em></p>
+  <p><a href="https://www.luochang.ink/dive-into-langgraph-en/">📚 Read Online</a></p>
+  <h3>📖 LangGraph 1.0 Guide</h3>
+  <p><em>Build powerful Agents from scratch</em></p>
 </div>
 
 ---
@@ -66,20 +66,20 @@ Quick overview of the tutorial:
 
 | # | Chapter | Main Content |
 | -- | -- | -- |
-| 1 | [Quickstart](../1.quickstart.ipynb) | Create your first ReAct Agent |
-| 2 | [State Graph](../2.stategraph.ipynb) | Create workflows using StateGraph |
-| 3 | [Middleware](../3.middleware.ipynb) | Implement four features with custom middleware: budget control, message truncation, sensitive word filtering, PII detection |
-| 4 | [Human-in-the-Loop](../4.human_in_the_loop.ipynb) | Implement human-in-the-loop using built-in HITL middleware |
-| 5 | [Memory](../5.memory.ipynb) | Learn how to create short-term and long-term memory |
-| 6 | [Context Engineering](../6.context.ipynb) | Manage context using State, Store, Runtime |
-| 7 | [MCP Server](../7.mcp_server.ipynb) | How to create MCP Server and integrate with LangGraph |
-| 8 | [Supervisor Pattern](../8.supervisor.ipynb) | Two methods to implement supervisor pattern: tool-calling, langgraph-supervisor |
-| 9 | [Parallelization](../9.parallelization.ipynb) | How to implement concurrency: node concurrency, `@task` decorator, Map-reduce, Sub-graphs |
-| 10 | [RAG](../10.rag.ipynb) | Implement RAG: Vector Retrieval, Keyword Retrieval, Hybrid Retrieval |
-| 11 | [Web Search](../11.web_search.ipynb) | Implement web search functionality: DashScope, Tavily, DDGS |
-| 12 | [Deep Agents](../12.deep_agents.ipynb) | Brief introduction to Deep Agents |
-| 13 | [Gradio APP](../13.gradio_app.ipynb) | Build a streaming chat agent app with Gradio |
-| 14 | [Appendix: Debug UI](../14.langgraph_cli.ipynb) | Introduction to the debug UI provided by langgraph-cli |
+| 1 | [Quickstart](https://www.luochang.ink/dive-into-langgraph-en/quickstart/) | Create your first ReAct Agent |
+| 2 | [State Graph](https://www.luochang.ink/dive-into-langgraph-en/stategraph/) | Create workflows using StateGraph |
+| 3 | [Middleware](https://www.luochang.ink/dive-into-langgraph-en/middleware/) | Implement four features with custom middleware: budget control, message truncation, sensitive word filtering, PII detection |
+| 4 | [Human-in-the-Loop](https://www.luochang.ink/dive-into-langgraph-en/human-in-the-loop/) | Implement human-in-the-loop using built-in HITL middleware |
+| 5 | [Memory](https://www.luochang.ink/dive-into-langgraph-en/memory/) | Learn how to create short-term and long-term memory |
+| 6 | [Context Engineering](https://www.luochang.ink/dive-into-langgraph-en/context/) | Manage context using State, Store, Runtime |
+| 7 | [MCP Server](https://www.luochang.ink/dive-into-langgraph-en/mcp-server/) | How to create MCP Server and integrate with LangGraph |
+| 8 | [Supervisor Pattern](https://www.luochang.ink/dive-into-langgraph-en/supervisor/) | Two methods to implement supervisor pattern: tool-calling, langgraph-supervisor |
+| 9 | [Parallelization](https://www.luochang.ink/dive-into-langgraph-en/parallelization/) | How to implement concurrency: node concurrency, `@task` decorator, Map-reduce, Sub-graphs |
+| 10 | [RAG](https://www.luochang.ink/dive-into-langgraph-en/rag/) | Implement RAG: Vector Retrieval, Keyword Retrieval, Hybrid Retrieval |
+| 11 | [Web Search](https://www.luochang.ink/dive-into-langgraph-en/web-search/) | Implement web search functionality: DashScope, Tavily, DDGS |
+| 12 | [Deep Agents](https://www.luochang.ink/dive-into-langgraph-en/deep-agents/) | Brief introduction to Deep Agents |
+| 13 | [Gradio APP](https://www.luochang.ink/dive-into-langgraph-en/gradio-app/) | Build a streaming chat agent app with Gradio |
+| 14 | [Appendix: Debug UI](https://www.luochang.ink/dive-into-langgraph-en/langgraph-cli/) | Introduction to the debug UI provided by langgraph-cli |
 
 > [!NOTE]
 >
@@ -93,11 +93,11 @@ Quick overview of the tutorial:
 langgraph dev
 ```
 
-See [Appendix](https://www.luochang.ink/dive-into-langgraph/langgraph-cli/) for details.
+See details: [Appendix: Debug Page](https://www.luochang.ink/dive-into-langgraph-en/langgraph-cli/)
 
 ## 5. Hands-on Project
 
-[Chapter 13](https://www.luochang.ink/dive-into-langgraph/gradio-app/) open-sources an agent application built with Gradio + LangChain, as shown below. You can add more features to this app and customize your own agent.
+[Chapter 13](https://www.luochang.ink/dive-into-langgraph-en/gradio-app/) open-sources an Agent application implemented with Gradio + LangChain. The effect is shown below. You can add more features to this application and customize your own Agent.
 
 ![gradio_app](../app/images/gradio_app.webp)
 
