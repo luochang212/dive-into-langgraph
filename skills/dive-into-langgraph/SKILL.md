@@ -56,9 +56,6 @@ KIMI_API_KEY=your_api_key
 | 9 | **并行** | 节点并发、@task 装饰器、Map-reduce、Sub-graphs | [在线](https://www.luochang.ink/dive-into-langgraph/parallelization/) | [本地](references/9.parallelization.md) |
 | 10 | **RAG** | 向量检索、关键词检索、混合检索 | [在线](https://www.luochang.ink/dive-into-langgraph/rag/) | [本地](references/10.rag.md) |
 | 11 | **网络搜索** | DashScope、Tavily 和 DDGS | [在线](https://www.luochang.ink/dive-into-langgraph/web-search/) | [本地](references/11.web_search.md) |
-| 12 | **Deep Agents** | 简单介绍 Deep Agents | [在线](https://www.luochang.ink/dive-into-langgraph/deep-agents/) | [本地](references/12.deep_agents.md) |
-| 13 | **Gradio APP** | 基于 Gradio 开发流式对话智能体应用 | [在线](https://www.luochang.ink/dive-into-langgraph/gradio-app/) | [本地](references/13.gradio_app.md) |
-| 14 | **附录：调试页面** | langgraph-cli 提供的调试页面 | [在线](https://www.luochang.ink/dive-into-langgraph/langgraph-cli/) | [本地](references/14.langgraph_cli.md) |
 
 ## 官方资源
 

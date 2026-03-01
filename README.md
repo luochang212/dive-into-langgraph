@@ -25,6 +25,16 @@
 
 ---
 
+## NEWS❕
+
+**重磅发布**：本教程已转为 [Agent Skill](https://github.com/agentskills/agentskills)。现无需用人脑学习本教程，只需要为你的 Coding Agent ([Claude Code](https://github.com/anthropics/claude-code) / [Qwen Code](https://github.com/QwenLM/qwen-code)) 安装本 Skill，即可写出高质量的 LangChain 和 LangGraph 代码。详见：[SKILL.md](skills/dive-into-langgraph/SKILL.md)
+
+使用 npx 安装 Skill：
+
+```
+npx skills add https://github.com/luochang212/dive-into-langgraph/tree/main/skills/dive-into-langgraph
+```
+
 ## 一、项目介绍
 
 > 2025 年 10 月中旬，LangGraph 发布 1.0 版本。开发团队承诺这是一个稳定版本，预计未来接口不会大改，因此现在正是学习它的好时机。

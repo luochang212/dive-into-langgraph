@@ -15,9 +15,6 @@ NOTEBOOKS=(
     "9.parallelization.ipynb"
     "10.rag.ipynb"
     "11.web_search.ipynb"
-    "12.deep_agents.ipynb"
-    "13.gradio_app.ipynb"
-    "14.langgraph_cli.ipynb"
 )
 
 PROJECT_ROOT="$SCRIPT_DIR"
