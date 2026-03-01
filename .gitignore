@@ -1,6 +1,8 @@
 .DS_Store
 .idea
 .trae
+.claude
+.qwen
 
 .langgraph_api
 .ipynb_checkpoints
