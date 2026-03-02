@@ -21,11 +21,6 @@ from tools.tool_math import (
     divide,
     safe_eval,
 )
-from tools.tool_file import (
-    curr_dir,
-    ls_dir,
-    read_file,
-)
 
 
 def simple_invoke_example(agent):
@@ -41,16 +36,6 @@ def simple_invoke_example(agent):
 def math_tool_example(agent):
     print_section("数学工具调用")
     query = "计算 log(99, 3) + 3"
-    print(f"😄 {query}")
-    response = agent.invoke({
-        "messages": [{"role": "user", "content": query}]
-    })
-    print(f"🤖 {response["messages"][-1].content}")
-
-
-def file_tool_example(agent):
-    print_section("文件工具调用")
-    query = "打印 ./utils.py 文件的前 9 行"
     print(f"😄 {query}")
     response = agent.invoke({
         "messages": [{"role": "user", "content": query}]
@@ -83,13 +68,12 @@ def main():
     agent = create_agent(llm)
     agent_with_tools = create_agent(
         llm,
-        tools=[add, subtract, multiply, divide, safe_eval, curr_dir, ls_dir, read_file]
+        tools=[add, subtract, multiply, divide, safe_eval]
     )
 
     # 运行示例
     simple_invoke_example(agent)
     math_tool_example(agent_with_tools)
-    file_tool_example(agent_with_tools)
     list_tools_example(agent_with_tools)
     stream_messages_example(agent)
 

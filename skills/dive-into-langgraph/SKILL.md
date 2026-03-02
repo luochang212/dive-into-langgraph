@@ -26,26 +26,25 @@ pip install \
   pydantic
 ```
 
-## 环境变量 (.env)
+## 环境变量
 
 使用大模型需要设置环境变量，推荐使用阿里云百炼（DashScope）的模型：
 
 ```bash
+# 阿里百炼 (DashScope)
+# 获取地址: https://bailian.console.aliyun.com/
 DASHSCOPE_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
-DASHSCOPE_API_KEY=your_api_key
-```
+DASHSCOPE_API_KEY=your_api_key_here
 
-你也可以使用其他供应商的模型：
-
-```bash
-# 火山方舟
+# 火山方舟 (ARK)
+# 获取地址: https://console.volcengine.com/ark/
 ARK_BASE_URL=https://ark.cn-beijing.volces.com/api/v3
-ARK_API_KEY=your_api_key
+ARK_API_KEY=your_api_key_here
 
-# Kimi
-KIMI_BASE_URL=https://api.moonshot.cn/v1
-KIMI_API_KEY=your_api_key
+# 或者其他模型供应商...
 ```
+
+请将环境变量添加到 `.env` 文件，并填入你的 API Key。
 
 ## 章节概览
 
