@@ -138,11 +138,7 @@ langgraph dev
 - [langgraph-101](https://github.com/langchain-ai/langgraph-101)
 - [langchain-academy](https://github.com/langchain-ai/langchain-academy)
 
-## 七、Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=luochang212/dive-into-langgraph&type=date&legend=top-left)](https://www.star-history.com/#luochang212/dive-into-langgraph&type=date&legend=top-left)
-
-## 八、如何贡献
+## 七、如何贡献
 
 我们欢迎任何形式的贡献！
 
@@ -150,6 +146,10 @@ langgraph dev
 - 💡 功能建议 - 有好想法就告诉我们
 - 📝 内容完善 - 帮助改进教程内容
 - 🔧 代码优化 - 提交 Pull Request
+
+## 八、Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=luochang212/dive-into-langgraph&type=date&legend=top-left)](https://www.star-history.com/#luochang212/dive-into-langgraph&type=date&legend=top-left)
 
 ## 九、开源协议
 

@@ -138,11 +138,7 @@ See: [/app](../app/)
 - [langgraph-101](https://github.com/langchain-ai/langgraph-101)
 - [langchain-academy](https://github.com/langchain-ai/langchain-academy)
 
-## 7. Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=luochang212/dive-into-langgraph&type=date&legend=top-left)](https://www.star-history.com/#luochang212/dive-into-langgraph&type=date&legend=top-left)
-
-## 8. How to Contribute
+## 7. How to Contribute
 
 We welcome any form of contribution!
 
@@ -150,6 +146,10 @@ We welcome any form of contribution!
 - 💡 Suggest features — share your ideas
 - 📝 Improve content — help enhance the tutorial
 - 🔧 Optimize code — submit a Pull Request
+
+## 8. Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=luochang212/dive-into-langgraph&type=date&legend=top-left)](https://www.star-history.com/#luochang212/dive-into-langgraph&type=date&legend=top-left)
 
 ## 9. License
 
