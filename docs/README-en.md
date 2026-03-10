@@ -25,6 +25,20 @@
 
 ---
 
+## 📢 News
+
+### ✨ 2026-03-02 Update
+
+This tutorial has been converted into an Agent Skill. Now you don't need to learn this tutorial manually — just install this Skill for your [Claude Code](https://github.com/anthropics/claude-code), and you can write high-quality LangChain and LangGraph code. See details: [SKILL.md](../skills/dive-into-langgraph/SKILL.md)
+
+Install this Skill using npx ([dive-into-langgraph](https://skills.sh/luochang212/dive-into-langgraph/dive-into-langgraph)):
+
+```
+npx skills \
+  add https://github.com/luochang212/dive-into-langgraph \
+  --skill dive-into-langgraph
+```
+
 ## 1. Introduction
 
 > In mid-October 2025, LangGraph released version 1.0. The team announced this as a stable release and expects the interfaces not to change significantly, so now is a great time to learn it.
@@ -53,10 +67,17 @@ pip install -r requirements.txt
   langgraph-cli[inmem]
   langgraph-supervisor
   langgraph-checkpoint-sqlite
+  langgraph-checkpoint-redis
   langmem
   ipynbname
   fastmcp
   bs4
+  scikit-learn
+  supervisor
+  jieba
+  dashscope
+  tavily-python
+  ddgs
   ```
 </details>
 
@@ -117,7 +138,11 @@ See: [/app](../app/)
 - [langgraph-101](https://github.com/langchain-ai/langgraph-101)
 - [langchain-academy](https://github.com/langchain-ai/langchain-academy)
 
-## 7. How to Contribute
+## 7. Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=luochang212/dive-into-langgraph&type=date&legend=top-left)](https://www.star-history.com/#luochang212/dive-into-langgraph&type=date&legend=top-left)
+
+## 8. How to Contribute
 
 We welcome any form of contribution!
 
@@ -126,6 +151,6 @@ We welcome any form of contribution!
 - 📝 Improve content — help enhance the tutorial
 - 🔧 Optimize code — submit a Pull Request
 
-## 8. License
+## 9. License
 
 This work is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-nc-sa/4.0/).
