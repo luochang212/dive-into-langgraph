@@ -48,6 +48,9 @@ This is an open-source ebook project designed to help Agent developers quickly m
 ## 2. Installation
 
 ```bash
+# required python version >=3.11, <3.14
+python -m venv ./venv/
+source ./venv/bin/activate
 pip install -r requirements.txt
 ```
 
@@ -80,6 +83,12 @@ pip install -r requirements.txt
   ddgs
   ```
 </details>
+
+Or you can install via [uv](https://docs.astral.sh/uv/) to install the dependencies：
+
+```bash
+uv sync
+```
 
 ## 3. Contents
 
