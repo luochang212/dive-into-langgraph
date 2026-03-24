@@ -432,7 +432,7 @@ def main() -> None:
     app = create_ui(
         llm_func=make_generate_response(service, config),
         tab_name="Gradio APP - WebUI",
-        main_title="Gradio Chat APP",
+        main_title="Gradio Agent APP",
         initial_message=[{"role": "assistant", "content": _get_greeting(service)}],
     )
     app.launch(
