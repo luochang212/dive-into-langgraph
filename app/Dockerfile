@@ -5,7 +5,7 @@ WORKDIR /app
 
 # 更换为国内镜像源并安装系统依赖
 # 如需使用 npx 请安装 nodejs npm 
-RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources && \
+RUN sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list.d/debian.sources && \
     apt-get update && apt-get install -y \
     curl \
     supervisor \
@@ -14,7 +14,7 @@ RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debi
     && rm -rf /var/lib/apt/lists/*
 
 # 复制依赖文件并安装Python依赖
-COPY pyproject.toml .
+COPY pyproject.toml uv.lock ./
 RUN pip install uv==0.9.24 -i https://mirrors.aliyun.com/pypi/simple/
 RUN uv sync -i https://mirrors.aliyun.com/pypi/simple/
 
