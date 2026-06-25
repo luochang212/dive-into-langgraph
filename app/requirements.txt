@@ -7,3 +7,4 @@ langgraph>=1.2.6
 fastmcp>=3.4.2
 dashscope>=1.25.24
 gradio>=6.19.0
+typer>=0.24.1,<0.25

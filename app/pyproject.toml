@@ -14,6 +14,7 @@ dependencies = [
     "langgraph>=1.2.6",
     "pydantic>=2.13.4",
     "python-dotenv>=1.2.2",
+    "typer>=0.24.1,<0.25",
 ]
 
 [dependency-groups]

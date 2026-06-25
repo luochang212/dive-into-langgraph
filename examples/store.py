@@ -4,6 +4,7 @@
 
 运行前准备：
     $ pip install -U langgraph-checkpoint-redis
+    $ cd examples
     $ docker compose up -d
     $ docker exec myredis redis-cli ping
 运行后查询：

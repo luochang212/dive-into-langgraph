@@ -1,4 +1,4 @@
-# Redis 测试环节，联动 test_store.py 使用
+# Redis 示例环境，联动 store.py 使用
 
 services:
   redis:
