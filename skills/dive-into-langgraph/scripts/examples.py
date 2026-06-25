@@ -35,7 +35,7 @@ def simple_invoke_example(agent):
 
 def math_tool_example(agent):
     print_section("数学工具调用")
-    query = "计算 log(99, 3) + 3"
+    query = "计算 log(99) + 3"
     print(f"😄 {query}")
     response = agent.invoke({
         "messages": [{"role": "user", "content": query}]
