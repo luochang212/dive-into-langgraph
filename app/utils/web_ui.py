@@ -228,6 +228,51 @@ html, body {
     box-shadow: 0 6px 16px rgba(0, 122, 255, 0.3) !important;
 }
 
+.stop-button {
+    background: #dc2626 !important;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2) !important;
+}
+
+.stop-button:hover {
+    background: #b91c1c !important;
+    box-shadow: 0 6px 16px rgba(220, 38, 38, 0.3) !important;
+}
+
+.typing-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-width: 32px;
+    min-height: 18px;
+}
+
+.typing-indicator span {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.78);
+    animation: typing-dot 1.1s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(2) {
+    animation-delay: 0.16s;
+}
+
+.typing-indicator span:nth-child(3) {
+    animation-delay: 0.32s;
+}
+
+@keyframes typing-dot {
+    0%, 80%, 100% {
+        opacity: 0.35;
+        transform: translateY(0);
+    }
+    40% {
+        opacity: 1;
+        transform: translateY(-3px);
+    }
+}
+
 /* 点击效果 */
 .button:active {
     transform: scale(0.98);
@@ -303,6 +348,37 @@ html, body {
 theme = gr.themes.Soft(primary_hue="blue", secondary_hue="blue")
 
 
+def _show_stop_button():
+    return gr.update(visible=False), gr.update(visible=True)
+
+
+def _show_send_button():
+    return gr.update(visible=True), gr.update(visible=False)
+
+
+def _clear_active_typing_indicator(history):
+    updated_history = list(history or [])
+    if not updated_history:
+        return updated_history
+
+    last_message = updated_history[-1]
+    if (
+        isinstance(last_message, dict)
+        and last_message.get("role") == "assistant"
+        and isinstance(last_message.get("content"), str)
+        and last_message["content"].startswith('<span class="typing-indicator"')
+    ):
+        copied = dict(last_message)
+        copied["content"] = ""
+        updated_history[-1] = copied
+    return updated_history
+
+
+def _stop_generation(history):
+    send_update, stop_update = _show_send_button()
+    return send_update, stop_update, _clear_active_typing_indicator(history)
+
+
 def create_ui(llm_func, tab_name, main_title, initial_message=None):
     """创建聊天界面"""
     with gr.Blocks(title=tab_name, fill_width=True) as ui:
@@ -335,7 +411,7 @@ def create_ui(llm_func, tab_name, main_title, initial_message=None):
         )
 
         # 输入区域
-        with gr.Row(elem_classes=["input-row", "dark"]) as input_row:
+        with gr.Row(elem_classes=["input-row", "dark"]):
             msg = gr.Textbox(
                 placeholder="输入消息...",
                 show_label=False,
@@ -343,17 +419,60 @@ def create_ui(llm_func, tab_name, main_title, initial_message=None):
                 elem_classes=["textbox", "dark"]
             )
             submit_btn = gr.Button("发送", elem_classes=["button"])
+            stop_btn = gr.Button(
+                "中止",
+                visible=False,
+                variant="stop",
+                elem_classes=["button", "stop-button"],
+            )
 
-        msg.submit(
+        enter_start = msg.submit(
+            _show_stop_button,
+            None,
+            [submit_btn, stop_btn],
+            queue=False,
+            show_progress="hidden",
+        )
+        enter_generation = enter_start.then(
             llm_func,
             [msg, chatbot],
             [msg, chatbot]
         )
-        
-        submit_btn.click(
+        enter_generation.then(
+            _show_send_button,
+            None,
+            [submit_btn, stop_btn],
+            queue=False,
+            show_progress="hidden",
+        )
+
+        click_start = submit_btn.click(
+            _show_stop_button,
+            None,
+            [submit_btn, stop_btn],
+            queue=False,
+            show_progress="hidden",
+        )
+        click_generation = click_start.then(
             llm_func,
             [msg, chatbot],
             [msg, chatbot]
+        )
+        click_generation.then(
+            _show_send_button,
+            None,
+            [submit_btn, stop_btn],
+            queue=False,
+            show_progress="hidden",
+        )
+
+        stop_btn.click(
+            _stop_generation,
+            [chatbot],
+            [submit_btn, stop_btn, chatbot],
+            queue=False,
+            show_progress="hidden",
+            cancels=[enter_generation, click_generation],
         )
     
     return ui

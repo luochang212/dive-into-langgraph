@@ -37,6 +37,12 @@ from utils.web_ui import create_ui, custom_css, theme
 
 load_dotenv()
 
+TYPING_INDICATOR_HTML = (
+    '<span class="typing-indicator" aria-label="AI 正在回复">'
+    "<span></span><span></span><span></span>"
+    "</span>"
+)
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 配置层
@@ -45,7 +51,8 @@ load_dotenv()
 @dataclass
 class LLMConfig:
     """LLM 模型配置"""
-    model: str = "qwen3-coder-plus"
+    provider: str = "dashscope"
+    model: str = "qwen3.7-plus"
     base_url: Optional[str] = None
     api_key: Optional[str] = None
     timeout: int = 30
@@ -55,9 +62,9 @@ class LLMConfig:
 
     # ── 支持的 LLM 提供商 ────────────────────────────────────────────────────
     # DashScope 目前有免费额度，支持以下模型：
-    #   kimi-k2-thinking / deepseek-v3.2 / glm-4.7 / qwen3-coder-plus-2025-07-22
+    #   kimi-k2-thinking / deepseek-v3.2 / glm-4.7 / qwen3.7-plus
     # 如果觉得卡，可以使用付费模型：
-    #   qwen3-max / qwen3-max-preview / qwen3-coder-plus
+    #   qwen3-max / qwen3-max-preview
     # ─────────────────────────────────────────────────────────────────────────
 
     @classmethod
@@ -65,7 +72,8 @@ class LLMConfig:
         """从环境变量创建 LLM 配置"""
         if provider == "dashscope":
             return cls(
-                model="qwen3-coder-plus",
+                provider=provider,
+                model="qwen3.7-plus",
                 base_url=os.getenv("DASHSCOPE_BASE_URL"),
                 api_key=os.getenv("DASHSCOPE_API_KEY"),
                 enable_thinking=True,
@@ -73,6 +81,7 @@ class LLMConfig:
         if provider == "ark":
             # 字节火山方舟，支持：deepseek-v3-2-251201 / kimi-k2-thinking-251104
             return cls(
+                provider=provider,
                 model="deepseek-v3-2-251201",
                 base_url=os.getenv("ARK_BASE_URL"),
                 api_key=os.getenv("ARK_API_KEY"),
@@ -83,6 +92,7 @@ class LLMConfig:
             #   ollama pull qwen3:4b
             #   OLLAMA_HOST=0.0.0.0:11435 ollama serve
             return cls(
+                provider=provider,
                 model="qwen3:4b",
                 base_url="http://127.0.0.1:11435/v1",
                 api_key="-",
@@ -137,8 +147,6 @@ class AppConfig:
     """应用总配置"""
     llm: LLMConfig = field(default_factory=LLMConfig)
     mcp: MCPConfig = field(default_factory=MCPConfig)
-    # 是否清洗历史对话中的 HTML 内容（可减轻上下文负担）
-    remove_html: bool = False
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -216,6 +224,19 @@ class AgentService:
 
         return search_brief
 
+    def _get_local_tools(self) -> List[Any]:
+        """获取与当前 provider 匹配的本地工具"""
+        local_tools: List[Any] = [
+            calculator,
+            role_play,
+        ]
+        if self._config.llm.provider == "dashscope":
+            local_tools.extend([
+                dashscope_search,
+                self._make_search_brief_tool(),
+            ])
+        return local_tools
+
     # ── 主 Agent ──────────────────────────────────────────────────────────────
 
     async def get_agent(self) -> Any:
@@ -234,17 +255,9 @@ class AgentService:
                 client = MultiServerMCPClient(mcp_dict)
                 mcp_tools = await client.get_tools()
 
-            # 本地工具
-            local_tools = [
-                calculator,
-                role_play,
-                dashscope_search,
-                self._make_search_brief_tool(),
-            ]
-
             self._agent = create_agent(
                 model=self.llm,
-                tools=mcp_tools + local_tools,
+                tools=mcp_tools + self._get_local_tools(),
                 middleware=[
                     _main_agent_prompt,
                     SummarizationMiddleware(
@@ -297,20 +310,23 @@ def _get_greeting(service: AgentService) -> str:
         return "你好！我是你的智能助手。\n请问有什么可以帮你的吗？"
 
 
-def _summarize_error(llm: ChatOpenAI, err: Exception, limit: int = 500) -> str:
+async def _summarize_error(llm: ChatOpenAI | None, err: BaseException, limit: int = 500) -> str:
     """用 LLM 总结错误，失败时降级输出原始日志"""
     full_trace = "".join(traceback.format_exception(type(err), err, err.__traceback__))
     full_trace = full_trace[-5000:]  # 避免过长
 
-    try:
-        abstract = llm.invoke("\n".join([
-            full_trace,
-            "---",
-            "以上是 LangChain Agent 的报错信息，请简述报错原因：",
-        ]))
-        return f"\n ⚠️ 发生错误，以下是摘要信息：\n{abstract}"
-    except Exception:
-        return f"\n ⚠️ 发生错误，以下是原始日志：\n{full_trace[:limit]}"
+    if llm is not None:
+        try:
+            abstract = await llm.ainvoke("\n".join([
+                full_trace,
+                "---",
+                "以上是 LangChain Agent 的报错信息，请简述报错原因：",
+            ]))
+            content = getattr(abstract, "content", abstract)
+            return f"\n ⚠️ 发生错误，以下是摘要信息：\n{content}"
+        except Exception:
+            pass
+    return f"\n ⚠️ 发生错误，以下是原始日志：\n{full_trace[:limit]}"
 
 
 async def _stream_events(
@@ -323,6 +339,10 @@ async def _stream_events(
     # 需要跳过输出的子 Agent 名称（避免与主流输出重复）
     SKIP_SUBAGENTS = {"subagent:search-brief"}
 
+    def clear_typing_indicator() -> None:
+        if history[-1]["content"] == TYPING_INDICATOR_HTML:
+            history[-1]["content"] = ""
+
     async for mode, payload in agent.astream(
         {"messages": messages},
         stream_mode=["messages", "values"],
@@ -333,6 +353,7 @@ async def _stream_events(
             node = metadata.get("langgraph_node", "")
 
             if node == "model" and token.content:
+                clear_typing_indicator()
                 history[-1]["content"] += token.content
                 yield "", history
 
@@ -340,6 +361,7 @@ async def _stream_events(
                 if token.name in SKIP_SUBAGENTS:
                     continue
                 if token.content:
+                    clear_typing_indicator()
                     history[-1]["content"] += format_tool_result(token.name, token.content)
                     yield "", history
 
@@ -349,11 +371,54 @@ async def _stream_events(
                 continue
             tool_calls = getattr(state_msgs[-1], "tool_calls", None)
             if tool_calls:
+                clear_typing_indicator()
                 history[-1]["content"] += "".join(
                     format_tool_call(tc.get("name") or "unknown", tc.get("args") or {})
                     for tc in tool_calls
                 )
                 yield "", history
+
+
+def _message_content_for_llm(role: str, content: Any) -> Any:
+    """Return a non-mutating LLM-facing copy of message content."""
+    if role != "assistant":
+        return content
+
+    if isinstance(content, str):
+        if "<details" in content and (
+            "tool-call-details" in content
+            or "tool-result-details" in content
+            or "think-result-details" in content
+        ):
+            return get_cleaned_text(content)
+        return content
+
+    if isinstance(content, list):
+        cleaned_items = []
+        for item in content:
+            if isinstance(item, dict):
+                copied = dict(item)
+                if isinstance(copied.get("text"), str):
+                    copied["text"] = _message_content_for_llm(role, copied["text"])
+                cleaned_items.append(copied)
+            else:
+                cleaned_items.append(item)
+        return cleaned_items
+
+    return content
+
+
+def build_llm_messages(history: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Build a clean, non-mutating message history for the LangChain agent."""
+    messages: List[Dict[str, Any]] = []
+    for message in history:
+        copied = dict(message)
+        copied["content"] = _message_content_for_llm(
+            str(copied.get("role", "")),
+            copied.get("content"),
+        )
+        messages.append(copied)
+    return messages
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -369,37 +434,42 @@ def make_generate_response(service: AgentService, config: AppConfig):
         message: str,
         history: List[Dict[str, str]],
     ) -> AsyncIterator[Tuple[str, List[Dict[str, str]]]]:
-        if not message:
+        if not message or not message.strip():
             yield "", history
             return
 
-        # 清洗上一条 AI 回复中的 HTML（可减轻上下文负担）
-        if (
-            config.remove_html
-            and history
-            and history[-1]["role"] == "assistant"
-            and isinstance(history[-1].get("content"), list)
-        ):
-            item = history[-1]["content"][0]
-            if isinstance(item, dict) and "text" in item:
-                item["text"] = get_cleaned_text(item["text"])
-
         history.append({"role": "user", "content": message})
-        history.append({"role": "assistant", "content": ""})
-
-        messages = history[:-1]
-        agent = await service.get_agent()
-        tool_context = ToolSchema(
-            base_url=config.llm.base_url or "",
-            api_key=config.llm.api_key or "",
-        )
+        history.append({"role": "assistant", "content": TYPING_INDICATOR_HTML})
+        yield "", history
 
         try:
+            messages = build_llm_messages(history[:-1])
+            agent = await service.get_agent()
+            tool_context = ToolSchema(
+                base_url=config.llm.base_url or "",
+                api_key=config.llm.api_key or "",
+                model=config.llm.model,
+            )
             async for update in _stream_events(agent, messages, history, tool_context):
                 yield update
+        except asyncio.CancelledError:
+            if history[-1]["content"] == TYPING_INDICATOR_HTML:
+                history[-1]["content"] = ""
+            raise
         except Exception as err:
             print(f"发生错误: {err}")
-            history[-1]["content"] += _summarize_error(service.llm, err)
+            try:
+                error_llm = service.llm
+            except Exception:
+                error_llm = None
+            if history[-1]["content"] == TYPING_INDICATOR_HTML:
+                history[-1]["content"] = ""
+            history[-1]["content"] += await _summarize_error(error_llm, err)
+            yield "", history
+
+        cleared_typing_indicator = history[-1]["content"] == TYPING_INDICATOR_HTML
+        if cleared_typing_indicator:
+            history[-1]["content"] = ""
             yield "", history
 
         yield "", history
