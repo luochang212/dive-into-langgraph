@@ -1,4 +1,4 @@
-﻿﻿# Practical: Build a Streaming Conversational Agent App with LangChain
+# Practical: Build a Streaming Conversational Agent App with LangChain
 
 [中文](../README.md) | English
 
@@ -40,7 +40,7 @@
 
 ## 🚀 Getting Started
 
-**Prerequisites:** `Python ≥ 3.10`
+**Prerequisites:** `Python ≥ 3.13`
 
 ### 1) Configure environment variables
 
