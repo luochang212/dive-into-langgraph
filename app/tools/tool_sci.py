@@ -107,7 +107,7 @@ class SafeEvaluator(ast.NodeVisitor):
                 raise ValueError(f"计算结果类型错误: {type(result)}")
         except ZeroDivisionError:
             raise ValueError("除零错误")
-        except ValueError as e:
+        except ValueError:
             raise
         except Exception as e:
             raise ValueError(f"无效的数学表达式: {str(e)}")

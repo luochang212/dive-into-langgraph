@@ -24,6 +24,10 @@ best_response_prompt = """下面是几种类型的男生，面对女神{situatio
 下面是男生们的反应：\n\n{responses}"""
 
 
+MAX_ROLES = 10
+STRUCTURED_OUTPUT_METHOD = "json_mode"
+
+
 # 角色
 class Roles(BaseModel):
     roles: list[str]
@@ -72,15 +76,24 @@ def create_doge_graph(llm):
     # [MAP] 角色回复节点：生成每个角色的回复
     def generate_response(state: Role):
         prompt = role_play_prompt.format(role=state["role"], situation=state["situation"])
-        response = llm.with_structured_output(Response).invoke(prompt)
+        response = llm.with_structured_output(
+            Response,
+            method=STRUCTURED_OUTPUT_METHOD,
+        ).invoke(prompt)
         return {"responses": [{"role": state["role"], "content": response.response}]}
 
     # [REDUCE] 最佳回复节点：返回最佳回复
     def best_response(state: Overall):
-        responses = "\n\n".join([r["content"] for r in state["responses"]])
+        responses = "\n\n".join(
+            f"{index}. 【{item['role']}】{item['content']}"
+            for index, item in enumerate(state["responses"])
+        )
         prompt = best_response_prompt.format(responses=responses, situation=state["situation"])
-        response = llm.with_structured_output(BestResponse).invoke(prompt)
-        best_record = state["responses"][response.id]
+        response = llm.with_structured_output(
+            BestResponse,
+            method=STRUCTURED_OUTPUT_METHOD,
+        ).invoke(prompt)
+        best_record = _select_best_response_record(state["responses"], response)
         return {"best_response": best_record["content"], "best_role": best_record["role"]}
 
     doge_builder = StateGraph(Overall, output_schema=DogeOutput)
@@ -98,6 +111,12 @@ def create_doge_graph(llm):
     doge_graph = doge_builder.compile(name='best-response')
 
     return doge_graph
+
+
+def _select_best_response_record(responses: list[dict], best_response: BestResponse) -> dict:
+    if not 0 <= best_response.id < len(responses):
+        raise ValueError(f"无效的最佳回复 ID: {best_response.id}")
+    return responses[best_response.id]
 
 
 @tool
@@ -124,11 +143,15 @@ def role_play(
     Returns:
         str: 包含所有角色回复及最佳回复评选结果的格式化文本
     """
+    if not roles:
+        raise ValueError("roles 不能为空")
+    if len(roles) > MAX_ROLES:
+        raise ValueError(f"roles 最多支持 {MAX_ROLES} 个")
+
     base_url = runtime.context.base_url
     api_key = runtime.context.api_key
+    model_name = runtime.context.model
 
-    # 默认使用 qwen3-max
-    model_name = "qwen3-max"
     llm = init_chat_model(
         model=model_name,
         model_provider="openai",
