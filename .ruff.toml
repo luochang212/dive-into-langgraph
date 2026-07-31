@@ -1,3 +1,8 @@
 # 全项目统一的 ruff 配置（唯一配置源）。
 # app/ 已移除独立的 [tool.ruff]，由本文件统一管理，避免重复。
 line-length = 100
+
+[lint]
+# 显式钉住 lint 规则集：ruff 0.16 起默认规则集大幅变宽（加入 pyupgrade、
+# bugbear、bandit 等），显式 select 可保持 0.15 时代的稳定行为。
+select = ["E4", "E7", "E9", "F"]
