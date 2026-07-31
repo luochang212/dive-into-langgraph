@@ -38,3 +38,7 @@ dev = [
 
 [tool.uv]
 package = false
+
+[[tool.uv.index]]
+url = "https://mirrors.cloud.tencent.com/pypi/simple/"
+default = true
