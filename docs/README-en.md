@@ -60,6 +60,7 @@ pip install -r requirements.txt
   ```text
   pydantic
   python-dotenv
+  rank-bm25
   langchain[openai]
   langchain-community
   langchain-mcp-adapters
