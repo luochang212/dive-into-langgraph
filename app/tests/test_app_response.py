@@ -195,7 +195,9 @@ class GenerateResponseTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(history[1]["content"], "")
 
-    async def test_generate_response_sends_cleaned_history_to_agent_without_mutating_ui_history(self):
+    async def test_generate_response_sends_cleaned_history_to_agent_without_mutating_ui_history(
+        self,
+    ):
         captured = {}
         tool_html = format_tool_result("calculator", "2")
         history = [

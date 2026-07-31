@@ -21,8 +21,7 @@ class AgentServiceToolTests(unittest.TestCase):
 
     def test_dashscope_provider_registers_dashscope_search_tools(self):
         tool_names = [
-            tool.name
-            for tool in self._service_for_provider("dashscope")._get_local_tools()
+            tool.name for tool in self._service_for_provider("dashscope")._get_local_tools()
         ]
 
         self.assertIn("role_play", tool_names)
@@ -33,8 +32,7 @@ class AgentServiceToolTests(unittest.TestCase):
         for provider in ("ark", "ollama"):
             with self.subTest(provider=provider):
                 tool_names = [
-                    tool.name
-                    for tool in self._service_for_provider(provider)._get_local_tools()
+                    tool.name for tool in self._service_for_provider(provider)._get_local_tools()
                 ]
 
                 self.assertIn("role_play", tool_names)

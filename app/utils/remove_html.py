@@ -20,6 +20,7 @@ def _compile_details_block_re(details_class: str) -> re.Pattern[str]:
         re.IGNORECASE,
     )
 
+
 _CODE_TAG_RE: Final[re.Pattern[str]] = re.compile(
     r"<code[^>]*>(?P<code>[\s\S]*?)</code>",
     re.IGNORECASE,
@@ -82,8 +83,12 @@ def get_cleaned_text(
         fence = _fence_for(tool_output)
         return f"\n\n{fence}{info}\n{tool_output}\n{fence}\n\n"
 
-    replaced = tool_details_re.sub(lambda m: _replace_details_block(m, kind="tool_return"), without_think)
-    replaced = tool_call_details_re.sub(lambda m: _replace_details_block(m, kind="tool_call"), replaced)
+    replaced = tool_details_re.sub(
+        lambda m: _replace_details_block(m, kind="tool_return"), without_think
+    )
+    replaced = tool_call_details_re.sub(
+        lambda m: _replace_details_block(m, kind="tool_call"), replaced
+    )
 
     cleaned = _MULTI_BLANK_LINES_RE.sub("\n\n", replaced)
     return cleaned.strip()

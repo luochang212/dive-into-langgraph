@@ -10,7 +10,6 @@ from langchain.tools import tool
 
 
 class SafeEvaluator(ast.NodeVisitor):
-
     # 支持的二元运算
     BIN_OPS = {
         ast.Add: operator.add,

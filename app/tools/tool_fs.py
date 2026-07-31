@@ -19,7 +19,7 @@ def ls_dir(dirpath: str) -> str:
     if not dirpath:
         return "目录路径不能为空"
     try:
-        return '\n'.join(os.listdir(dirpath))
+        return "\n".join(os.listdir(dirpath))
     except Exception as e:
         return f"列出目录失败: {e}"
 
@@ -28,7 +28,7 @@ def ls_dir(dirpath: str) -> str:
 def read_file(filepath: str) -> str:
     """读取文件内容"""
     try:
-        with open(filepath, 'r') as f:
+        with open(filepath, "r") as f:
             return f.read()
     except Exception as e:
         return f"读取失败: {e}"

@@ -10,11 +10,7 @@ def _streaming_dummy(message, history):
 
 
 def _blocks_by_type(ui, type_name):
-    return [
-        block
-        for block in ui.blocks.values()
-        if type(block).__name__ == type_name
-    ]
+    return [block for block in ui.blocks.values() if type(block).__name__ == type_name]
 
 
 def _create_test_ui(test_case):
@@ -63,20 +59,24 @@ class ButtonStateTests(unittest.TestCase):
     def test_stop_generation_clears_active_typing_indicator(self):
         self.assertTrue(hasattr(web_ui, "_stop_generation"))
 
-        send_update, stop_update, history = web_ui._stop_generation([
-            {"role": "user", "content": "hello"},
-            {"role": "assistant", "content": '<span class="typing-indicator"></span>'},
-        ])
+        send_update, stop_update, history = web_ui._stop_generation(
+            [
+                {"role": "user", "content": "hello"},
+                {"role": "assistant", "content": '<span class="typing-indicator"></span>'},
+            ]
+        )
 
         self.assertTrue(send_update["visible"])
         self.assertFalse(stop_update["visible"])
         self.assertEqual(history[-1], {"role": "assistant", "content": ""})
 
     def test_stop_generation_does_not_clear_text_that_mentions_typing_indicator(self):
-        _, _, history = web_ui._stop_generation([
-            {"role": "user", "content": "hello"},
-            {"role": "assistant", "content": "The CSS class is typing-indicator."},
-        ])
+        _, _, history = web_ui._stop_generation(
+            [
+                {"role": "user", "content": "hello"},
+                {"role": "assistant", "content": "The CSS class is typing-indicator."},
+            ]
+        )
 
         self.assertEqual(
             history[-1],

@@ -18,16 +18,12 @@ def dashscope_search(
     dashscope.api_key = runtime.context.api_key
 
     response = Generation.call(
-        model='qwen-max',
-        prompt=query,
-        enable_search=True,
-        result_format='message'
+        model="qwen-max", prompt=query, enable_search=True, result_format="message"
     )
 
     if response.status_code == 200:
         return response.output.choices[0].message.content
     else:
         return (
-            "Search failed with status code: "
-            f"{response.status_code}, message: {response.message}"
+            f"Search failed with status code: {response.status_code}, message: {response.message}"
         )

@@ -30,11 +30,7 @@ def execute_python(code: str) -> str:
     # Normalize indentation (LLMs love extra spaces)
     code = textwrap.dedent(code)
 
-    with tempfile.NamedTemporaryFile(
-        mode="w",
-        suffix=".py",
-        delete=False
-    ) as f:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
         f.write(code)
         file_path = f.name
 
@@ -49,8 +45,8 @@ def execute_python(code: str) -> str:
             [sys.executable, file_path],
             capture_output=True,
             text=True,
-            timeout=20,         # hard stop
-            check=False,        # don't raise
+            timeout=20,  # hard stop
+            check=False,  # don't raise
             env=env,
         )
 
@@ -85,19 +81,18 @@ if __name__ == "__main__":
     import asyncio
 
     # 配置网络参数
-    host = os.getenv('HOST', '127.0.0.1')
-    port = int(os.getenv('PORT', 8001))
+    host = os.getenv("HOST", "127.0.0.1")
+    port = int(os.getenv("PORT", 8001))
 
     parser = argparse.ArgumentParser(description="启动代码执行 MCP Server")
-    parser.add_argument("-t", "--transport", type=str, default="stdio", help="通信方式，可选 stdio 或 http")
+    parser.add_argument(
+        "-t", "--transport", type=str, default="stdio", help="通信方式，可选 stdio 或 http"
+    )
     args = parser.parse_args()
 
     if args.transport == "stdio":
         mcp.run(transport="stdio")
     elif args.transport == "http":
-        asyncio.run(mcp.run(transport="http",
-                            host=host,
-                            port=port,
-                            path="/mcp"))
+        asyncio.run(mcp.run(transport="http", host=host, port=port, path="/mcp"))
     else:
         raise ValueError(f"Unknown transport: {args.transport}")

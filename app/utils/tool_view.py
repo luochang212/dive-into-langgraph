@@ -8,6 +8,7 @@ import html
 import json
 from typing import Any
 
+
 def _to_display_text(value: Any) -> str:
     if value is None:
         return ""
@@ -32,7 +33,10 @@ def _maybe_pretty_json(text: str) -> str:
     stripped = text.strip()
     if not stripped:
         return ""
-    if not ((stripped.startswith("{") and stripped.endswith("}")) or (stripped.startswith("[") and stripped.endswith("]"))):
+    if not (
+        (stripped.startswith("{") and stripped.endswith("}"))
+        or (stripped.startswith("[") and stripped.endswith("]"))
+    ):
         return text
     try:
         parsed = json.loads(stripped)
@@ -51,17 +55,19 @@ def format_tool_call(tool_name: str, tool_args: Any) -> str:
     else:
         display_args = _to_display_text(tool_args)
     safe_tool_args = html.escape(display_args)
-    return "\n".join([
-        '<details class="tool-call-details">',
-        '<summary class="tool-call-summary">',
-        f'<div class="tool-call-title"> 🔧 Tool Call: <code class="tool-call-name">{safe_tool_name}</code></div>',
-        '<svg class="tool-call-icon" width="20" height="20" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>',
-        '</summary>',
-        '<pre class="tool-call-pre">',
-        f"\n{safe_tool_args}",
-        '</pre>',
-        '</details>\n\n',
-    ])
+    return "\n".join(
+        [
+            '<details class="tool-call-details">',
+            '<summary class="tool-call-summary">',
+            f'<div class="tool-call-title"> 🔧 Tool Call: <code class="tool-call-name">{safe_tool_name}</code></div>',
+            '<svg class="tool-call-icon" width="20" height="20" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>',
+            "</summary>",
+            '<pre class="tool-call-pre">',
+            f"\n{safe_tool_args}",
+            "</pre>",
+            "</details>\n\n",
+        ]
+    )
 
 
 def format_tool_result(tool_name: str, tool_output: Any) -> str:
@@ -74,14 +80,16 @@ def format_tool_result(tool_name: str, tool_output: Any) -> str:
     """
     safe_tool_name = html.escape(tool_name)
     safe_tool_output = html.escape(_to_display_text(tool_output))
-    return "\n".join([
-        '<details class="tool-result-details">',
-        '<summary class="tool-result-summary">',
-        f'<div class="tool-result-title"> 📁 Tool Result: <code class="tool-result-name">{safe_tool_name}</code></div>',
-        '<svg class="tool-result-icon" width="20" height="20" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>',
-        '</summary>',
-        '<pre class="tool-result-pre">',
-        f"\n{safe_tool_output}",
-        '</pre>',
-        '</details>\n\n',
-    ])
+    return "\n".join(
+        [
+            '<details class="tool-result-details">',
+            '<summary class="tool-result-summary">',
+            f'<div class="tool-result-title"> 📁 Tool Result: <code class="tool-result-name">{safe_tool_name}</code></div>',
+            '<svg class="tool-result-icon" width="20" height="20" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>',
+            "</summary>",
+            '<pre class="tool-result-pre">',
+            f"\n{safe_tool_output}",
+            "</pre>",
+            "</details>\n\n",
+        ]
+    )

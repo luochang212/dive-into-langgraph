@@ -19,7 +19,9 @@ def _safe_get(func):
 
 DYNAMIC_INFO = {
     "当前时间 (now)": lambda: datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-    "UTC时间 (utc_now)": lambda: datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
+    "UTC时间 (utc_now)": lambda: datetime.datetime.now(datetime.timezone.utc).strftime(
+        "%Y-%m-%d %H:%M:%S"
+    ),
 }
 
 
