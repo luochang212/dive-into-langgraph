@@ -28,7 +28,7 @@ def list_agent_tools(agent) -> str:
 
     lines = []
     for tool in tools:
-        desc = (tool.description or "").split('\n')[0]
+        desc = (tool.description or "").split("\n")[0]
         lines.append(f"- `{tool.name}`: {desc}")
     return "\n".join(lines)
 
@@ -36,8 +36,8 @@ def list_agent_tools(agent) -> str:
 async def stream_messages(agent, messages: dict):
     """流式输出 - messages 模式"""
     async for token, _ in agent.astream(
-            messages,
-            stream_mode="messages",
+        messages,
+        stream_mode="messages",
     ):
         if token.content:
             print(token.content, end="", flush=True)
