@@ -77,6 +77,7 @@ pip install -r requirements.txt
   dashscope
   tavily-python
   ddgs
+  deepagents
   ```
 </details>
 
