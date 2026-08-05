@@ -48,9 +48,11 @@ TYPING_INDICATOR_HTML = (
 # 配置层
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 @dataclass
 class LLMConfig:
     """LLM 模型配置"""
+
     provider: str = "dashscope"
     model: str = "qwen3.7-plus"
     base_url: Optional[str] = None
@@ -111,9 +113,7 @@ class LLMConfig:
             "timeout": self.timeout,
         }
         if self.enable_thinking:
-            kwargs["extra_body"] = {
-                "chat_template_kwargs": {"enable_thinking": True}
-            }
+            kwargs["extra_body"] = {"chat_template_kwargs": {"enable_thinking": True}}
         if self.temperature is not None:
             kwargs["temperature"] = self.temperature
         if self.top_p is not None:
@@ -124,27 +124,29 @@ class LLMConfig:
 @dataclass
 class MCPConfig:
     """MCP 服务配置"""
+
     # 开启的 MCP 服务名称集合
-    enabled: frozenset = field(default_factory=lambda: frozenset({
-        "code-execution:stdio",
-        # "antv-chart:stdio",
-        # "filesystem:stdio",
-        # "amap-maps:http",
-    }))
+    enabled: frozenset = field(
+        default_factory=lambda: frozenset(
+            {
+                "code-execution:stdio",
+                # "antv-chart:stdio",
+                # "filesystem:stdio",
+                # "amap-maps:http",
+            }
+        )
+    )
     base_path: str = "./"
 
     def get_active_dict(self) -> dict:
         """获取已启用的 MCP 配置字典"""
-        return {
-            k: v
-            for k, v in get_mcp_dict(self.base_path).items()
-            if k in self.enabled
-        }
+        return {k: v for k, v in get_mcp_dict(self.base_path).items() if k in self.enabled}
 
 
 @dataclass
 class AppConfig:
     """应用总配置"""
+
     llm: LLMConfig = field(default_factory=LLMConfig)
     mcp: MCPConfig = field(default_factory=MCPConfig)
 
@@ -152,6 +154,7 @@ class AppConfig:
 # ─────────────────────────────────────────────────────────────────────────────
 # 动态提示词
 # ─────────────────────────────────────────────────────────────────────────────
+
 
 @dynamic_prompt
 def _main_agent_prompt(_: ModelRequest) -> str:
@@ -168,6 +171,7 @@ def _search_subagent_prompt(_: ModelRequest) -> str:
 # ─────────────────────────────────────────────────────────────────────────────
 # 服务层
 # ─────────────────────────────────────────────────────────────────────────────
+
 
 class AgentService:
     """
@@ -231,10 +235,12 @@ class AgentService:
             role_play,
         ]
         if self._config.llm.provider == "dashscope":
-            local_tools.extend([
-                dashscope_search,
-                self._make_search_brief_tool(),
-            ])
+            local_tools.extend(
+                [
+                    dashscope_search,
+                    self._make_search_brief_tool(),
+                ]
+            )
         return local_tools
 
     # ── 主 Agent ──────────────────────────────────────────────────────────────
@@ -265,9 +271,7 @@ class AgentService:
                         trigger=("tokens", 2000),
                         keep=("messages", 7),
                     ),
-                    TodoListMiddleware(
-                        system_prompt=middleware_todolist.get_system_prompt()
-                    ),
+                    TodoListMiddleware(system_prompt=middleware_todolist.get_system_prompt()),
                 ],
             )
 
@@ -278,16 +282,14 @@ class AgentService:
 # 应用层辅助函数
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 def _get_tools_info(agent: Any) -> str:
     """获取 Agent 工具列表的可读描述"""
     node = agent.get_graph().nodes["tools"]
     tools = list(node.data.tools_by_name.values())
 
     if len(tools) < 13:
-        lines = [
-            f"- `{t.name}`: {(t.description or '').split(chr(10))[0]}"
-            for t in tools
-        ]
+        lines = [f"- `{t.name}`: {(t.description or '').split(chr(10))[0]}" for t in tools]
         return "\n".join(lines)
 
     # 工具较多时只展示名称
@@ -300,11 +302,13 @@ def _get_greeting(service: AgentService) -> str:
     try:
         agent = asyncio.run(service.get_agent())
         tools_info = _get_tools_info(agent)
-        return "\n".join([
-            "你好！我是你的智能助手，可以使用的工具包括：",
-            tools_info,
-            "\n请问有什么可以帮你的吗？",
-        ])
+        return "\n".join(
+            [
+                "你好！我是你的智能助手，可以使用的工具包括：",
+                tools_info,
+                "\n请问有什么可以帮你的吗？",
+            ]
+        )
     except Exception as exc:
         print(f"获取工具列表时出错: {exc}")
         return "你好！我是你的智能助手。\n请问有什么可以帮你的吗？"
@@ -317,11 +321,15 @@ async def _summarize_error(llm: ChatOpenAI | None, err: BaseException, limit: in
 
     if llm is not None:
         try:
-            abstract = await llm.ainvoke("\n".join([
-                full_trace,
-                "---",
-                "以上是 LangChain Agent 的报错信息，请简述报错原因：",
-            ]))
+            abstract = await llm.ainvoke(
+                "\n".join(
+                    [
+                        full_trace,
+                        "---",
+                        "以上是 LangChain Agent 的报错信息，请简述报错原因：",
+                    ]
+                )
+            )
             content = getattr(abstract, "content", abstract)
             return f"\n ⚠️ 发生错误，以下是摘要信息：\n{content}"
         except Exception:
@@ -425,11 +433,13 @@ def build_llm_messages(history: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
 # 应用层：响应生成
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 def make_generate_response(service: AgentService, config: AppConfig):
     """
     工厂函数：返回绑定了 service 和 config 的 generate_response 协程生成器。
     Gradio 的 llm_func 签名为 (message, history) -> AsyncIterator。
     """
+
     async def generate_response(
         message: str,
         history: List[Dict[str, str]],
@@ -480,6 +490,7 @@ def make_generate_response(service: AgentService, config: AppConfig):
 # ─────────────────────────────────────────────────────────────────────────────
 # 主函数
 # ─────────────────────────────────────────────────────────────────────────────
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Gradio Agent APP")

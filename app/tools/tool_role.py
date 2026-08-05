@@ -71,7 +71,10 @@ def create_doge_graph(llm):
 
     # [MAP] 使用 Send 函数分发角色
     def continue_to_responses(state: Overall):
-        return [ Send("generate_response", {"role": r, "situation": state["situation"]}) for r in state["roles"] ]
+        return [
+            Send("generate_response", {"role": r, "situation": state["situation"]})
+            for r in state["roles"]
+        ]
 
     # [MAP] 角色回复节点：生成每个角色的回复
     def generate_response(state: Role):
@@ -108,7 +111,7 @@ def create_doge_graph(llm):
     doge_builder.add_edge("best_response", END)
 
     # 编译图
-    doge_graph = doge_builder.compile(name='best-response')
+    doge_graph = doge_builder.compile(name="best-response")
 
     return doge_graph
 
@@ -124,8 +127,16 @@ def role_play(
     runtime: ToolRuntime[ToolSchema],
     situation: str = "告诉你她今天要加班",
     roles: list[str] = [
-        "男神", "巨魔", "舔狗", "渣男", "奶狗弟弟", "社恐宅男",
-        "霸道总裁", "茶茶的男生", "文艺长发男", "萌萌二次元"
+        "男神",
+        "巨魔",
+        "舔狗",
+        "渣男",
+        "奶狗弟弟",
+        "社恐宅男",
+        "霸道总裁",
+        "茶茶的男生",
+        "文艺长发男",
+        "萌萌二次元",
     ],
 ):
     """在指定情境下，模拟多个人设与女神对话的场景
@@ -164,5 +175,7 @@ def role_play(
     return "\n".join(
         [f"{len(roles)} 种人设的回复："]
         + [f"\n【{item['role']}】\n{item['content']}" for item in response["responses"]]
-        + [f"\n最受 {model_name} 喜爱的是【{response.get('best_role')}】的回复：\n{response['best_response']}"]
+        + [
+            f"\n最受 {model_name} 喜爱的是【{response.get('best_role')}】的回复：\n{response['best_response']}"
+        ]
     )

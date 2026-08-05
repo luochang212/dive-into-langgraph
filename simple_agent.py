@@ -16,6 +16,7 @@ llm = ChatOpenAI(
 # 创建Agent
 agent = create_agent(model=llm)
 
+
 # langgraph-cli 入口函数
 def get_app():
     return agent

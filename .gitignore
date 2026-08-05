@@ -2,15 +2,12 @@
 .idea
 .trae
 .claude
-.qwen
 
 .langgraph_api
 .ipynb_checkpoints
 
 .env
 .venv
-.pytest_cache
-.ruff_cache
 
 __pycache__
 archived
@@ -24,3 +21,10 @@ archived
 # MyST build outputs
 _build
 _static
+
+# Claude Code local settings
+.claude/settings.local.json
+
+.qwen
+.pytest_cache
+.ruff_cache

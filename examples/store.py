@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import StateGraph, MessagesState, START
-from langgraph.store.redis import RedisStore  
+from langgraph.store.redis import RedisStore
 from langgraph.store.base import BaseStore
 
 # 加载模型配置
@@ -43,11 +43,11 @@ with (
         state: MessagesState,
         config: RunnableConfig,
         *,
-        store: BaseStore,  
+        store: BaseStore,
     ):
         user_id = config["configurable"]["user_id"]
         namespace = ("memories", user_id)
-        memories = store.search(namespace, query=str(state["messages"][-1].content))  
+        memories = store.search(namespace, query=str(state["messages"][-1].content))
         info = "\n".join([d.value["data"] for d in memories])
         system_msg = f"You are a helpful assistant talking to the user. User info: {info}"
 
@@ -55,11 +55,9 @@ with (
         last_message = state["messages"][-1]
         if "remember" in last_message.content.lower():
             memory = "User name is Bob"
-            store.put(namespace, str(uuid.uuid4()), {"data": memory})  
+            store.put(namespace, str(uuid.uuid4()), {"data": memory})
 
-        response = llm.invoke(
-            [{"role": "system", "content": system_msg}] + state["messages"]
-        )
+        response = llm.invoke([{"role": "system", "content": system_msg}] + state["messages"])
         return {"messages": response}
 
     builder = StateGraph[MessagesState, None, MessagesState, MessagesState](MessagesState)
@@ -67,25 +65,25 @@ with (
     builder.add_edge(START, "call_model")
 
     graph = builder.compile(
-        store=store,  
+        store=store,
     )
 
     config = {
         "configurable": {
-            "thread_id": "1",  
-            "user_id": "1",  
+            "thread_id": "1",
+            "user_id": "1",
         }
     }
     for chunk in graph.stream(
         {"messages": [{"role": "user", "content": "Hi! Remember: my name is Bob"}]},
-        config,  
+        config,
         stream_mode="values",
     ):
         chunk["messages"][-1].pretty_print()
 
     config = {
         "configurable": {
-            "thread_id": "2",  
+            "thread_id": "2",
             "user_id": "1",
         }
     }

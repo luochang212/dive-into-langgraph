@@ -27,20 +27,16 @@ def simple_invoke_example(agent):
     print_section("简单调用")
     query = "你好"
     print(f"😄 {query}")
-    response = agent.invoke({
-        "messages": [{"role": "user", "content": query}]
-    })
-    print(f"🤖 {response["messages"][-1].content}")
+    response = agent.invoke({"messages": [{"role": "user", "content": query}]})
+    print(f"🤖 {response['messages'][-1].content}")
 
 
 def math_tool_example(agent):
     print_section("数学工具调用")
     query = "计算 log(99) + 3"
     print(f"😄 {query}")
-    response = agent.invoke({
-        "messages": [{"role": "user", "content": query}]
-    })
-    print(f"🤖 {response["messages"][-1].content}")
+    response = agent.invoke({"messages": [{"role": "user", "content": query}]})
+    print(f"🤖 {response['messages'][-1].content}")
 
 
 def list_tools_example(agent):
@@ -66,10 +62,7 @@ def main():
 
     # 创建 Agent
     agent = create_agent(llm)
-    agent_with_tools = create_agent(
-        llm,
-        tools=[add, subtract, multiply, divide, safe_eval]
-    )
+    agent_with_tools = create_agent(llm, tools=[add, subtract, multiply, divide, safe_eval])
 
     # 运行示例
     simple_invoke_example(agent)

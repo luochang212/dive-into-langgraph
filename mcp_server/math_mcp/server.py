@@ -26,7 +26,7 @@ def _eval_ast(node):
         if isinstance(op, ast.Mod):
             return left % right
         if isinstance(op, ast.Pow):
-            return left ** right
+            return left**right
         if isinstance(op, ast.FloorDiv):
             return left // right
         raise ValueError("Unsupported operation")
@@ -48,8 +48,7 @@ def _eval_ast(node):
 
 
 def _normalize_expression(text: str) -> str:
-    """Normalize input to a strict arithmetic expression.
-    """
+    """Normalize input to a strict arithmetic expression."""
     t = text.replace("×", "*").replace("÷", "/")
 
     allowed = set("0123456789.+-*/() % ")
@@ -58,7 +57,7 @@ def _normalize_expression(text: str) -> str:
         if ch in allowed:
             cleaned.append(ch)
 
-    expr = ''.join(cleaned)
+    expr = "".join(cleaned)
     expr = re.sub(r"\s+", " ", expr).strip()
     return expr
 
@@ -71,15 +70,15 @@ def math(question: str) -> int | float:
     # Security: Limit input length to prevent DoS attacks
     if len(question) > 1000:
         raise ValueError("Input too long. Maximum 1000 characters allowed.")
-    
+
     expr = _normalize_expression(question)
     if not expr:
         raise ValueError("No arithmetic expression found in input")
-    
+
     # Security: Further limit expression length after normalization
     if len(expr) > 200:
         raise ValueError("Expression too complex after normalization")
-    
+
     try:
         parsed = ast.parse(expr, mode="eval")
         result = _eval_ast(parsed)

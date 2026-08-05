@@ -17,14 +17,16 @@ def format_think_result(think_content: str) -> str:
     if not think_content:
         return ""
 
-    return "\n".join([
-        '<details class="think-result-details">',
-        '<summary class="think-result-summary">',
-        '<div class="think-result-title"> 💭 Thinking</div>',
-        '<svg class="think-result-icon" width="20" height="20" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>',
-        '</summary>',
-        '<pre class="think-result-pre">',
-        f'\n{html.escape(think_content)}',
-        '</pre>',
-        '</details>\n\n',
-    ])
+    return "\n".join(
+        [
+            '<details class="think-result-details">',
+            '<summary class="think-result-summary">',
+            '<div class="think-result-title"> 💭 Thinking</div>',
+            '<svg class="think-result-icon" width="20" height="20" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>',
+            "</summary>",
+            '<pre class="think-result-pre">',
+            f"\n{html.escape(think_content)}",
+            "</pre>",
+            "</details>\n\n",
+        ]
+    )

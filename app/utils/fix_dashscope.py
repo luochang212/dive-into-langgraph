@@ -11,8 +11,8 @@ from langchain_core.messages import BaseMessage, AIMessageChunk
 from langchain_core.outputs import ChatGenerationChunk
 from langchain_openai import ChatOpenAI
 
-class DashScopeChatOpenAI(ChatOpenAI):
 
+class DashScopeChatOpenAI(ChatOpenAI):
     async def _astream(
         self,
         messages: List[BaseMessage],
@@ -37,7 +37,9 @@ class DashScopeChatOpenAI(ChatOpenAI):
             content_text = delta.content or ""
             reasoning_text = getattr(delta, "reasoning_content", None) or ""
 
-            assert not (content_text and reasoning_text), "Content and reasoning cannot be present at the same time"
+            assert not (content_text and reasoning_text), (
+                "Content and reasoning cannot be present at the same time"
+            )
 
             final_text = ""
             text_type = ""
@@ -56,15 +58,12 @@ class DashScopeChatOpenAI(ChatOpenAI):
                 response_metadata={
                     "dashscope_type": text_type,
                     "finish_reason": choice.finish_reason,
-                    "model_name": chunk.model
-                }
+                    "model_name": chunk.model,
+                },
             )
 
             generation_chunk = ChatGenerationChunk(message=msg_chunk)
             yield generation_chunk
 
             if run_manager:
-                await run_manager.on_llm_new_token(
-                    final_text,
-                    chunk=msg_chunk
-                )
+                await run_manager.on_llm_new_token(final_text, chunk=msg_chunk)

@@ -22,11 +22,7 @@ def generate_response(message, history):
     time.sleep(processing_time)
 
     # 模拟生成智能回复
-    responses = [
-        "这是一个基于大语言模型的回复示例。",
-        "我理解你的查询了。",
-        "感谢你的提问！"
-    ]
+    responses = ["这是一个基于大语言模型的回复示例。", "我理解你的查询了。", "感谢你的提问！"]
 
     # 使用新的消息格式
     history.append({"role": "user", "content": message})
@@ -388,7 +384,7 @@ def create_ui(llm_func, tab_name, main_title, initial_message=None):
             # <center>{main_title}</center>
             """,
             elem_id="header",  # 添加 ID 以便 CSS 精确定位
-            elem_classes=["dark"]
+            elem_classes=["dark"],
         )
 
         # 头像路径
@@ -402,12 +398,12 @@ def create_ui(llm_func, tab_name, main_title, initial_message=None):
             elem_id="chatbot",
             avatar_images=(
                 user_avatar_path,  # 用户头像
-                ai_avatar_path     # AI头像
+                ai_avatar_path,  # AI头像
             ),
             height=600,
             show_label=False,
             elem_classes=["dark"],
-            buttons=[]  # 禁用右上角的所有按钮（分享、复制、清空等）
+            buttons=[],  # 禁用右上角的所有按钮（分享、复制、清空等）
         )
 
         # 输入区域
@@ -416,7 +412,7 @@ def create_ui(llm_func, tab_name, main_title, initial_message=None):
                 placeholder="输入消息...",
                 show_label=False,
                 container=False,
-                elem_classes=["textbox", "dark"]
+                elem_classes=["textbox", "dark"],
             )
             submit_btn = gr.Button("发送", elem_classes=["button"])
             stop_btn = gr.Button(
@@ -433,11 +429,7 @@ def create_ui(llm_func, tab_name, main_title, initial_message=None):
             queue=False,
             show_progress="hidden",
         )
-        enter_generation = enter_start.then(
-            llm_func,
-            [msg, chatbot],
-            [msg, chatbot]
-        )
+        enter_generation = enter_start.then(llm_func, [msg, chatbot], [msg, chatbot])
         enter_generation.then(
             _show_send_button,
             None,
@@ -453,11 +445,7 @@ def create_ui(llm_func, tab_name, main_title, initial_message=None):
             queue=False,
             show_progress="hidden",
         )
-        click_generation = click_start.then(
-            llm_func,
-            [msg, chatbot],
-            [msg, chatbot]
-        )
+        click_generation = click_start.then(llm_func, [msg, chatbot], [msg, chatbot])
         click_generation.then(
             _show_send_button,
             None,
@@ -474,7 +462,7 @@ def create_ui(llm_func, tab_name, main_title, initial_message=None):
             show_progress="hidden",
             cancels=[enter_generation, click_generation],
         )
-    
+
     return ui
 
 
@@ -490,5 +478,5 @@ if __name__ == "__main__":
         server_port=7860,
         share=False,  # 内部使用时，必须为 False
         theme=theme,
-        css=custom_css
+        css=custom_css,
     )

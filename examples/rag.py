@@ -36,6 +36,7 @@ client = OpenAI(
     base_url=os.getenv("DASHSCOPE_BASE_URL"),
 )
 
+
 # DashScope 兼容的 OpenAIEmbeddings 实现
 class DashScopeEmbeddings(Embeddings):
     def __init__(self, model: str = "text-embedding-v4", dimensions: int = 1024):
@@ -61,6 +62,7 @@ class DashScopeEmbeddings(Embeddings):
             dimensions=self.dimensions,
         )
         return r.data[0].embedding
+
 
 # 初始化内存向量存储
 embeddings = DashScopeEmbeddings()
@@ -97,16 +99,17 @@ document_ids = vector_store.add_documents(documents=all_splits)
 
 # print(document_ids[:3])
 
+
 # 创建上下文检索工具
 @tool(response_format="content_and_artifact")
 def retrieve_context(query: str):
     """Retrieve information to help answer a query."""
     retrieved_docs = vector_store.similarity_search(query, k=2)
     serialized = "\n\n".join(
-        (f"Source: {doc.metadata}\nContent: {doc.page_content}")
-        for doc in retrieved_docs
+        (f"Source: {doc.metadata}\nContent: {doc.page_content}") for doc in retrieved_docs
     )
     return serialized, retrieved_docs
+
 
 # 创建 ReAct Agent
 agent = create_agent(
@@ -116,7 +119,7 @@ agent = create_agent(
         # If desired, specify custom instructions
         "You have access to a tool that retrieves context from a blog post. "
         "Use the tool to help answer user queries."
-    )
+    ),
 )
 
 # 测试 ReAct Agent
