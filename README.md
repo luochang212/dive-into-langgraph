@@ -150,7 +150,7 @@ langgraph dev
 
 ## 八、Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=luochang212/dive-into-langgraph&type=date&legend=top-left)](https://www.star-history.com/#luochang212/dive-into-langgraph&type=date&legend=top-left)
+[![Star History Chart](https://star-history.dera.page/svg?repos=luochang212/dive-into-langgraph&type=date&legend=top-left)](https://star-history.dera.page/#luochang212/dive-into-langgraph&type=date&legend=top-left)
 
 ## 九、开源协议
 
