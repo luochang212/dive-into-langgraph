@@ -20,7 +20,7 @@ LangGraph 是由 LangChain 团队开发的开源 Agent 框架。v1.0 是稳定�
 pip install \
   langgraph \
   "langchain[mcp,openai]" \
-  langchain-community \
+  langchain-tavily \
   python-dotenv \
   pydantic
 ```

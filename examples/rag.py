@@ -5,13 +5,13 @@
 """
 
 import os
+
 import bs4
+import requests
 
 from dotenv import load_dotenv
-from openai import OpenAI
-from langchain_openai import ChatOpenAI
-from langchain_community.document_loaders import WebBaseLoader
-from langchain_core.embeddings import Embeddings
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_core.documents import Document
 from langchain_core.vectorstores import InMemoryVectorStore
 from langchain.agents import create_agent
 from langchain.tools import tool
@@ -30,55 +30,34 @@ llm = ChatOpenAI(
     temperature=0.7,
 )
 
-# 创建 OpenAI 客户端
-client = OpenAI(
+
+# 初始化内存向量存储（DashScope 兼容 OpenAI 的 Embeddings 接口）
+embeddings = OpenAIEmbeddings(
+    model="text-embedding-v4",
+    dimensions=1024,
+    check_embedding_ctx_length=False,  # 关闭本地 token 切分，直接提交原文
     api_key=os.getenv("DASHSCOPE_API_KEY"),
     base_url=os.getenv("DASHSCOPE_BASE_URL"),
 )
-
-
-# DashScope 兼容的 OpenAIEmbeddings 实现
-class DashScopeEmbeddings(Embeddings):
-    def __init__(self, model: str = "text-embedding-v4", dimensions: int = 1024):
-        self.model = model
-        self.dimensions = dimensions
-
-    def embed_documents(self, texts: list[str]) -> list[list[float]]:
-        out: list[list[float]] = []
-        for i in range(0, len(texts), 10):
-            chunk = texts[i : i + 10]
-            r = client.embeddings.create(
-                model=self.model,
-                input=chunk,
-                dimensions=self.dimensions,
-            )
-            out.extend([d.embedding for d in r.data])
-        return out
-
-    def embed_query(self, text: str) -> list[float]:
-        r = client.embeddings.create(
-            model=self.model,
-            input=[text],
-            dimensions=self.dimensions,
-        )
-        return r.data[0].embedding
-
-
-# 初始化内存向量存储
-embeddings = DashScopeEmbeddings()
 vector_store = InMemoryVectorStore(embedding=embeddings)
 
-bs4_strainer = bs4.SoupStrainer(class_=("post"))
-loader = WebBaseLoader(
-    web_paths=("https://luochang212.github.io/posts/quick_bi_intro/",),
-    bs_kwargs={"parse_only": bs4_strainer},
-    requests_kwargs={
-        "headers": {
+
+def load_web_page(url: str, strainer: bs4.SoupStrainer | None = None) -> list[Document]:
+    """抓取网页并提取正文"""
+    response = requests.get(
+        url,
+        headers={
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
-        }
-    },
-)
-docs = loader.load()
+        },
+        timeout=30,
+    )
+    response.raise_for_status()
+    soup = bs4.BeautifulSoup(response.text, "html.parser", parse_only=strainer)
+    return [Document(page_content=soup.get_text(), metadata={"source": url})]
+
+
+bs4_strainer = bs4.SoupStrainer(class_=("post"))
+docs = load_web_page("https://luochang212.github.io/posts/quick_bi_intro/", bs4_strainer)
 
 assert len(docs) == 1
 # print(f"Total characters: {len(docs[0].page_content)}")

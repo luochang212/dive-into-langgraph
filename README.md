@@ -60,8 +60,8 @@ pip install -r requirements.txt
   python-dotenv
   rank-bm25
   langchain[mcp,openai]
-  langchain-community
   langchain-text-splitters
+  langchain-tavily
   langgraph
   langgraph-cli[inmem]
   langgraph-supervisor
@@ -71,11 +71,10 @@ pip install -r requirements.txt
   ipynbname
   fastmcp
   bs4
+  requests
   scikit-learn
   supervisor
   jieba
-  dashscope
-  tavily-python
   ddgs
   deepagents
   ```
