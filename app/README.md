@@ -127,15 +127,15 @@ uv run app.py
 ├── tests                   # 测试目录
 ├── tools                   # 工具模块
 │   ├── __init__.py
+│   ├── tool_fs.py
 │   ├── tool_math.py
 │   ├── tool_role.py
 │   ├── tool_runtime.py
+│   ├── tool_sci.py
 │   └── tool_search.py
 ├── utils                   # 实用脚本模块
 │   ├── __init__.py
 │   ├── device_info.py
-│   ├── fix_dashscope.py
-│   ├── fix_deepseek.py
 │   ├── remove_html.py
 │   ├── think_view.py
 │   ├── tool_view.py

@@ -120,15 +120,15 @@ See: [query.md](./query.md)
 ├── tests                   # Tests
 ├── tools                   # Tools
 │   ├── __init__.py
+│   ├── tool_fs.py
 │   ├── tool_math.py
 │   ├── tool_role.py
 │   ├── tool_runtime.py
+│   ├── tool_sci.py
 │   └── tool_search.py
 ├── utils                   # Utility scripts
 │   ├── __init__.py
 │   ├── device_info.py
-│   ├── fix_dashscope.py
-│   ├── fix_deepseek.py
 │   ├── remove_html.py
 │   ├── think_view.py
 │   ├── tool_view.py

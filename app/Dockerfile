@@ -15,9 +15,9 @@ RUN sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list.d/debia
     vim \
     && rm -rf /var/lib/apt/lists/*
 
-# 复制依赖文件并安装Python依赖
+# 复制依赖文件并安装Python依赖（索引已在 pyproject.toml 钉定为腾讯源）
 COPY pyproject.toml uv.lock ./
-RUN uv sync -i https://mirrors.aliyun.com/pypi/simple/
+RUN uv sync
 
 # 复制应用代码
 COPY app.py .

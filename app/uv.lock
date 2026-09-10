@@ -1127,7 +1127,7 @@ wheels = [
 
 [[package]]
 name = "langchain-openai"
-version = "1.6.1"
+version = "1.6.2"
 source = { registry = "https://mirrors.cloud.tencent.com/pypi/simple/" }
 dependencies = [
     { name = "certifi" },
@@ -1135,9 +1135,9 @@ dependencies = [
     { name = "openai" },
     { name = "tiktoken" },
 ]
-sdist = { url = "https://mirrors.cloud.tencent.com/pypi/packages/b6/f3/18aeffe267f08c02041114ac42631bcbb2db02bfd538079826f88847fd34/langchain_openai-1.6.1.tar.gz", hash = "sha256:a09c329d6d9c5b5bf7025c0d5a5cc8e7ec8d784d662861809e1ec1cce1cd3d26" }
+sdist = { url = "https://mirrors.cloud.tencent.com/pypi/packages/ab/5e/c9e5e4e55ec184d8e2a907d40d8a75d6ce1ebeb3c9f7ef585c49a8cc9c2b/langchain_openai-1.6.2.tar.gz", hash = "sha256:bec6d190e1e47e774c2be8728bc93457cef1ab2ec3295c277d8daefab434e880" }
 wheels = [
-    { url = "https://mirrors.cloud.tencent.com/pypi/packages/3a/71/7e2354b29e88afcaec944db5b476230337dd136477c844c81fc868c5c3c9/langchain_openai-1.6.1-py3-none-any.whl", hash = "sha256:0642a96662777512de94830b156cb61b89db7e92a04f26f1f70da34c38ff2d72" },
+    { url = "https://mirrors.cloud.tencent.com/pypi/packages/b2/47/b87a3c372e52678eb4408360eadbe04cdd5371e21fe2560b6efd66989624/langchain_openai-1.6.2-py3-none-any.whl", hash = "sha256:368e34ab3bdd30af422371b2f2f9346f21e79beae8b0823c253633819d1fd2f8" },
 ]
 
 [[package]]
@@ -1420,7 +1420,7 @@ wheels = [
 
 [[package]]
 name = "openai"
-version = "3.8.0"
+version = "3.12.0"
 source = { registry = "https://mirrors.cloud.tencent.com/pypi/simple/" }
 dependencies = [
     { name = "anyio" },
@@ -1430,9 +1430,9 @@ dependencies = [
     { name = "sniffio" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://mirrors.cloud.tencent.com/pypi/packages/f2/b0/1100c93f93e1c174205ce8d15a049a446f0dc88e9262c1f1f223fe6b9493/openai-3.8.0.tar.gz", hash = "sha256:6138a5a1333a1be9e4d1edea2d160b311542787b029543f87de4961c66358d16" }
+sdist = { url = "https://mirrors.cloud.tencent.com/pypi/packages/6e/be/9590a0cefe815f71fb8d17ef7424bd7698d5e6dc29dd72f0a631f18c2071/openai-3.12.0.tar.gz", hash = "sha256:83ed9ea714792e9ef6183c2bd23325c6b922549c713cc94d56b6d79903e88bf7" }
 wheels = [
-    { url = "https://mirrors.cloud.tencent.com/pypi/packages/24/a4/c7e89d3bfb8b7c7ffa38ec9fe527bccf4df723f752fb11bdb3da6c750b76/openai-3.8.0-py3-none-any.whl", hash = "sha256:514736aa1e4ef1033c1209ad53897392845ccd4f2c4fae6413b2cf5f91c2c926" },
+    { url = "https://mirrors.cloud.tencent.com/pypi/packages/25/c0/bd61170c913f9be63b9ac5bf09b21f218701c7a31f0a9c9d4e366389eb8c/openai-3.12.0-py3-none-any.whl", hash = "sha256:4f66612edf46f326c34f9638b027ceee0b9abe6ac8051d6408c79415ae6d26f1" },
 ]
 
 [[package]]
