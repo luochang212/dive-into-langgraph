@@ -20,6 +20,6 @@ mcp-server-chart --transport streamable --port 1123
 ```
 "图表可视化": {
     "url": "http://localhost:1123/mcp",
-    "transport": "streamable_http",
+    "transport": "http",
 },
 ```

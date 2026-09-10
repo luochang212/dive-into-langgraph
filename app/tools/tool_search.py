@@ -2,10 +2,8 @@
 联网搜索工具
 """
 
-import dashscope
-
-from dashscope import Generation
 from langchain.tools import tool, ToolRuntime
+from openai import OpenAI
 from tools.tool_runtime import ToolSchema
 
 
@@ -15,15 +13,13 @@ def dashscope_search(
     runtime: ToolRuntime[ToolSchema],
 ) -> str:
     """使用 DashScope 提供的搜索 API 搜索互联网信息"""
-    dashscope.api_key = runtime.context.api_key
-
-    response = Generation.call(
-        model="qwen-max", prompt=query, enable_search=True, result_format="message"
+    client = OpenAI(
+        api_key=runtime.context.api_key,
+        base_url=runtime.context.base_url,
     )
-
-    if response.status_code == 200:
-        return response.output.choices[0].message.content
-    else:
-        return (
-            f"Search failed with status code: {response.status_code}, message: {response.message}"
-        )
+    response = client.responses.create(
+        model=runtime.context.model,
+        input=query,
+        tools=[{"type": "web_search"}],
+    )
+    return response.output_text

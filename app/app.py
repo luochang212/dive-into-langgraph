@@ -21,8 +21,8 @@ from langchain.agents.middleware import (
     TodoListMiddleware,
     dynamic_prompt,
 )
+from langchain.mcp import MCPAdapter
 from langchain.tools import ToolRuntime, tool
-from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain_openai import ChatOpenAI
 
 from config.mcp_config import get_mcp_dict
@@ -54,7 +54,7 @@ class LLMConfig:
     """LLM 模型配置"""
 
     provider: str = "dashscope"
-    model: str = "qwen3.7-plus"
+    model: str = "qwen3.7-flash"
     base_url: Optional[str] = None
     api_key: Optional[str] = None
     timeout: int = 30
@@ -63,10 +63,8 @@ class LLMConfig:
     top_p: Optional[float] = None
 
     # ── 支持的 LLM 提供商 ────────────────────────────────────────────────────
-    # DashScope 目前有免费额度，支持以下模型：
-    #   kimi-k2-thinking / deepseek-v3.2 / glm-4.7 / qwen3.7-plus
-    # 如果觉得卡，可以使用付费模型：
-    #   qwen3-max / qwen3-max-preview
+    # DashScope 推荐的省钱模型：qwen3.7-flash
+    # 需要更强能力时可切换到 qwen3.8-flash 或 qwen3.8-max。
     # ─────────────────────────────────────────────────────────────────────────
 
     @classmethod
@@ -75,7 +73,7 @@ class LLMConfig:
         if provider == "dashscope":
             return cls(
                 provider=provider,
-                model="qwen3.7-plus",
+                model="qwen3.7-flash",
                 base_url=os.getenv("DASHSCOPE_BASE_URL"),
                 api_key=os.getenv("DASHSCOPE_API_KEY"),
                 enable_thinking=True,
@@ -258,8 +256,8 @@ class AgentService:
             mcp_dict = self._config.mcp.get_active_dict()
             mcp_tools: List[Any] = []
             if mcp_dict:
-                client = MultiServerMCPClient(mcp_dict)
-                mcp_tools = await client.get_tools()
+                adapter = MCPAdapter({"mcpServers": mcp_dict})
+                mcp_tools = await adapter.list_tools()
 
             self._agent = create_agent(
                 model=self.llm,

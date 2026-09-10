@@ -9,7 +9,7 @@ from langchain_openai import ChatOpenAI
 
 
 def create_llm(
-    model: str = "qwen3.5-plus",
+    model: str = "qwen3.7-flash",
     **kwargs,
 ) -> ChatOpenAI:
     """使用 ChatOpenAI 创建 LLM"""

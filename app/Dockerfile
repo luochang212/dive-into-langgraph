@@ -1,5 +1,7 @@
 FROM python:3.13-slim
 
+COPY --from=ghcr.io/astral-sh/uv:0.9.24 /uv /uvx /bin/
+
 # 设置工作目录
 WORKDIR /app
 
@@ -15,7 +17,6 @@ RUN sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list.d/debia
 
 # 复制依赖文件并安装Python依赖
 COPY pyproject.toml uv.lock ./
-RUN pip install uv==0.9.24 -i https://mirrors.aliyun.com/pypi/simple/
 RUN uv sync -i https://mirrors.aliyun.com/pypi/simple/
 
 # 复制应用代码

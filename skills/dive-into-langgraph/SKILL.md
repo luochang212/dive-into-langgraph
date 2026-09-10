@@ -19,9 +19,8 @@ LangGraph 是由 LangChain 团队开发的开源 Agent 框架。v1.0 是稳定�
 ```bash
 pip install \
   langgraph \
-  "langchain[openai]" \
+  "langchain[mcp,openai]" \
   langchain-community \
-  langchain-mcp-adapters \
   python-dotenv \
   pydantic
 ```
@@ -60,7 +59,7 @@ ARK_API_KEY=your_api_key_here
 | 8 | **监督者模式** | 两种方法：tool-calling、langgraph-supervisor | [在线](https://luochang212.github.io/dive-into-langgraph/supervisor/) | [本地](references/8.supervisor.md) |
 | 9 | **并行** | 节点并发、@task 装饰器、Map-reduce、Sub-graphs | [在线](https://luochang212.github.io/dive-into-langgraph/parallelization/) | [本地](references/9.parallelization.md) |
 | 10 | **RAG** | 向量检索、关键词检索、混合检索 | [在线](https://luochang212.github.io/dive-into-langgraph/rag/) | [本地](references/10.rag.md) |
-| 11 | **网络搜索** | DashScope、Tavily 和 DDGS | [在线](https://luochang212.github.io/dive-into-langgraph/web-search/) | [本地](references/11.web_search.md) |
+| 11 | **网络搜索** | DashScope、Tavily、DDGS 和 Exa MCP | [在线](https://luochang212.github.io/dive-into-langgraph/web-search/) | [本地](references/11.web_search.md) |
 
 ## 官方资源
 

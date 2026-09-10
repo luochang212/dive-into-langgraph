@@ -59,9 +59,8 @@ pip install -r requirements.txt
   pydantic
   python-dotenv
   rank-bm25
-  langchain[openai]
+  langchain[mcp,openai]
   langchain-community
-  langchain-mcp-adapters
   langchain-text-splitters
   langgraph
   langgraph-cli[inmem]
@@ -98,7 +97,7 @@ pip install -r requirements.txt
 | 8 | [监督者模式](./8.supervisor.ipynb) | 两种方法实现监督者模式：tool-calling、langgraph-supervisor |
 | 9 | [并行](./9.parallelization.ipynb) | 如何实现并发：节点并发、`@task` 装饰器、Map-reduce、Sub-graphs |
 | 10 | [RAG](./10.rag.ipynb) | 三种方式实现 RAG：向量检索、关键词检索、混合检索 |
-| 11 | [网络搜索](./11.web_search.ipynb) | 实现联网搜索：DashScope、Tavily 和 DDGS |
+| 11 | [网络搜索](./11.web_search.ipynb) | 实现联网搜索：DashScope、Tavily、DDGS 和 Exa MCP |
 | 12 | [Deep Agents](./12.deep_agents.ipynb) | 简单介绍 Deep Agents |
 | 13 | [Gradio APP](./13.gradio_app.ipynb) | 基于 Gradio 开发流式对话智能体应用 |
 | 14 | [附录：调试页面](./14.langgraph_cli.ipynb) | 介绍 langgraph-cli 提供的调试页面 |
