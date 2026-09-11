@@ -1,38 +1,29 @@
-# Jupyter Book
+# MyST 电子书
 
-[Jupyter Book](https://jupyterbook.org/stable/) 是基于 Jupyter Notebook 构建交互式书籍的工具。
+[MyST](https://mystmd.org/) 直接使用根目录的 `myst.yml` 和 Jupyter Notebook 构建本教程。
 
-安装：
+同步仓库环境：
 
 ```bash
-pip install jupyter-book
+uv sync
 ```
 
-初始化项目：
+构建 HTML 并执行 CI 校验：
 
 ```bash
-jupyter book init
+npx --yes mystmd build --html --ci
 ```
 
-构建项目：
+本地预览：
 
 ```bash
-jupyter book build
-```
-
-启动项目：
-
-```bash
-jupyter book start
-
-# 或者
-npx mystmd start
+npx --yes mystmd start
 ```
 
 构建并预览静态页面：
 
 ```bash
-npx mystmd build --html
+npx --yes mystmd build --html
 
-python3 -m http.server 8000 --directory _build/html
+uv run python -m http.server 8000 --directory _build/html
 ```

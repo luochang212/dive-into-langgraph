@@ -49,13 +49,13 @@ This is an open-source ebook project designed to help Agent developers quickly m
 ## 2. Installation
 
 ```bash
-pip install -r requirements.txt
+uv sync
 ```
 
 <details>
   <summary>Dependency list</summary>
 
-  The following packages are listed in `requirements.txt`:
+  The main dependencies are declared in `pyproject.toml`; `uv.lock` is the source of truth for exact versions:
 
   ```text
   pydantic
@@ -66,7 +66,6 @@ pip install -r requirements.txt
   langchain-tavily
   langgraph
   langgraph-cli[inmem]
-  langgraph-supervisor
   langgraph-checkpoint-sqlite
   langgraph-checkpoint-redis
   langmem
@@ -82,6 +81,20 @@ pip install -r requirements.txt
   ```
 </details>
 
+### Code quality and Git hooks
+
+Install the repository's pre-commit hook after the first checkout:
+
+```bash
+uv run pre-commit install
+```
+
+The hook checks repository-wide Ruff formatting and linting before every commit without rewriting files. Run the same checks used by CI manually with:
+
+```bash
+uv run pre-commit run --all-files
+```
+
 ## 3. Contents
 
 Quick overview of the tutorial:
@@ -95,7 +108,7 @@ Quick overview of the tutorial:
 | 5 | [Memory](https://luochang212.github.io/dive-into-langgraph-en/memory/) | Learn how to create short-term and long-term memory |
 | 6 | [Context Engineering](https://luochang212.github.io/dive-into-langgraph-en/context/) | Manage context using State, Store, Runtime |
 | 7 | [MCP Server](https://luochang212.github.io/dive-into-langgraph-en/mcp-server/) | How to create MCP Server and integrate with LangGraph |
-| 8 | [Supervisor Pattern](https://luochang212.github.io/dive-into-langgraph-en/supervisor/) | Two methods to implement supervisor pattern: tool-calling, langgraph-supervisor |
+| 8 | [Supervisor Pattern](https://luochang212.github.io/dive-into-langgraph-en/supervisor/) | Implement a supervisor with the officially recommended subagents-as-tools pattern |
 | 9 | [Parallelization](https://luochang212.github.io/dive-into-langgraph-en/parallelization/) | How to implement concurrency: node concurrency, `@task` decorator, Map-reduce, Sub-graphs |
 | 10 | [RAG](https://luochang212.github.io/dive-into-langgraph-en/rag/) | Implement RAG: Vector Retrieval, Keyword Retrieval, Hybrid Retrieval |
 | 11 | [Web Search](https://luochang212.github.io/dive-into-langgraph-en/web-search/) | Implement web search functionality: DashScope, Tavily, DDGS, and Exa MCP |

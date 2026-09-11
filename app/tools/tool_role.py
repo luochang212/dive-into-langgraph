@@ -170,7 +170,7 @@ def role_play(
         api_key=api_key,
     )
     doge_graph = create_doge_graph(llm)
-    response = doge_graph.invoke({"roles": roles, "situation": situation})
+    response = doge_graph.invoke({"roles": roles, "situation": situation}, version="v2").value
 
     return "\n".join(
         [f"{len(roles)} 种人设的回复："]

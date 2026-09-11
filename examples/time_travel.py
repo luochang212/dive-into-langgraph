@@ -60,7 +60,7 @@ config = {
         "thread_id": uuid.uuid4(),
     }
 }
-state = graph.invoke({}, config)
+state = graph.invoke({}, config, version="v2").value
 
 print(state["topic"])
 print()
@@ -85,7 +85,7 @@ new_config = graph.update_state(new_config, values={"joke": ""})
 print(new_config)
 
 # 从检查点恢复执行
-new_state = graph.invoke(None, new_config)
+new_state = graph.invoke(None, new_config, version="v2").value
 
 print(new_state["topic"])
 print()

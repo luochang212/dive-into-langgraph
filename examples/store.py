@@ -3,7 +3,7 @@
 参考: https://docs.langchain.com/oss/python/langgraph/add-memory#add-long-term-memory
 
 运行前准备：
-    $ pip install -U langgraph-checkpoint-redis
+    $ uv sync
     $ cd examples
     $ docker compose up -d
     $ docker exec myredis redis-cli ping
@@ -78,8 +78,9 @@ with (
         {"messages": [{"role": "user", "content": "Hi! Remember: my name is Bob"}]},
         config,
         stream_mode="values",
+        version="v2",
     ):
-        chunk["messages"][-1].pretty_print()
+        chunk["data"]["messages"][-1].pretty_print()
 
     config = {
         "configurable": {
@@ -92,5 +93,6 @@ with (
         {"messages": [{"role": "user", "content": "what is my name?"}]},
         config,
         stream_mode="values",
+        version="v2",
     ):
-        chunk["messages"][-1].pretty_print()
+        chunk["data"]["messages"][-1].pretty_print()

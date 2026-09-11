@@ -57,8 +57,8 @@ Then register for [Alibaba Cloud Bailian](https://bailian.console.aliyun.com/?ta
 Install dependencies with uv and start the app:
 
 ```bash
-# 1. Install uv
-pip install uv -U
+# 1. Install uv if needed
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # 2. Sync the virtual environment with uv
 uv sync
@@ -66,22 +66,6 @@ uv sync
 # 3. Run the app with uv
 uv run app.py
 ```
-
-<details>
-  <summary>If uv installation fails, you can use pip</summary>
-  
-  ```bash
-  # 1. Install dependencies
-  pip install -r requirements.txt -U -i https://mirrors.cloud.tencent.com/pypi/simple/
-  # Notes:
-  #   -i uses a mirror (full name: --index-url)
-  #   -U upgrades to the latest versions (full name: --upgrade)
-
-  # 2. Run the app
-  python app.py
-  ```
-  
-</details>
 
 ## 🐒 Test Questions
 
@@ -114,7 +98,6 @@ See: [query.md](./query.md)
 │   ├── prompt_enhance.py
 │   └── subagent_search.py
 ├── pyproject.toml
-├── requirements.txt        # Dependencies
 ├── space                   # Filesystem read/write space
 │   └── food.md
 ├── tests                   # Tests
@@ -174,14 +157,13 @@ docker compose exec -it gradio-agent bash
 
 ```bash
 # 1. Make sure uv is installed
-pip install uv -U
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # 2. Initialize the project (creates a pyproject.toml with basic info)
 uv init --name gradio-agent-app --description "Streaming conversational agent built with LangChain" --python 3.13
 
-# 3. Update the dependencies section in pyproject.toml
-# This creates a .venv virtual environment and an uv.lock file
-uv add -r requirements.txt
+# 3. Add a dependency; this updates pyproject.toml and uv.lock
+uv add <package>
 ```
 
 ## 📝 Changelog

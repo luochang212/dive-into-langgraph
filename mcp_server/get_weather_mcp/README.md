@@ -1,3 +1,6 @@
-pip install fastmcp
+在仓库根目录同步环境并启动服务：
 
-python -m get_weather_mcp
+```bash
+uv sync
+uv run python -m mcp_server.get_weather_mcp
+```

@@ -10,16 +10,15 @@ dependencies = [
     "langchain-text-splitters>=1.1.2",
     "langchain-tavily>=0.2.18",
     "langgraph>=1.2.11",
-    "langgraph-cli[inmem]>=0.4.30",
-    "langgraph-supervisor>=0.0.31",
-    "langgraph-checkpoint-sqlite>=3.1.0",
+    "langgraph-cli[inmem]>=0.4.31",
+    "langgraph-checkpoint-sqlite>=3.1.1",
     "langgraph-checkpoint-redis>=0.5.2",
     "langmem>=0.0.30",
     "ipynbname>=2025.8.0.0",
     "fastmcp>=4.0.3",
     "bs4>=0.0.2",
     "requests>=2.34.2",
-    "scikit-learn>=1.9.0",
+    "scikit-learn>=1.9.1",
     "supervisor>=4.3.0",
     "jieba>=0.42.1",
     "rank-bm25>=0.2.2",
@@ -29,9 +28,10 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "jupyter>=1.0.0",
-    "ipykernel>=6.29.0",
-    "ruff>=0.16.6",
+    "jupyter>=1.1.1",
+    "ipykernel>=7.3.0",
+    "pre-commit>=4.6.2",
+    "ruff>=0.16.7",
 ]
 
 [tool.uv]

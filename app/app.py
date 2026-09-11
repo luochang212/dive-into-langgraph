@@ -21,6 +21,8 @@ from langchain.agents.middleware import (
     TodoListMiddleware,
     dynamic_prompt,
 )
+
+# `langchain.mcp` ships in the stable package but remains a Beta namespace.
 from langchain.mcp import MCPAdapter
 from langchain.tools import ToolRuntime, tool
 from langchain_openai import ChatOpenAI
@@ -221,8 +223,9 @@ class AgentService:
                 {"messages": [{"role": "user", "content": query}]},
                 config={"configurable": {"thread_id": str(uuid.uuid4())}},
                 context=runtime.context,
+                version="v2",
             )
-            return result["messages"][-1].content
+            return result.value["messages"][-1].content
 
         return search_brief
 
@@ -349,11 +352,14 @@ async def _stream_events(
         if history[-1]["content"] == TYPING_INDICATOR_HTML:
             history[-1]["content"] = ""
 
-    async for mode, payload in agent.astream(
+    async for part in agent.astream(
         {"messages": messages},
         stream_mode=["messages", "values"],
         context=tool_context,
+        version="v2",
     ):
+        mode = part["type"]
+        payload = part["data"]
         if mode == "messages":
             token, metadata = payload
             node = metadata.get("langgraph_node", "")

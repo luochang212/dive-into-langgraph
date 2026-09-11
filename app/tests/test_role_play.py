@@ -59,11 +59,13 @@ class RolePlayTests(unittest.TestCase):
 
     def test_role_play_uses_runtime_model(self):
         graph = Mock()
-        graph.invoke.return_value = {
-            "responses": [{"role": "A", "content": "alpha"}],
-            "best_role": "A",
-            "best_response": "alpha",
-        }
+        graph.invoke.return_value = SimpleNamespace(
+            value={
+                "responses": [{"role": "A", "content": "alpha"}],
+                "best_role": "A",
+                "best_response": "alpha",
+            }
+        )
         runtime = SimpleNamespace(
             context=SimpleNamespace(
                 base_url="https://example.test/v1",
@@ -84,6 +86,7 @@ class RolePlayTests(unittest.TestCase):
             base_url="https://example.test/v1",
             api_key="test-key",
         )
+        graph.invoke.assert_called_once_with({"roles": ["A"], "situation": "测试"}, version="v2")
         self.assertIn("deepseek-v3-2-251201", result)
 
     def test_role_play_rejects_empty_roles(self):
@@ -100,11 +103,13 @@ class RolePlayTests(unittest.TestCase):
 
     def test_role_play_rejects_too_many_roles(self):
         graph = Mock()
-        graph.invoke.return_value = {
-            "responses": [{"role": "A", "content": "alpha"}],
-            "best_role": "A",
-            "best_response": "alpha",
-        }
+        graph.invoke.return_value = SimpleNamespace(
+            value={
+                "responses": [{"role": "A", "content": "alpha"}],
+                "best_role": "A",
+                "best_response": "alpha",
+            }
+        )
         runtime = SimpleNamespace(
             context=SimpleNamespace(
                 base_url="https://example.test/v1",
@@ -128,7 +133,7 @@ class RolePlayTests(unittest.TestCase):
         llm = _FakeLLM()
         graph = tool_role.create_doge_graph(llm)
 
-        graph.invoke({"roles": ["A", "B"], "situation": "测试"})
+        graph.invoke({"roles": ["A", "B"], "situation": "测试"}, version="v2")
 
         self.assertIn("0. 【A】A-reply", llm.best_response_prompt)
         self.assertIn("1. 【B】B-reply", llm.best_response_prompt)
@@ -137,7 +142,7 @@ class RolePlayTests(unittest.TestCase):
         llm = _FakeLLM()
         graph = tool_role.create_doge_graph(llm)
 
-        graph.invoke({"roles": ["A", "B"], "situation": "测试"})
+        graph.invoke({"roles": ["A", "B"], "situation": "测试"}, version="v2")
 
         self.assertEqual(llm.structured_output_methods, ["json_mode", "json_mode", "json_mode"])
 

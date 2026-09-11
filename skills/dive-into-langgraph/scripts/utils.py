@@ -35,10 +35,12 @@ def list_agent_tools(agent) -> str:
 
 async def stream_messages(agent, messages: dict):
     """流式输出 - messages 模式"""
-    async for token, _ in agent.astream(
+    async for part in agent.astream(
         messages,
         stream_mode="messages",
+        version="v2",
     ):
+        token, _ = part["data"]
         if token.content:
             print(token.content, end="", flush=True)
 

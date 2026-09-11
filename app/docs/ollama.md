@@ -52,9 +52,9 @@ curl http://127.0.0.1:11435/api/generate -d '{
 ```python
 """
 运行方法：
-    pip install -U langchain-openai
+    uv sync
     OLLAMA_HOST=0.0.0.0:11435 ollama serve
-    python ollama.py
+    uv run python ollama.py
 """
 
 from langchain_openai import ChatOpenAI

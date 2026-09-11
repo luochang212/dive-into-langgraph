@@ -107,5 +107,6 @@ query = "当前的 Agent 能力，有哪些局限？"
 for event in agent.stream(
     {"messages": [{"role": "user", "content": query}]},
     stream_mode="values",
+    version="v2",
 ):
-    event["messages"][-1].pretty_print()
+    event["data"]["messages"][-1].pretty_print()

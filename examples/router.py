@@ -32,8 +32,8 @@ tool_agent = create_agent(
 
 def run_tool_agent(state: MessagesState):
     # 透传消息给 agent，返回其消息栈
-    res = tool_agent.invoke({"messages": state["messages"]})
-    return {"messages": res["messages"]}
+    res = tool_agent.invoke({"messages": state["messages"]}, version="v2")
+    return {"messages": res.value["messages"]}
 
 
 # 3) 路由节点：简单规则判断是否需要走工具
@@ -66,5 +66,5 @@ graph_builder.add_edge("chatbot", END)
 graph_builder.add_edge("tool_agent", END)
 graph = graph_builder.compile()
 
-result = graph.invoke({"messages": [HumanMessage(content="你好，北京是什么天气")]})
-print(result["messages"][-1].content)
+result = graph.invoke({"messages": [HumanMessage(content="你好，北京是什么天气")]}, version="v2")
+print(result.value["messages"][-1].content)

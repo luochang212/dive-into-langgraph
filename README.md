@@ -47,13 +47,13 @@ npx skills add luochang212/dive-into-langgraph
 ## 二、安装依赖
 
 ```bash
-pip install -r requirements.txt
+uv sync
 ```
 
 <details>
   <summary>依赖包列表</summary>
 
-  以下为 `requirements.txt` 中的依赖包清单：
+  `pyproject.toml` 声明的主要依赖如下，精确版本以 `uv.lock` 为准：
 
   ```text
   pydantic
@@ -64,7 +64,6 @@ pip install -r requirements.txt
   langchain-tavily
   langgraph
   langgraph-cli[inmem]
-  langgraph-supervisor
   langgraph-checkpoint-sqlite
   langgraph-checkpoint-redis
   langmem
@@ -80,6 +79,20 @@ pip install -r requirements.txt
   ```
 </details>
 
+### 代码质量与 Git Hook
+
+首次克隆后安装仓库的 pre-commit Hook：
+
+```bash
+uv run pre-commit install
+```
+
+Hook 会在每次提交前检查全仓 Ruff 格式和 lint，但不会自动改写文件。手动执行同一套 CI 检查：
+
+```bash
+uv run pre-commit run --all-files
+```
+
 ## 三、章节目录
 
 本教程的内容速览：
@@ -93,7 +106,7 @@ pip install -r requirements.txt
 | 5 | [记忆](./5.memory.ipynb) | 创建短期记忆、长期记忆 |
 | 6 | [上下文工程](./6.context.ipynb) | 使用 State、Store、Runtime 管理上下文 |
 | 7 | [MCP Server](./7.mcp_server.ipynb) | 创建 MCP Server 并接入 LangGraph |
-| 8 | [监督者模式](./8.supervisor.ipynb) | 两种方法实现监督者模式：tool-calling、langgraph-supervisor |
+| 8 | [监督者模式](./8.supervisor.ipynb) | 使用官方推荐的 subagents-as-tools 模式实现监督者 |
 | 9 | [并行](./9.parallelization.ipynb) | 如何实现并发：节点并发、`@task` 装饰器、Map-reduce、Sub-graphs |
 | 10 | [RAG](./10.rag.ipynb) | 三种方式实现 RAG：向量检索、关键词检索、混合检索 |
 | 11 | [网络搜索](./11.web_search.ipynb) | 实现联网搜索：DashScope、Tavily、DDGS 和 Exa MCP |

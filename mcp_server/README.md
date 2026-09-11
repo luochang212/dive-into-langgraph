@@ -1,13 +1,13 @@
-安装后台程序管理工具 `supervisor`：
+同步项目环境：
 
 ```bash
-pip install supervisor
+uv sync
 ```
 
 编写配置，启动 `supervisord` 维持后台任务：
 
 ```bash
-supervisord -c ./mcp_supervisor.conf
+uv run supervisord -c mcp_server/mcp_supervisor.conf
 ```
 
 检查端口是否正常提供服务：

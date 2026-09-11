@@ -14,16 +14,15 @@ LangGraph 是由 LangChain 团队开发的开源 Agent 框架。v1.0 是稳定�
 
 ## 安装依赖
 
-基础依赖：
+在本仓库中同步全部依赖：
 
 ```bash
-pip install \
-  langgraph \
-  "langchain[mcp,openai]" \
-  langchain-tavily \
-  python-dotenv \
-  pydantic
+uv sync
 ```
+
+仓库使用 `pyproject.toml` 声明依赖、`uv.lock` 固定精确版本。MCP 使用
+`langchain[mcp]` 内置的 `langchain.mcp.MCPAdapter`。`langchain.mcp` 命名空间当前仍为
+**Beta**，本 Skill 只面向当前稳定包中的最新接口，不保留旧形态兼容层。
 
 ## 环境变量
 
@@ -56,7 +55,7 @@ ARK_API_KEY=your_api_key_here
 | 5 | **记忆** | 短期记忆、长期记忆 | [在线](https://luochang212.github.io/dive-into-langgraph/memory/) | [本地](references/5.memory.md) |
 | 6 | **上下文工程** | 使用 State、Store、Runtime 管理上下文 | [在线](https://luochang212.github.io/dive-into-langgraph/context/) | [本地](references/6.context.md) |
 | 7 | **MCP Server** | 创建 MCP Server 并接入 LangGraph | [在线](https://luochang212.github.io/dive-into-langgraph/mcp-server/) | [本地](references/7.mcp_server.md) |
-| 8 | **监督者模式** | 两种方法：tool-calling、langgraph-supervisor | [在线](https://luochang212.github.io/dive-into-langgraph/supervisor/) | [本地](references/8.supervisor.md) |
+| 8 | **监督者模式** | 官方推荐的 subagents-as-tools 模式 | [在线](https://luochang212.github.io/dive-into-langgraph/supervisor/) | [本地](references/8.supervisor.md) |
 | 9 | **并行** | 节点并发、@task 装饰器、Map-reduce、Sub-graphs | [在线](https://luochang212.github.io/dive-into-langgraph/parallelization/) | [本地](references/9.parallelization.md) |
 | 10 | **RAG** | 向量检索、关键词检索、混合检索 | [在线](https://luochang212.github.io/dive-into-langgraph/rag/) | [本地](references/10.rag.md) |
 | 11 | **网络搜索** | DashScope、Tavily、DDGS 和 Exa MCP | [在线](https://luochang212.github.io/dive-into-langgraph/web-search/) | [本地](references/11.web_search.md) |

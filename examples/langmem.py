@@ -32,9 +32,13 @@ agent = create_agent(
 )
 
 # 执行示例：使用智能体进行简单对话
-response = agent.invoke({"messages": [HumanMessage(content="请记住我喜欢编程。")]})
+response = agent.invoke(
+    {"messages": [HumanMessage(content="请记住我喜欢编程。")]}, version="v2"
+).value
 print("智能体响应:", response["messages"][-1].content)
 
 # 检索记忆以验证存储
-search_result = agent.invoke({"messages": [HumanMessage(content="回忆一下我喜欢什么吗？")]})
+search_result = agent.invoke(
+    {"messages": [HumanMessage(content="回忆一下我喜欢什么吗？")]}, version="v2"
+).value
 print("记忆检索结果:", search_result["messages"][-1].content)

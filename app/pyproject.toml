@@ -6,11 +6,11 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "fastmcp>=4.0.3",
-    "gradio>=6.26.0",
+    "gradio>=6.27.0",
     "langchain[mcp]>=1.4.0",
-    "langchain-openai>=1.6.1",
+    "langchain-openai>=1.6.2",
     "langgraph>=1.2.11",
-    "openai>=3.8.0",
+    "openai>=3.13.0",
     "pydantic>=2.13.5",
     "python-dotenv>=1.2.3",
     "typer>=0.27.2",
@@ -18,7 +18,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "ruff>=0.16.6",
+    "ruff>=0.16.7",
 ]
 
 [tool.uv]

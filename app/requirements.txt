@@ -1,9 +1,0 @@
-pydantic>=2.13.5
-python-dotenv>=1.2.3
-langchain[mcp]>=1.4.0
-langchain-openai>=1.6.1
-langgraph>=1.2.11
-openai>=3.8.0
-fastmcp>=4.0.3
-gradio>=6.26.0
-typer>=0.27.2

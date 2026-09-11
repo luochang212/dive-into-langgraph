@@ -30,7 +30,7 @@ A 14-chapter Jupyter ebook on LangGraph 1.0 (LangChain + LangGraph), covering Re
 - repo root: `uv sync` — tutorial/notebook dependencies (dev tools `ruff`, `jupyter` included)
 - `app/`: `cd app && uv sync` — the Gradio app
 
-**Prefer latest stable on build.** `uv sync` installs from the lock; when refreshing, prefer latest stable (`uv lock --upgrade-package <name>`). The dev toolchain is latest-stable — e.g. `ruff>=0.16.1`, whose 0.16 line formats Markdown code blocks by default and widened the default lint rules, so the root `.ruff.toml` pins `select = ["E4", "E7", "E9", "F"]` explicitly.
+**Prefer latest stable on build.** `uv sync` installs from the lock; when refreshing, prefer latest stable (`uv lock --upgrade-package <name>`). The dev toolchain is latest-stable — e.g. `ruff>=0.16.7`, whose 0.16 line formats Markdown code blocks by default and widened the default lint rules, so the root `.ruff.toml` pins `select = ["E4", "E7", "E9", "F"]` explicitly.
 
 **`uv.lock` is the source of truth.** It is checked in. Preserve its registry/index when refreshing — never rewrite the whole lock's package URLs.
 
@@ -38,6 +38,7 @@ A 14-chapter Jupyter ebook on LangGraph 1.0 (LangChain + LangGraph), covering Re
 
 **Format:** `ruff format .` — config in the root `.ruff.toml` (`line-length = 100`).
 **Lint:** `ruff check .` — rules `E4/E7/E9/F`.
+**Git hook:** `uv run pre-commit install` once per clone. The versioned hook and CI both run `uv run pre-commit run --all-files`; hooks check but do not rewrite files.
 
 ## Docs
 

@@ -4,6 +4,7 @@ from unittest.mock import patch
 
 import app as app_module
 from app import AppConfig, LLMConfig, make_generate_response
+from tools.tool_runtime import ToolSchema
 from utils.tool_view import format_tool_call, format_tool_result
 
 
@@ -47,7 +48,47 @@ class AsyncSummaryLLM:
         return "async summary"
 
 
+class V2StreamingAgent:
+    def __init__(self):
+        self.kwargs = None
+
+    async def astream(self, inputs, **kwargs):
+        self.kwargs = kwargs
+        yield {
+            "type": "messages",
+            "ns": (),
+            "data": (
+                type("Token", (), {"content": "hello", "name": None})(),
+                {"langgraph_node": "model"},
+            ),
+        }
+        yield {
+            "type": "values",
+            "ns": (),
+            "data": {"messages": [type("Message", (), {"tool_calls": []})()]},
+        }
+
+
 class GenerateResponseTests(unittest.IsolatedAsyncioTestCase):
+    async def test_stream_events_uses_v2_envelope(self):
+        agent = V2StreamingAgent()
+        history = [{"role": "assistant", "content": app_module.TYPING_INDICATOR_HTML}]
+
+        updates = [
+            update
+            async for update in app_module._stream_events(
+                agent,
+                [{"role": "user", "content": "hello"}],
+                history,
+                ToolSchema(base_url="", api_key="", model="test"),
+            )
+        ]
+
+        self.assertEqual(agent.kwargs["version"], "v2")
+        self.assertEqual(agent.kwargs["stream_mode"], ["messages", "values"])
+        self.assertEqual(history[-1]["content"], "hello")
+        self.assertEqual(updates[-1], ("", history))
+
     def test_build_llm_messages_cleans_assistant_tool_html(self):
         tool_html = (
             "before\n"

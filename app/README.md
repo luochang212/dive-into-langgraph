@@ -56,8 +56,8 @@ cp .env.example .env
 使用 uv 安装依赖，并启动应用：
 
 ```bash
-# 1. 安装 uv
-pip install uv -U
+# 1. 安装 uv（如尚未安装）
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # 2. 使用 uv 同步虚拟环境
 uv sync
@@ -65,22 +65,6 @@ uv sync
 # 3. 使用 uv 运行应用
 uv run app.py
 ```
-
-<details>
-  <summary>如果使用 uv 安装失败，可以使用 pip 安装</summary>
-  
-  ```bash
-  # 1. 安装依赖包
-  pip install -r requirements.txt -U -i https://mirrors.cloud.tencent.com/pypi/simple/
-  # 注释：
-  #   -i 为使用镜像源，全称 --index-url
-  #   -U 为升级到最新包版本，全称 --upgrade
-
-  # 2. 运行应用
-  python app.py
-  ```
-  
-</details>
 
 ## 🐒 测试问题
 
@@ -121,7 +105,6 @@ uv run app.py
 │   ├── prompt_enhance.py
 │   └── subagent_search.py
 ├── pyproject.toml
-├── requirements.txt        # 项目依赖
 ├── space                   # filesystem 读写空间
 │   └── food.md
 ├── tests                   # 测试目录
@@ -181,14 +164,13 @@ docker compose exec -it gradio-agent bash
 
 ```bash
 # 1. 确保已经安装 uv
-pip install uv -U
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # 2. 初始化项目，这会创建一个包含基础信息的 pyproject.toml 文件
 uv init --name gradio-agent-app --description "基于 LangChain 构建流式对话智能体" --python 3.13
 
-# 3. 更新 pyproject.toml 中的 dependencies 部分
-# 这会自动创建 .venv 虚拟环境，并创建 uv.lock 文件
-uv add -r requirements.txt
+# 3. 添加依赖；这会更新 pyproject.toml 和 uv.lock
+uv add <package>
 ```
 
 ## 📢 更多介绍
