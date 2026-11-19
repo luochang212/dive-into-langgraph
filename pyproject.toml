@@ -16,7 +16,6 @@ dependencies = [
     "langmem>=0.0.30",
     "ipynbname>=2025.8.0.0",
     "fastmcp>=4.0.3",
-    "bs4>=0.0.2",
     "requests>=2.34.2",
     "scikit-learn>=1.9.1",
     "supervisor>=4.3.0",
@@ -24,6 +23,7 @@ dependencies = [
     "rank-bm25>=0.2.2",
     "ddgs>=9.16.0",
     "deepagents>=0.7.13",
+    "beautifulsoup4>=4.15.0",
 ]
 
 [dependency-groups]

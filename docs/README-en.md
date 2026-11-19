@@ -71,7 +71,7 @@ uv sync
   langmem
   ipynbname
   fastmcp
-  bs4
+  beautifulsoup4
   requests
   scikit-learn
   supervisor
@@ -108,10 +108,10 @@ Quick overview of the tutorial:
 | 5 | [Memory](https://luochang212.github.io/dive-into-langgraph-en/memory/) | Learn how to create short-term and long-term memory |
 | 6 | [Context Engineering](https://luochang212.github.io/dive-into-langgraph-en/context/) | Manage context using State, Store, Runtime |
 | 7 | [MCP Server](https://luochang212.github.io/dive-into-langgraph-en/mcp-server/) | How to create MCP Server and integrate with LangGraph |
-| 8 | [Supervisor Pattern](https://luochang212.github.io/dive-into-langgraph-en/supervisor/) | Implement a supervisor with the officially recommended subagents-as-tools pattern |
+| 8 | [Supervisor Pattern](https://luochang212.github.io/dive-into-langgraph-en/supervisor/) | Two methods to implement supervisor pattern: tool-calling, langgraph-supervisor |
 | 9 | [Parallelization](https://luochang212.github.io/dive-into-langgraph-en/parallelization/) | How to implement concurrency: node concurrency, `@task` decorator, Map-reduce, Sub-graphs |
 | 10 | [RAG](https://luochang212.github.io/dive-into-langgraph-en/rag/) | Implement RAG: Vector Retrieval, Keyword Retrieval, Hybrid Retrieval |
-| 11 | [Web Search](https://luochang212.github.io/dive-into-langgraph-en/web-search/) | Implement web search functionality: DashScope, Tavily, DDGS, and Exa MCP |
+| 11 | [Web Search](https://luochang212.github.io/dive-into-langgraph-en/web-search/) | Implement web search functionality: DashScope, Tavily, DDGS |
 | 12 | [Deep Agents](https://luochang212.github.io/dive-into-langgraph-en/deep-agents/) | Brief introduction to Deep Agents |
 | 13 | [Gradio APP](https://luochang212.github.io/dive-into-langgraph-en/gradio-app/) | Build a streaming chat agent app with Gradio |
 | 14 | [Appendix: Debug UI](https://luochang212.github.io/dive-into-langgraph-en/langgraph-cli/) | Introduction to the debug UI provided by langgraph-cli |

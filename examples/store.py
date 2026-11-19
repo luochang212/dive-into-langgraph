@@ -3,7 +3,7 @@
 参考: https://docs.langchain.com/oss/python/langgraph/add-memory#add-long-term-memory
 
 运行前准备：
-    $ uv sync
+    $ uv add langgraph-checkpoint-redis
     $ cd examples
     $ docker compose up -d
     $ docker exec myredis redis-cli ping
@@ -28,7 +28,7 @@ load_dotenv()
 llm = ChatOpenAI(
     api_key=os.getenv("DASHSCOPE_API_KEY"),
     base_url=os.getenv("DASHSCOPE_BASE_URL"),
-    model="qwen3.7-flash",
+    model="qwen3-coder-plus",
     temperature=0.7,
 )
 
@@ -78,9 +78,8 @@ with (
         {"messages": [{"role": "user", "content": "Hi! Remember: my name is Bob"}]},
         config,
         stream_mode="values",
-        version="v2",
     ):
-        chunk["data"]["messages"][-1].pretty_print()
+        chunk["messages"][-1].pretty_print()
 
     config = {
         "configurable": {
@@ -93,6 +92,5 @@ with (
         {"messages": [{"role": "user", "content": "what is my name?"}]},
         config,
         stream_mode="values",
-        version="v2",
     ):
-        chunk["data"]["messages"][-1].pretty_print()
+        chunk["messages"][-1].pretty_print()

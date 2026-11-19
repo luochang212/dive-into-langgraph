@@ -10,7 +10,7 @@ load_dotenv()
 llm = ChatOpenAI(
     api_key=os.getenv("DASHSCOPE_API_KEY"),
     base_url=os.getenv("DASHSCOPE_BASE_URL"),
-    model="qwen3.7-flash",
+    model="qwen3-coder-plus",
 )
 
 # 创建Agent

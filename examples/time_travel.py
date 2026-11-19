@@ -16,7 +16,7 @@ load_dotenv()
 llm = ChatOpenAI(
     api_key=os.getenv("DASHSCOPE_API_KEY"),
     base_url=os.getenv("DASHSCOPE_BASE_URL"),
-    model="qwen3.7-flash",
+    model="qwen3-coder-plus",
     temperature=0.7,
 )
 
@@ -60,7 +60,7 @@ config = {
         "thread_id": uuid.uuid4(),
     }
 }
-state = graph.invoke({}, config, version="v2").value
+state = graph.invoke({}, config)
 
 print(state["topic"])
 print()
@@ -85,7 +85,7 @@ new_config = graph.update_state(new_config, values={"joke": ""})
 print(new_config)
 
 # 从检查点恢复执行
-new_state = graph.invoke(None, new_config, version="v2").value
+new_state = graph.invoke(None, new_config)
 
 print(new_state["topic"])
 print()

@@ -26,7 +26,7 @@ load_dotenv()
 llm = ChatOpenAI(
     api_key=os.getenv("DASHSCOPE_API_KEY"),
     base_url=os.getenv("DASHSCOPE_BASE_URL"),
-    model="qwen3.7-flash",
+    model="qwen3-coder-plus",
     temperature=0.7,
 )
 
@@ -40,6 +40,8 @@ embeddings = OpenAIEmbeddings(
     base_url=os.getenv("DASHSCOPE_BASE_URL"),
 )
 vector_store = InMemoryVectorStore(embedding=embeddings)
+
+bs4_strainer = bs4.SoupStrainer(class_=("post"))
 
 
 def load_web_page(url: str, strainer: bs4.SoupStrainer | None = None) -> list[Document]:
@@ -56,7 +58,6 @@ def load_web_page(url: str, strainer: bs4.SoupStrainer | None = None) -> list[Do
     return [Document(page_content=soup.get_text(), metadata={"source": url})]
 
 
-bs4_strainer = bs4.SoupStrainer(class_=("post"))
 docs = load_web_page("https://luochang212.github.io/posts/quick_bi_intro/", bs4_strainer)
 
 assert len(docs) == 1
@@ -107,6 +108,5 @@ query = "当前的 Agent 能力，有哪些局限？"
 for event in agent.stream(
     {"messages": [{"role": "user", "content": query}]},
     stream_mode="values",
-    version="v2",
 ):
-    event["data"]["messages"][-1].pretty_print()
+    event["messages"][-1].pretty_print()
