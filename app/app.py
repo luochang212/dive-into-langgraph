@@ -56,29 +56,33 @@ class LLMConfig:
     """LLM 模型配置"""
 
     provider: str = "dashscope"
-    model: str = "qwen3.7-flash"
+    model: str = "qwen3.8-flash"
     base_url: Optional[str] = None
     api_key: Optional[str] = None
     timeout: int = 30
     enable_thinking: bool = True
+    thinking_budget: Optional[int] = None
     temperature: Optional[float] = None
     top_p: Optional[float] = None
 
     # ── 支持的 LLM 提供商 ────────────────────────────────────────────────────
-    # DashScope 推荐的省钱模型：qwen3.7-flash
-    # 需要更强能力时可切换到 qwen3.8-flash 或 qwen3.8-max。
+    # 性能、速度与成本均衡：qwen3.8-flash
+    # 需要更强能力时可切换到 qwen4-max。
     # ─────────────────────────────────────────────────────────────────────────
 
     @classmethod
     def from_env(cls, provider: str = "dashscope") -> LLMConfig:
         """从环境变量创建 LLM 配置"""
         if provider == "dashscope":
+            budget = os.getenv("DASHSCOPE_THINKING_BUDGET")
             return cls(
                 provider=provider,
-                model="qwen3.7-flash",
+                model="qwen3.8-flash",
                 base_url=os.getenv("DASHSCOPE_BASE_URL"),
                 api_key=os.getenv("DASHSCOPE_API_KEY"),
-                enable_thinking=True,
+                enable_thinking=os.getenv("DASHSCOPE_THINKING", "true").lower()
+                in {"1", "true", "yes", "on"},
+                thinking_budget=int(budget) if budget else None,
             )
         if provider == "ark":
             # 字节火山方舟，支持：deepseek-v3-2-251201 / kimi-k2-thinking-251104
@@ -112,8 +116,15 @@ class LLMConfig:
             "api_key": self.api_key,
             "timeout": self.timeout,
         }
-        if self.enable_thinking:
-            kwargs["extra_body"] = {"chat_template_kwargs": {"enable_thinking": True}}
+        if self.provider == "ollama":
+            if self.enable_thinking:
+                kwargs["extra_body"] = {"chat_template_kwargs": {"enable_thinking": True}}
+        else:
+            # DashScope 形状：qwen3.8 系列默认开启思考，显式传入以可控
+            extra_body: dict = {"enable_thinking": self.enable_thinking}
+            if self.enable_thinking and self.thinking_budget:
+                extra_body["thinking_budget"] = self.thinking_budget
+            kwargs["extra_body"] = extra_body
         if self.temperature is not None:
             kwargs["temperature"] = self.temperature
         if self.top_p is not None:
