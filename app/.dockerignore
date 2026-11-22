@@ -39,6 +39,7 @@ README.md
 .dockerignore
 
 # Environment (只在本地使用)
+.env
 .env.example
 
 # OS

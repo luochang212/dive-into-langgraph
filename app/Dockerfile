@@ -17,7 +17,8 @@ RUN sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list.d/debia
 
 # 复制依赖文件并安装Python依赖（索引已在 pyproject.toml 钉定为腾讯源）
 COPY pyproject.toml uv.lock ./
-RUN uv sync
+# --frozen: 构建期不重新解析依赖，保证与 uv.lock 完全一致
+RUN uv sync --frozen
 
 # 复制应用代码
 COPY app.py .
