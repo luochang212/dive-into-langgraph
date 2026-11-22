@@ -57,6 +57,10 @@ class SafeEvaluator(ast.NodeVisitor):
             raise ValueError(f"不支持的二元运算符: {op_type}")
         left = self.visit(node.left)
         right = self.visit(node.right)
+        # 幂运算防护：按结果位数设上限，避免 9**9**9 这类表达式耗尽内存
+        if op_type is ast.Pow and isinstance(left, int) and isinstance(right, int):
+            if left.bit_length() * abs(right) > 100_000:
+                raise ValueError("指数过大，拒绝计算")
         return self.BIN_OPS[op_type](left, right)
 
     def visit_UnaryOp(self, node):
@@ -76,8 +80,8 @@ class SafeEvaluator(ast.NodeVisitor):
         if func_name not in self.SAFE_FUNCS:
             raise ValueError(f"不支持的函数: {func_name}")
 
-        if len(node.args) != 1:
-            raise ValueError(f"{func_name} 函数需要且仅需要一个参数")
+        if len(node.args) != 1 or node.keywords:
+            raise ValueError(f"{func_name} 函数仅支持一个位置参数（不支持关键字参数）")
 
         arg = self.visit(node.args[0])
         return self.SAFE_FUNCS[func_name](arg)
@@ -120,7 +124,7 @@ def calculator(expression: str) -> str:
     支持的运算符: + - * / ** ()
     支持的函数: sqrt exp log log2 log10 sin cos tan abs
 
-    注意: 上叙函数仅支持单参数。像 log(9, 3) 这样的，不行
+    注意: 上述函数仅支持单参数。像 log(9, 3) 或 log(9, base=3) 这样的，不行
     例子: 计算 (sqrt(9) + 1) ** 2
     """
     evaluator = SafeEvaluator()
