@@ -54,6 +54,9 @@ def execute_python(code: str) -> str:
         stderr = result.stderr.strip()
 
         if stderr:
+            # 同时有 stderr 和 stdout 时都返回，避免只报错丢失正常输出
+            if stdout:
+                return f"Error:\n{stderr}\n\nStdout:\n{stdout}"
             return f"Error:\n{stderr}"
 
         return stdout if stdout else "Execution finished (no output)"
@@ -78,7 +81,6 @@ if __name__ == "__main__":
 
     # 启动 MCP Server
     import argparse
-    import asyncio
 
     # 配置网络参数
     host = os.getenv("HOST", "127.0.0.1")
@@ -90,9 +92,10 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
+    # 注意: fastmcp 4.x 的 run() 是同步函数（内部自带事件循环），不要用 asyncio.run 包裹
     if args.transport == "stdio":
         mcp.run(transport="stdio")
     elif args.transport == "http":
-        asyncio.run(mcp.run(transport="http", host=host, port=port, path="/mcp"))
+        mcp.run(transport="http", host=host, port=port, path="/mcp")
     else:
         raise ValueError(f"Unknown transport: {args.transport}")

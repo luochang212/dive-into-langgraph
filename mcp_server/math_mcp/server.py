@@ -26,6 +26,11 @@ def _eval_ast(node):
         if isinstance(op, ast.Mod):
             return left % right
         if isinstance(op, ast.Pow):
+            # DoS guard: bound the result size (in bits) so that `9**9**9`
+            # (7 characters, ~370 million digits) cannot blow up memory
+            if isinstance(left, int) and isinstance(right, int):
+                if left.bit_length() * abs(right) > 100_000:
+                    raise ValueError("Exponent too large - refusing to compute")
             return left**right
         if isinstance(op, ast.FloorDiv):
             return left // right
@@ -64,8 +69,12 @@ def _normalize_expression(text: str) -> str:
 
 @mcp.tool
 def math(question: str) -> int | float:
-    """Solve a natural-language arithmetic question, e.g. "what's (3 + 5) x 12?".
+    """Solve a natural-language arithmetic question, e.g. "what's (3 + 5) * 12?".
     Returns a number; integers are returned without a decimal.
+
+    Note: only digits, ( ) + - * / % ** and spaces survive normalization; letters
+    and CJK characters are stripped before evaluation, so the input must contain
+    a plain arithmetic expression (× / ÷ are mapped to * and /).
     """
     # Security: Limit input length to prevent DoS attacks
     if len(question) > 1000:
