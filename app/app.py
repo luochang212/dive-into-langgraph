@@ -25,7 +25,7 @@ from langchain.agents.middleware import (
 # `langchain.mcp` ships in the stable package but remains a Beta namespace.
 from langchain.mcp import MCPAdapter
 from langchain.tools import ToolRuntime, tool
-from langchain_openai import ChatOpenAI
+from langchain_deepseek import ChatDeepSeek
 
 from config.mcp_config import get_mcp_dict
 from prompts import middleware_todolist, prompt_enhance, subagent_search
@@ -34,6 +34,7 @@ from tools.tool_runtime import ToolSchema
 from tools.tool_sci import calculator
 from tools.tool_search import dashscope_search
 from utils.remove_html import get_cleaned_text
+from utils.think_view import format_think_result
 from utils.tool_view import format_tool_call, format_tool_result
 from utils.web_ui import create_ui, custom_css, theme
 
@@ -50,6 +51,13 @@ TYPING_INDICATOR_HTML = (
 # 配置层
 # ─────────────────────────────────────────────────────────────────────────────
 
+# 兜底 base_url：与 .env.example 保持一致。
+# 若只配了 API_KEY 而漏配 base_url，ChatDeepSeek 会静默指向 api.deepseek.com，产生迷惑性 401。
+DEFAULT_BASE_URLS = {
+    "dashscope": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "ark": "https://ark.cn-beijing.volces.com/api/v3",
+}
+
 
 @dataclass
 class LLMConfig:
@@ -59,7 +67,11 @@ class LLMConfig:
     model: str = "qwen3.8-flash"
     base_url: Optional[str] = None
     api_key: Optional[str] = None
-    timeout: int = 30
+    # 对齐 pi-ai / openai SDK 的默认口径（600s）：流式请求下这是相邻数据块之间的
+    # 空闲上限而非总时长，正常生成不会触发；卡死时用户可随时点"中止"。
+    timeout: int = 600
+    # 依赖 openai SDK 内建的重试（指数退避，遵循 Retry-After），不在应用层手搓重试循环
+    max_retries: int = 2
     enable_thinking: bool = True
     thinking_budget: Optional[int] = None
     temperature: Optional[float] = None
@@ -78,7 +90,7 @@ class LLMConfig:
             return cls(
                 provider=provider,
                 model="qwen3.8-flash",
-                base_url=os.getenv("DASHSCOPE_BASE_URL"),
+                base_url=os.getenv("DASHSCOPE_BASE_URL") or DEFAULT_BASE_URLS["dashscope"],
                 api_key=os.getenv("DASHSCOPE_API_KEY"),
                 enable_thinking=os.getenv("DASHSCOPE_THINKING", "true").lower()
                 in {"1", "true", "yes", "on"},
@@ -89,7 +101,7 @@ class LLMConfig:
             return cls(
                 provider=provider,
                 model="deepseek-v3-2-251201",
-                base_url=os.getenv("ARK_BASE_URL"),
+                base_url=os.getenv("ARK_BASE_URL") or DEFAULT_BASE_URLS["ark"],
                 api_key=os.getenv("ARK_API_KEY"),
                 enable_thinking=False,
             )
@@ -109,12 +121,13 @@ class LLMConfig:
         raise ValueError(f"未知的 LLM 提供商：{provider!r}")
 
     def to_kwargs(self) -> dict:
-        """转换为 ChatOpenAI 的构造参数"""
+        """转换为 ChatDeepSeek 的构造参数"""
         kwargs: dict = {
             "model": self.model,
             "base_url": self.base_url,
             "api_key": self.api_key,
             "timeout": self.timeout,
+            "max_retries": self.max_retries,
         }
         if self.provider == "ollama":
             if self.enable_thinking:
@@ -196,7 +209,7 @@ class AgentService:
 
     def __init__(self, config: AppConfig) -> None:
         self._config = config
-        self._llm: Optional[ChatOpenAI] = None
+        self._llm: Optional[ChatDeepSeek] = None
         self._search_subagent: Optional[Any] = None
         self._agent: Optional[Any] = None
         self._lock = asyncio.Lock()
@@ -204,10 +217,10 @@ class AgentService:
     # ── LLM ──────────────────────────────────────────────────────────────────
 
     @property
-    def llm(self) -> ChatOpenAI:
+    def llm(self) -> ChatDeepSeek:
         """获取 LLM 实例（懒加载）"""
         if self._llm is None:
-            self._llm = ChatOpenAI(**self._config.llm.to_kwargs())
+            self._llm = ChatDeepSeek(**self._config.llm.to_kwargs())
         return self._llm
 
     # ── 搜索子 Agent ──────────────────────────────────────────────────────────
@@ -326,7 +339,7 @@ def _get_greeting(service: AgentService) -> str:
         return "你好！我是你的智能助手。\n请问有什么可以帮你的吗？"
 
 
-async def _summarize_error(llm: ChatOpenAI | None, err: BaseException, limit: int = 500) -> str:
+async def _summarize_error(llm: ChatDeepSeek | None, err: BaseException, limit: int = 500) -> str:
     """用 LLM 总结错误，失败时降级输出原始日志"""
     full_trace = "".join(traceback.format_exception(type(err), err, err.__traceback__))
     full_trace = full_trace[-5000:]  # 避免过长
@@ -357,7 +370,16 @@ async def _stream_events(
 ) -> AsyncIterator[Tuple[str, List[Dict[str, str]]]]:
     """处理 Agent 事件流，更新 history 并逐步 yield"""
     # 需要跳过输出的子 Agent 名称（避免与主流输出重复）
-    SKIP_SUBAGENTS = {"subagent:search-brief"}
+    SKIP_SUBAGENTS = {"subagent_search_brief"}
+
+    # 流式思考块状态：start 为 None 表示当前没有打开的思考块。
+    # 思考内容在 history 中渲染为 <details> 折叠块（默认折叠、点击展开），
+    # 与正文分离——发送给 LLM 前会由 remove_html 剥离。
+    think_state = {"start": None, "buffer": ""}
+
+    def invalidate_think_block() -> None:
+        # 其他内容（工具块等）追加后，旧的块前缀位置作废；后续思考将开新块
+        think_state["start"] = None
 
     def clear_typing_indicator() -> None:
         if history[-1]["content"] == TYPING_INDICATOR_HTML:
@@ -375,20 +397,39 @@ async def _stream_events(
             token, metadata = payload
             node = metadata.get("langgraph_node", "")
 
-            if node == "model" and token.content:
-                clear_typing_indicator()
-                history[-1]["content"] += token.content
-                yield "", history
+            if node == "model":
+                # qwen 混合思考模型的思考增量在 additional_kwargs["reasoning_content"]
+                reasoning = (getattr(token, "additional_kwargs", None) or {}).get(
+                    "reasoning_content"
+                )
+                if reasoning:
+                    clear_typing_indicator()
+                    if think_state["start"] is None:
+                        think_state["start"] = len(history[-1]["content"])
+                        think_state["buffer"] = ""
+                    think_state["buffer"] += reasoning
+                    # 每次重建完整折叠块，保证 HTML 任意时刻都是良构的
+                    history[-1]["content"] = history[-1]["content"][
+                        : think_state["start"]
+                    ] + format_think_result(think_state["buffer"])
+                    yield "", history
+                elif token.content:
+                    think_state["start"] = None
+                    clear_typing_indicator()
+                    history[-1]["content"] += token.content
+                    yield "", history
 
             elif node == "tools":
                 if token.name in SKIP_SUBAGENTS:
                     continue
                 if token.content:
+                    invalidate_think_block()
                     clear_typing_indicator()
                     history[-1]["content"] += format_tool_result(token.name, token.content)
                     yield "", history
 
         elif mode == "values":
+            invalidate_think_block()
             state_msgs = payload.get("messages") if isinstance(payload, dict) else None
             if not state_msgs:
                 continue

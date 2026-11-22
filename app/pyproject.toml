@@ -14,12 +14,18 @@ dependencies = [
     "pydantic>=2.13.5",
     "python-dotenv>=1.2.3",
     "typer>=0.27.2",
+    "langchain-deepseek>=1.2.1",
 ]
 
 [dependency-groups]
 dev = [
+    "pytest>=9.2.0",
     "ruff>=0.16.7",
 ]
+
+[tool.pytest.ini_options]
+# 测试以 `from app import ...` / `from utils import ...` 风格导入，需把 app/ 根目录加入 sys.path
+pythonpath = ["."]
 
 [tool.uv]
 

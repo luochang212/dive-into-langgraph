@@ -69,6 +69,34 @@ class V2StreamingAgent:
         }
 
 
+class ScriptedV2Agent:
+    """按给定脚本顺序回放 v2 流式事件的 mock agent"""
+
+    def __init__(self, parts):
+        self.parts = parts
+
+    async def astream(self, inputs, **kwargs):
+        for part in self.parts:
+            yield part
+
+
+def _reasoning_token(text):
+    """模拟 qwen 混合思考模型的思考增量（reasoning_content 在 additional_kwargs 中）"""
+    return type(
+        "Token",
+        (),
+        {"content": "", "name": None, "additional_kwargs": {"reasoning_content": text}},
+    )()
+
+
+def _content_token(text):
+    return type(
+        "Token",
+        (),
+        {"content": text, "name": None, "additional_kwargs": {}},
+    )()
+
+
 class GenerateResponseTests(unittest.IsolatedAsyncioTestCase):
     async def test_stream_events_uses_v2_envelope(self):
         agent = V2StreamingAgent()
@@ -88,6 +116,112 @@ class GenerateResponseTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(agent.kwargs["stream_mode"], ["messages", "values"])
         self.assertEqual(history[-1]["content"], "hello")
         self.assertEqual(updates[-1], ("", history))
+
+    async def _stream_script(self, parts, history):
+        agent = ScriptedV2Agent(parts)
+        return [
+            update
+            async for update in app_module._stream_events(
+                agent,
+                [{"role": "user", "content": "hi"}],
+                history,
+                ToolSchema(base_url="", api_key="", model="test"),
+            )
+        ]
+
+    async def test_stream_events_renders_reasoning_as_collapsible_block(self):
+        history = [{"role": "assistant", "content": app_module.TYPING_INDICATOR_HTML}]
+        parts = [
+            {
+                "type": "messages",
+                "ns": (),
+                "data": (_reasoning_token("先想想"), {"langgraph_node": "model"}),
+            },
+            {
+                "type": "messages",
+                "ns": (),
+                "data": (_reasoning_token("再验证"), {"langgraph_node": "model"}),
+            },
+            {
+                "type": "messages",
+                "ns": (),
+                "data": (_content_token("这是答案"), {"langgraph_node": "model"}),
+            },
+        ]
+
+        await self._stream_script(parts, history)
+
+        final = history[-1]["content"]
+        # 思考块存在、多段思考增量聚在同一块内、默认折叠
+        self.assertIn('<details class="think-result-details">', final)
+        self.assertIn("先想想再验证", final)
+        # 正文出现在思考块之后，typing indicator 已清除
+        self.assertLess(final.index("</details>"), final.index("这是答案"))
+        self.assertNotIn(app_module.TYPING_INDICATOR_HTML, final)
+
+    async def test_stream_events_tool_block_survives_later_reasoning(self):
+        history = [{"role": "assistant", "content": app_module.TYPING_INDICATOR_HTML}]
+        parts = [
+            {
+                "type": "messages",
+                "ns": (),
+                "data": (_reasoning_token("第一段思考"), {"langgraph_node": "model"}),
+            },
+            {
+                "type": "values",
+                "ns": (),
+                "data": {
+                    "messages": [
+                        type(
+                            "Message",
+                            (),
+                            {"tool_calls": [{"name": "calculator", "args": {"a": 1}}]},
+                        )()
+                    ]
+                },
+            },
+            {
+                "type": "messages",
+                "ns": (),
+                "data": (_content_token("中间正文"), {"langgraph_node": "model"}),
+            },
+            {
+                "type": "messages",
+                "ns": (),
+                "data": (_reasoning_token("第二段思考"), {"langgraph_node": "model"}),
+            },
+            {
+                "type": "messages",
+                "ns": (),
+                "data": (_content_token("结尾"), {"langgraph_node": "model"}),
+            },
+        ]
+
+        await self._stream_script(parts, history)
+
+        final = history[-1]["content"]
+        # 顺序：思考块1 → 工具调用块 → 正文 → 思考块2 → 结尾
+        # 第二段思考必须开新块，且不能把工具块切掉
+        self.assertIn("tool-call-details", final)
+        self.assertEqual(
+            [
+                final.index("第一段思考"),
+                final.index("tool-call-details"),
+                final.index("中间正文"),
+                final.index("第二段思考"),
+                final.index("结尾"),
+            ],
+            sorted(
+                [
+                    final.index("第一段思考"),
+                    final.index("tool-call-details"),
+                    final.index("中间正文"),
+                    final.index("第二段思考"),
+                    final.index("结尾"),
+                ]
+            ),
+        )
+        self.assertEqual(final.count('<details class="think-result-details">'), 2)
 
     def test_build_llm_messages_cleans_assistant_tool_html(self):
         tool_html = (
