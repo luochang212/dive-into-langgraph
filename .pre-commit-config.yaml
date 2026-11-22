@@ -16,3 +16,11 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+
+      # 与 CI 的 notebooks job 对齐：本地提交前也跑 notebook 冒烟检查
+      - id: check-notebooks
+        name: Notebook smoke check
+        entry: uv run python scripts/check_notebooks.py
+        language: system
+        pass_filenames: false
+        always_run: true
