@@ -41,7 +41,7 @@ embeddings = OpenAIEmbeddings(
 )
 vector_store = InMemoryVectorStore(embedding=embeddings)
 
-bs4_strainer = bs4.SoupStrainer(class_=("post"))
+bs4_strainer = bs4.SoupStrainer(class_=("post",))
 
 
 def load_web_page(url: str, strainer: bs4.SoupStrainer | None = None) -> list[Document]:
