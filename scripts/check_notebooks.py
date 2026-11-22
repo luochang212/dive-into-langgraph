@@ -5,8 +5,10 @@ Catches the failure classes that full execution would, minus the cost
 (no LLM/API calls, no kernel):
 1. Every notebook parses as valid JSON.
 2. Every code cell's source compiles (IPython magic lines skipped).
-3. Every third-party top-level import used in the notebooks is importable
-   — guards against a notebook using a dependency that isn't declared/installed
+3. Every third-party import used in the notebooks is importable — both the
+   top-level package and dotted submodule paths (e.g. `langgraph.checkpoint.sqlite`,
+   which requires the separate `langgraph-checkpoint-sqlite` distribution).
+   Guards against a notebook using a dependency that isn't declared/installed
    (e.g. the rank_bm25 gap in 10.rag).
 """
 
@@ -26,7 +28,8 @@ def py_lines(src: str) -> list[str]:
     return [line for line in src.splitlines() if not line.lstrip().startswith(("!", "%"))]
 
 
-def top_level_imports(src: str) -> set[str]:
+def collect_imports(src: str) -> set[str]:
+    """Collect every imported module path, keeping dotted submodules intact."""
     try:
         tree = ast.parse(src)
     except SyntaxError:
@@ -35,9 +38,9 @@ def top_level_imports(src: str) -> set[str]:
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
             for alias in node.names:
-                mods.add(alias.name.split(".")[0])
+                mods.add(alias.name)
         elif isinstance(node, ast.ImportFrom) and node.module:
-            mods.add(node.module.split(".")[0])
+            mods.add(node.module)
     return mods
 
 
@@ -66,28 +69,41 @@ for nb in notebooks:
         except SyntaxError as exc:
             errors.append(f"{nb.name}:cell{i}: syntax error — {exc}")
 
-# 3: every third-party top-level import must be importable
+# 3: every third-party import must be importable (top-level packages AND dotted submodules)
 stdlib = set(sys.stdlib_module_names)
-third_party: set[str] = set()
+third_party_roots: set[str] = set()
+dotted_modules: set[str] = set()
 for nb in notebooks:
-    data = json.loads(nb.read_text(encoding="utf-8"))
+    try:
+        data = json.loads(nb.read_text(encoding="utf-8"))
+    except Exception:  # noqa: BLE001 - already reported in step 1
+        continue
     for cell in data.get("cells", []):
         if cell.get("cell_type") != "code":
             continue
         src = "\n".join(py_lines("".join(cell.get("source", []))))
-        third_party |= top_level_imports(src) - stdlib
+        for mod in collect_imports(src):
+            root = mod.split(".")[0]
+            if root in stdlib:
+                continue
+            third_party_roots.add(root)
+            if "." in mod:
+                dotted_modules.add(mod)
 
-for mod in sorted(third_party):
+for mod in sorted(third_party_roots | dotted_modules):
     try:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")  # third-party libs emit SyntaxWarnings at import
             importlib.import_module(mod)
-    except ImportError as exc:
-        errors.append(f"import '{mod}' used in notebooks but not importable — {exc}")
+    except Exception as exc:  # noqa: BLE001 - any import-time failure is a finding
+        errors.append(
+            f"import '{mod}' used in notebooks but not importable — {type(exc).__name__}: {exc}"
+        )
 
 if errors:
     print("\n".join(errors))
     sys.exit(1)
 print(
-    f"OK: {len(notebooks)} notebooks valid, all cells compile, {len(third_party)} third-party imports available"
+    f"OK: {len(notebooks)} notebooks valid, all cells compile, "
+    f"{len(third_party_roots | dotted_modules)} third-party imports available"
 )
