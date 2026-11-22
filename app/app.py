@@ -42,7 +42,8 @@ load_dotenv()
 
 TYPING_INDICATOR_HTML = (
     '<span class="typing-indicator" aria-label="AI 正在回复">'
-    "<span></span><span></span><span></span>"
+    '<span class="dot"></span><span class="dot"></span><span class="dot"></span>'
+    '<span class="thinking-label">正在思考…</span>'
     "</span>"
 )
 

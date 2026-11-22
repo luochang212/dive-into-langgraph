@@ -214,7 +214,9 @@ html, body {
     background: var(--primary) !important;
     color: white !important;
     border: none !important;
-    transition: all 0.3s ease !important;
+    /* 按压反馈用短过渡（press-scale），颜色类仍用 .3s */
+    transition: transform 0.14s cubic-bezier(0.23, 1, 0.32, 1), background 0.3s ease,
+        box-shadow 0.3s ease !important;
     box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2) !important;
 }
 
@@ -222,6 +224,11 @@ html, body {
 .button:hover {
     background: var(--secondary) !important;
     box-shadow: 0 6px 16px rgba(0, 122, 255, 0.3) !important;
+}
+
+/* 按压缩放微反馈（genesis: press-scale） */
+.button:active {
+    transform: scale(0.96);
 }
 
 .stop-button {
@@ -238,40 +245,57 @@ html, body {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    min-width: 32px;
     min-height: 18px;
 }
 
-.typing-indicator span {
+.typing-indicator .dot {
     width: 6px;
     height: 6px;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.78);
+    /* 不对称周期（genesis: pixel-grid-loader）：保持全亮再回落，更像"在工作" */
     animation: typing-dot 1.1s infinite ease-in-out;
 }
 
-.typing-indicator span:nth-child(2) {
+.typing-indicator .dot:nth-child(2) {
     animation-delay: 0.16s;
 }
 
-.typing-indicator span:nth-child(3) {
+.typing-indicator .dot:nth-child(3) {
     animation-delay: 0.32s;
 }
 
+/* 思考提示文字：高光带扫过（genesis: shimmer-text） */
+.thinking-label {
+    font-size: 0.85em;
+    color: #98a2b8;
+    margin-left: 4px;
+    background: linear-gradient(90deg, transparent, #dfe6f3 40%, transparent);
+    background-size: 200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 2s linear infinite;
+}
+
+@keyframes shimmer {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+}
+
 @keyframes typing-dot {
-    0%, 80%, 100% {
+    0%, 100% {
         opacity: 0.35;
         transform: translateY(0);
     }
-    40% {
+    18%, 42% {
         opacity: 1;
         transform: translateY(-3px);
     }
-}
-
-/* 点击效果 */
-.button:active {
-    transform: scale(0.98);
+    62% {
+        opacity: 0.35;
+        transform: translateY(0);
+    }
 }
 
 .dark, .textbox, .user, .assistant {
@@ -329,9 +353,36 @@ html, body {
 .think-result-summary::-webkit-details-marker { display: none; }
 .think-result-summary { list-style: none; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: bold; color: #aaa; outline: none; }
 .think-result-title { display: flex; align-items: center; }
-.think-result-pre { margin-top: 10px; padding: 10px; background-color: #1e1e2e; border-radius: 4px; color: #bbb; font-family: monospace; white-space: pre-wrap; max-height: 400px; overflow-y: auto; border: 1px solid #333; font-size: 0.9em; }
+/* 左侧竖线串联思考内容（genesis: thinking-traces / rikyu 变体） */
+.think-result-pre { margin-top: 10px; padding: 10px; background-color: #1e1e2e; border-radius: 4px; color: #bbb; font-family: monospace; white-space: pre-wrap; max-height: 400px; overflow-y: auto; border: 1px solid #333; border-left: 3px solid #5b6b8c; font-size: 0.9em; }
 .think-result-details[open] .think-result-icon { transform: rotate(180deg); }
 .think-result-icon { transition: transform 0.2s ease; fill: none; stroke: #aaa; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* details 块平滑展开（genesis: grid-accordion 的现代等价 ::details-content；
+   不支持的浏览器自动退化为瞬开，无需回退代码） */
+:root { interpolate-size: allow-keywords; }
+.think-result-details::details-content,
+.tool-result-details::details-content,
+.tool-call-details::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition: block-size 0.3s cubic-bezier(0.23, 1, 0.32, 1), content-visibility 0.3s allow-discrete;
+}
+.think-result-details[open]::details-content,
+.tool-result-details[open]::details-content,
+.tool-call-details[open]::details-content {
+    block-size: auto;
+}
+
+/* 动效降级：系统开启"减弱动态效果"时全部关闭 */
+@media (prefers-reduced-motion: reduce) {
+    .typing-indicator .dot { animation: none; opacity: 0.78; }
+    .thinking-label { animation: none; }
+    .button { transition: none !important; }
+    .think-result-details::details-content,
+    .tool-result-details::details-content,
+    .tool-call-details::details-content { transition: none; }
+}
 
 /* 隐藏 Chatbot 右上角的清空/删除按钮 */
 #chatbot button[aria-label="Clear"] {
