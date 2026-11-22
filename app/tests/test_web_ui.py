@@ -59,7 +59,7 @@ class ButtonStateTests(unittest.TestCase):
     def test_stop_generation_clears_active_typing_indicator(self):
         self.assertTrue(hasattr(web_ui, "_stop_generation"))
 
-        send_update, stop_update, history = web_ui._stop_generation(
+        send_update, stop_update, history, msg_update = web_ui._stop_generation(
             [
                 {"role": "user", "content": "hello"},
                 {"role": "assistant", "content": '<span class="typing-indicator"></span>'},
@@ -69,9 +69,11 @@ class ButtonStateTests(unittest.TestCase):
         self.assertTrue(send_update["visible"])
         self.assertFalse(stop_update["visible"])
         self.assertEqual(history[-1], {"role": "assistant", "content": ""})
+        # 取消生成后输入框必须解锁
+        self.assertTrue(msg_update["interactive"])
 
     def test_stop_generation_does_not_clear_text_that_mentions_typing_indicator(self):
-        _, _, history = web_ui._stop_generation(
+        _, _, history, _ = web_ui._stop_generation(
             [
                 {"role": "user", "content": "hello"},
                 {"role": "assistant", "content": "The CSS class is typing-indicator."},
@@ -120,13 +122,27 @@ class CreateUiTests(unittest.TestCase):
         }
         self.assertEqual(len(generation_fn_indices), 2)
 
+        # 生成事件不设全局并发上限（多用户不应互相排队）
+        for index in generation_fn_indices:
+            self.assertIsNone(ui.fns[index].concurrency_limit)
+
+        # 每条生成链路在生成前后各有一个输入框锁定/解锁监听器（共 2 链路 × 2）
+        msg_lock_events = [
+            fn
+            for fn in ui.fns.values()
+            if getattr(fn, "targets", None) == [(None, "then")]
+            and [component._id for component in fn.inputs] == []
+            and [component._id for component in fn.outputs] == [textbox._id]
+        ]
+        self.assertEqual(len(msg_lock_events), 4)
+
         stop_state_events = [
             fn
             for fn in ui.fns.values()
             if getattr(fn, "targets", None) == [(stop_button._id, "click")]
             and [component._id for component in fn.inputs] == [chatbot._id]
             and [component._id for component in fn.outputs]
-            == [send_button._id, stop_button._id, chatbot._id]
+            == [send_button._id, stop_button._id, chatbot._id, textbox._id]
         ]
         self.assertEqual(len(stop_state_events), 1)
 

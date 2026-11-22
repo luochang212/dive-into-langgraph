@@ -275,7 +275,7 @@ html, body {
 }
 
 .dark, .textbox, .user, .assistant {
-    font-family: "Microsoft YaHei", "PingFang SC", "Ali普惠体", sans-serif;
+    font-family: "Microsoft YaHei", "PingFang SC", "阿里普惠体", sans-serif;
 }
 
 /* 移动端适配 */
@@ -352,6 +352,15 @@ def _show_send_button():
     return gr.update(visible=True), gr.update(visible=False)
 
 
+def _lock_input():
+    # 生成期间锁定输入框，防止同一会话内通过回车/按钮二次提交
+    return gr.update(interactive=False)
+
+
+def _unlock_input():
+    return gr.update(interactive=True)
+
+
 def _clear_active_typing_indicator(history):
     updated_history = list(history or [])
     if not updated_history:
@@ -372,7 +381,8 @@ def _clear_active_typing_indicator(history):
 
 def _stop_generation(history):
     send_update, stop_update = _show_send_button()
-    return send_update, stop_update, _clear_active_typing_indicator(history)
+    # 取消会中断生成事件后面的 .then 解锁链，所以这里要一并解锁输入框
+    return send_update, stop_update, _clear_active_typing_indicator(history), _unlock_input()
 
 
 def create_ui(llm_func, tab_name, main_title, initial_message=None):
@@ -429,7 +439,10 @@ def create_ui(llm_func, tab_name, main_title, initial_message=None):
             queue=False,
             show_progress="hidden",
         )
-        enter_generation = enter_start.then(llm_func, [msg, chatbot], [msg, chatbot])
+        enter_generation = enter_start.then(
+            _lock_input, None, [msg], queue=False, show_progress="hidden"
+        ).then(llm_func, [msg, chatbot], [msg, chatbot], concurrency_limit=None)
+        enter_generation.then(_unlock_input, None, [msg], queue=False, show_progress="hidden")
         enter_generation.then(
             _show_send_button,
             None,
@@ -445,7 +458,10 @@ def create_ui(llm_func, tab_name, main_title, initial_message=None):
             queue=False,
             show_progress="hidden",
         )
-        click_generation = click_start.then(llm_func, [msg, chatbot], [msg, chatbot])
+        click_generation = click_start.then(
+            _lock_input, None, [msg], queue=False, show_progress="hidden"
+        ).then(llm_func, [msg, chatbot], [msg, chatbot], concurrency_limit=None)
+        click_generation.then(_unlock_input, None, [msg], queue=False, show_progress="hidden")
         click_generation.then(
             _show_send_button,
             None,
@@ -457,7 +473,7 @@ def create_ui(llm_func, tab_name, main_title, initial_message=None):
         stop_btn.click(
             _stop_generation,
             [chatbot],
-            [submit_btn, stop_btn, chatbot],
+            [submit_btn, stop_btn, chatbot, msg],
             queue=False,
             show_progress="hidden",
             cancels=[enter_generation, click_generation],
