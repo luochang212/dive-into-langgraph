@@ -81,3 +81,18 @@ jobs:
 
       - name: Build docs
         run: npx --yes mystmd build --html --ci
+
+  skills-branch:
+    # `skills-only` is what `npx skills add` clones, so an unsynced skill change
+    # is real drift rather than a flaky test: the check is a plain tree compare.
+    # Post-merge only — contributors cannot push that orphan branch, so failing
+    # their PRs over it would be a false alarm.
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Check skills-only is in sync
+        run: ./scripts/sync_skills_branch.sh --check

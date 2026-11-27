@@ -10,7 +10,7 @@
 
 **Verify before claiming done.** Don't say you ran something if you didn't. If you can't verify, say so.
 
-**Consistency is load-bearing.** When a toolchain decision changes, find every place that assumed the old one — stale config is a bug that hasn't manifested yet. Keep `uv.lock`, the ruff config, and the documented versions in sync.
+**Consistency is load-bearing.** When a toolchain decision changes, find every place that assumed the old one — stale config is a bug that hasn't manifested yet. Keep `uv.lock`, the ruff config, the documented versions, and the `skills-only` skill branch (see §Skill Distribution) in sync.
 
 ## What This Project Is
 
@@ -21,7 +21,7 @@ A 14-chapter Jupyter ebook on LangGraph 1.0 (LangChain + LangGraph), covering Re
 - **Tutorial notebooks** — repo root, 14 chapters (`1.quickstart.ipynb` … `14.langgraph_cli.ipynb`)
 - **Gradio app** — `app/`, its own uv project (Dockerfile, docker-compose)
 - **MCP servers** — `mcp_server/`
-- **Agent Skill** — `skills/dive-into-langgraph/`
+- **Agent Skill** — `skills/dive-into-langgraph/`, mirrored to the `skills-only` orphan branch (see §Skill Distribution)
 - **Ebook config** — `myst.yml`
 
 ## Environment & Toolchain
@@ -39,6 +39,19 @@ A 14-chapter Jupyter ebook on LangGraph 1.0 (LangChain + LangGraph), covering Re
 **Format:** `ruff format .` — config in the root `.ruff.toml` (`line-length = 100`).
 **Lint:** `ruff check .` — rules `E4/E7/E9/F`.
 **Git hook:** `uv run pre-commit install` once per clone. The versioned hook and CI both run `uv run pre-commit run --all-files`; hooks check but do not rewrite files.
+
+## Skill Distribution
+
+`origin/skills-only` is an orphan branch, not a copy of `main`. `npx skills add luochang212/dive-into-langgraph` clones it so users get the skill without the notebooks, app, or docs build. It holds only `skills/dive-into-langgraph/`, `README.md`, `.gitignore`, and `img/social-preview.webp`.
+
+**A skill change is not done until that branch is refreshed.** After committing anything under `skills/dive-into-langgraph/` (or the mirrored `README.md`), run:
+
+```
+./scripts/sync_skills_branch.sh          # export from main, commit on the orphan branch, push
+./scripts/sync_skills_branch.sh --check  # exit 1 when origin/skills-only is stale
+```
+
+The script exports the mirrored paths from `main` with `git archive`, commits them in a throwaway worktree, and pushes to `origin/skills-only`. Never hand-edit files on that branch — the next sync overwrites them, and `--check` (which needs network) is the only thing that would notice the drift.
 
 ## Docs
 
