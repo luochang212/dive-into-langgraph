@@ -3,7 +3,7 @@
         "./"
     ],
     "graphs": {
-        "supervisor": "./simple_agent.py:get_app"
+        "simple-agent": "./simple_agent.py:get_app"
     },
     "env": "./.env"
 }
