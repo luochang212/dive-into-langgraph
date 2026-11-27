@@ -1,0 +1,12 @@
+# 全仓库统一 LF。
+# text=auto：入库时自动归一化为 LF（git 自检测二进制文件，不会误伤图片/数据库）；
+# eol=lf：检出时也强制 LF，Windows 贡献者的工作区不再出现 CRLF。
+* text=auto eol=lf
+
+# 显式声明的二进制文件，双保险防止误归一化
+*.png binary
+*.webp binary
+*.ico binary
+*.db binary
+*.db-shm binary
+*.db-wal binary
