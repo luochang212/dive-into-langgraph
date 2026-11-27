@@ -9,7 +9,7 @@ from langchain_openai import ChatOpenAI
 
 
 def create_llm(
-    model: str = "qwen3.5-plus",
+    model: str = "qwen3.8-flash",
     **kwargs,
 ) -> ChatOpenAI:
     """使用 ChatOpenAI 创建 LLM"""
@@ -28,17 +28,19 @@ def list_agent_tools(agent) -> str:
 
     lines = []
     for tool in tools:
-        desc = (tool.description or "").split('\n')[0]
+        desc = (tool.description or "").split("\n")[0]
         lines.append(f"- `{tool.name}`: {desc}")
     return "\n".join(lines)
 
 
 async def stream_messages(agent, messages: dict):
     """流式输出 - messages 模式"""
-    async for token, _ in agent.astream(
-            messages,
-            stream_mode="messages",
+    async for part in agent.astream(
+        messages,
+        stream_mode="messages",
+        version="v2",
     ):
+        token, _ = part["data"]
         if token.content:
             print(token.content, end="", flush=True)
 

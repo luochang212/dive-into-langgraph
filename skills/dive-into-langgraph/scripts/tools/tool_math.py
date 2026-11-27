@@ -31,12 +31,11 @@ def multiply(a: float, b: float) -> float:
 def divide(a: float, b: float) -> float:
     """两数相除 (支持整数和浮点数)"""
     if float(b) == 0:
-        return "Error: Division by zero"
+        raise ValueError("除数不能为零")
     return float(a) / float(b)
 
 
 class SafeEvaluator(ast.NodeVisitor):
-
     # 支持的二元运算
     BIN_OPS = {
         ast.Add: operator.add,
@@ -84,6 +83,10 @@ class SafeEvaluator(ast.NodeVisitor):
             raise ValueError(f"不支持的二元运算符: {op_type}")
         left = self.visit(node.left)
         right = self.visit(node.right)
+        # 幂运算防护：按结果位数设上限，避免 9**9**9 这类表达式耗尽内存
+        if op_type is ast.Pow and isinstance(left, int) and isinstance(right, int):
+            if left.bit_length() * abs(right) > 100_000:
+                raise ValueError("指数过大，拒绝计算")
         return self.BIN_OPS[op_type](left, right)
 
     def visit_UnaryOp(self, node):
@@ -103,8 +106,8 @@ class SafeEvaluator(ast.NodeVisitor):
         if func_name not in self.SAFE_FUNCS:
             raise ValueError(f"不支持的函数: {func_name}")
 
-        if len(node.args) != 1:
-            raise ValueError(f"{func_name} 函数需要且仅需要一个参数")
+        if len(node.args) != 1 or node.keywords:
+            raise ValueError(f"{func_name} 函数仅支持一个位置参数（不支持关键字参数）")
 
         arg = self.visit(node.args[0])
         return self.SAFE_FUNCS[func_name](arg)
@@ -133,7 +136,7 @@ class SafeEvaluator(ast.NodeVisitor):
                 raise ValueError(f"计算结果类型错误: {type(result)}")
         except ZeroDivisionError:
             raise ValueError("除零错误")
-        except ValueError as e:
+        except ValueError:
             raise
         except Exception as e:
             raise ValueError(f"无效的数学表达式: {str(e)}")
@@ -147,7 +150,7 @@ def safe_eval(expression: str) -> str:
     支持的运算符: + - * / ** ()
     支持的函数: sqrt exp log log2 log10 sin cos tan abs
 
-    注意: 上叙函数仅支持单参数。像 log(9, 3) 这样的，不行
+    注意: 上述函数仅支持单参数。像 log(9, 3) 或 log(9, base=3) 这样的，不行
     例子: 计算 (sqrt(9) + 1) ** 2
     """
     evaluator = SafeEvaluator()

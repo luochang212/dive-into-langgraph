@@ -14,16 +14,10 @@ LangGraph 是由 LangChain 团队开发的开源 Agent 框架。v1.0 是稳定�
 
 ## 安装依赖
 
-基础依赖：
+在本仓库中同步全部依赖：
 
 ```bash
-pip install \
-  langgraph \
-  "langchain[openai]" \
-  langchain-community \
-  langchain-mcp-adapters \
-  python-dotenv \
-  pydantic
+uv sync
 ```
 
 ## 环境变量
