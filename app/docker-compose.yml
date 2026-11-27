@@ -3,6 +3,7 @@ services:
     build:
       dockerfile: Dockerfile
     container_name: gradio-agent-container
+    restart: unless-stopped
     ports:
       # 只绑定宿主回环地址：应用含无沙箱的代码执行工具，不对局域网/公网暴露
       - "127.0.0.1:7860:7860"

@@ -18,7 +18,6 @@
 
 - **tools**：
     - **联网搜索**：[tool_search](./tools/tool_search.py)
-    - **四则运算**：[tool_math](./tools/tool_math.py)
     - **科学计算**：[tool_sci](./tools/tool_sci.py)
     - **角色扮演**：[role-play](./tools/tool_role.py)
 - **MCP**：
@@ -34,6 +33,10 @@
 > \[!NOTE\]
 > 
 > 图表可视化、高德地图、文件系统 三个 MCP 默认关闭。如需开启，请在 [app.py](./app.py) 中解开注释。此外，高德地图开启前需要在 [高德开放平台](https://lbs.amap.com/api/mcp-server/create-project-and-key) 申请 `API_KEY` 并配置到 `.env` 文件。
+
+> \[!WARNING\]
+>
+> 本应用内置的 [代码执行 MCP](./mcp/code_execution.py) **没有沙箱**：Agent 生成的任意 Python 代码都会直接在本机运行。请只在本机或可信环境中使用；docker-compose 已默认将端口绑定到 `127.0.0.1`，请勿将容器直接暴露到公网。
 
 <!-- ## 👷 技能 (Skills) -->
 

@@ -13,7 +13,6 @@ dependencies = [
     "openai>=3.13.0",
     "pydantic>=2.13.5",
     "python-dotenv>=1.2.3",
-    "typer>=0.27.2",
     "langchain-deepseek>=1.2.1",
 ]
 
